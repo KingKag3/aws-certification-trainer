@@ -1,0 +1,1594 @@
+{
+  "schemaVersion": 1,
+  "sourceNote": "Descriptions and 'gotcha' facts were written from AWS's own public service overview pages, service FAQs, and the AWS Well-Architected Framework whitepaper. No exam-dump material was used.",
+  "categories": {
+    "compute": { "label": "Compute", "color": "#F58536", "icon": "cpu" },
+    "storage": { "label": "Storage", "color": "#3F8624", "icon": "database" },
+    "database": { "label": "Database", "color": "#527FFF", "icon": "layers" },
+    "networking": { "label": "Networking", "color": "#8C4FFF", "icon": "network" },
+    "edge": { "label": "Edge & Content Delivery", "color": "#C925D1", "icon": "globe" },
+    "security": { "label": "Security", "color": "#DD344C", "icon": "shield" },
+    "identity": { "label": "Identity", "color": "#E7157B", "icon": "key" },
+    "management": { "label": "Management & Governance", "color": "#E7157B", "icon": "sliders" },
+    "cost": { "label": "Cost Management", "color": "#01A88D", "icon": "receipt" },
+    "integration": { "label": "Application Integration", "color": "#E7157B", "icon": "link" },
+    "analytics": { "label": "Analytics", "color": "#8C4FFF", "icon": "chart" },
+    "ml": { "label": "AI & Machine Learning", "color": "#01A88D", "icon": "sparkles" },
+    "developer-tools": { "label": "Developer Tools", "color": "#3334B9", "icon": "terminal" },
+    "migration": { "label": "Migration & Transfer", "color": "#01A88D", "icon": "truck" },
+    "concept": { "label": "Core Concept", "color": "#FF9900", "icon": "book" }
+  },
+  "services": [
+    {
+      "id": "ec2", "name": "Amazon EC2", "category": "compute",
+      "tags": ["compute", "cost", "performance", "resilience"],
+      "purpose": "provides resizable virtual servers (instances) that you launch, patch and manage yourself",
+      "useCases": ["run a traditional application that needs OS-level access", "host workloads that require a specific kernel, agent or licence", "lift-and-shift an on-premises virtual machine"],
+      "facts": [
+        "You are responsible for patching the guest operating system on EC2 — AWS patches only the hypervisor and below.",
+        "Spot Instances can be reclaimed by AWS with a two-minute warning, so they suit fault-tolerant and interruptible work.",
+        "Stopping an instance releases its public IPv4 address unless you have attached an Elastic IP."
+      ],
+      "myths": [
+        "EC2 instances automatically scale up when CPU rises — scaling requires an Auto Scaling group, it is not built into the instance.",
+        "Instance store volumes survive a stop/start — they do not; instance store data is lost when the instance stops or terminates."
+      ],
+      "pricing": ["On-Demand", "Reserved Instances", "Savings Plans", "Spot Instances", "Dedicated Hosts"]
+    },
+    {
+      "id": "lambda", "name": "AWS Lambda", "category": "compute",
+      "tags": ["compute", "cost", "integration", "decoupling"],
+      "purpose": "runs your code in response to events without you provisioning or managing any servers",
+      "useCases": ["respond to an S3 upload or a DynamoDB stream record", "back an API Gateway endpoint", "run short scheduled jobs on an EventBridge rule"],
+      "facts": [
+        "Lambda bills on requests and on the duration your code actually runs, so idle functions cost nothing.",
+        "Memory is the only performance dial you set — CPU and network throughput scale in proportion to the memory you allocate.",
+        "A function has a maximum execution timeout of 15 minutes, which rules it out for long batch jobs."
+      ],
+      "myths": [
+        "Lambda can run any workload regardless of length — anything over 15 minutes must move to Fargate, ECS, Batch or EC2.",
+        "Lambda functions keep local disk state between invocations — /tmp may be reused on a warm start but must never be relied on."
+      ],
+      "pricing": ["Per request", "Per GB-second of duration", "Provisioned Concurrency"]
+    },
+    {
+      "id": "ecs", "name": "Amazon ECS", "category": "compute",
+      "tags": ["compute", "decoupling", "performance"],
+      "purpose": "is AWS's own container orchestrator for running and scaling Docker containers",
+      "useCases": ["run containerised microservices without operating a control plane", "schedule batch containers behind a load balancer"],
+      "facts": [
+        "ECS offers two launch types: EC2, where you manage the container hosts, and Fargate, where AWS does.",
+        "ECS has no control-plane charge — you pay only for the EC2 or Fargate capacity that runs your tasks."
+      ],
+      "myths": ["ECS requires Kubernetes knowledge — it uses its own task and service model, not Kubernetes objects."],
+      "pricing": ["Pay for underlying EC2 or Fargate capacity"]
+    },
+    {
+      "id": "eks", "name": "Amazon EKS", "category": "compute",
+      "tags": ["compute", "decoupling", "performance"],
+      "purpose": "runs upstream-conformant Kubernetes with the control plane managed by AWS",
+      "useCases": ["run existing Kubernetes manifests and Helm charts on AWS", "keep workloads portable across clouds and on-premises"],
+      "facts": [
+        "Unlike ECS, EKS charges an hourly fee per cluster for the managed control plane, on top of the worker capacity.",
+        "EKS worker nodes can be EC2 managed node groups, self-managed nodes, or Fargate profiles."
+      ],
+      "myths": ["EKS manages your worker nodes' patching for you — only the control plane is managed unless you use Fargate."],
+      "pricing": ["Hourly cluster fee", "Worker node compute (EC2 or Fargate)"]
+    },
+    {
+      "id": "fargate", "name": "AWS Fargate", "category": "compute",
+      "tags": ["compute", "cost", "decoupling"],
+      "purpose": "is the serverless compute engine that runs ECS tasks or EKS pods without you managing EC2 instances",
+      "useCases": ["run containers with no host fleet to patch or right-size", "spiky container workloads where idle instances would be wasteful"],
+      "facts": [
+        "Fargate bills per vCPU-second and GB-second requested by the task, not per instance-hour.",
+        "Fargate is not a standalone service — it is a launch type used by ECS and EKS."
+      ],
+      "myths": ["You can SSH into a Fargate task's host — there is no host to reach; use ECS Exec for a shell inside the container."],
+      "pricing": ["Per vCPU-second", "Per GB-second", "Fargate Spot"]
+    },
+    {
+      "id": "elastic-beanstalk", "name": "AWS Elastic Beanstalk", "category": "compute",
+      "tags": ["compute", "developer-tools", "management"],
+      "purpose": "deploys and scales a web application from your uploaded code while provisioning the underlying resources for you",
+      "useCases": ["get a standard web app running quickly without hand-building the stack", "give developers a paved path onto EC2 and load balancers"],
+      "facts": [
+        "Beanstalk itself is free — you pay only for the EC2, load balancer and other resources it creates.",
+        "The resources Beanstalk creates remain fully visible and editable in your account, unlike a black-box platform."
+      ],
+      "myths": ["Beanstalk is serverless — it provisions real EC2 instances that you can see and are billed for."],
+      "pricing": ["No charge for the service; pay for provisioned resources"]
+    },
+    {
+      "id": "lightsail", "name": "Amazon Lightsail", "category": "compute",
+      "tags": ["compute", "cost"],
+      "purpose": "bundles a virtual server, storage and networking into a fixed monthly price for simple workloads",
+      "useCases": ["run a small website, blog or dev environment at a predictable price", "let a newcomer launch a stack without learning VPC design"],
+      "facts": ["Lightsail uses a flat monthly bundle price that includes a data-transfer allowance, unlike EC2's metered pricing."],
+      "myths": ["Lightsail is the right choice for large production architectures — it deliberately trades flexibility for simplicity."],
+      "pricing": ["Fixed monthly bundle"]
+    },
+    {
+      "id": "batch", "name": "AWS Batch", "category": "compute",
+      "tags": ["compute", "cost", "performance"],
+      "purpose": "schedules and runs batch computing jobs, provisioning the right amount of compute for the queue",
+      "useCases": ["run large scientific or financial simulations", "process a queue of long-running jobs on Spot capacity"],
+      "facts": ["Batch has no additional charge; you pay for the EC2 or Fargate resources it launches to run jobs."],
+      "myths": ["Batch is a scheduler for cron-style tasks — for time-based triggers use EventBridge Scheduler instead."],
+      "pricing": ["Pay for underlying compute"]
+    },
+    {
+      "id": "auto-scaling", "name": "Amazon EC2 Auto Scaling", "category": "compute",
+      "tags": ["compute", "resilience", "cost", "performance"],
+      "purpose": "keeps a group of EC2 instances at the right size, replacing unhealthy instances and scaling on demand",
+      "useCases": ["hold capacity steady by replacing failed instances", "scale out on a CloudWatch alarm and back in when load drops"],
+      "facts": [
+        "Auto Scaling groups span multiple Availability Zones, which is what makes an EC2 tier resilient to an AZ failure.",
+        "There is no charge for Auto Scaling itself — you pay only for the instances it launches."
+      ],
+      "myths": [
+        "Auto Scaling makes an instance bigger under load — it adds and removes instances (horizontal scaling), it does not resize them.",
+        "An Auto Scaling group distributes traffic — that is the load balancer's job; the group only manages instance count and health."
+      ],
+      "pricing": ["No charge for the service"]
+    },
+    {
+      "id": "outposts", "name": "AWS Outposts", "category": "compute",
+      "tags": ["compute", "migration", "compliance"],
+      "purpose": "puts AWS-managed racks of AWS infrastructure in your own data centre, using the same APIs",
+      "useCases": ["keep workloads on-premises for data residency or single-digit-millisecond latency", "run a hybrid architecture with one control plane"],
+      "facts": ["Outposts hardware is owned, delivered, installed and maintained by AWS but physically lives in your facility."],
+      "myths": ["Outposts is a software product you install on your own servers — it is specific AWS-supplied hardware."],
+      "pricing": ["Per-rack or per-server subscription (1 or 3 year)"]
+    },
+    {
+      "id": "local-zones", "name": "AWS Local Zones", "category": "edge",
+      "tags": ["compute", "edge", "performance"],
+      "purpose": "places compute and storage closer to large population centres for latency-sensitive applications",
+      "useCases": ["real-time gaming or media rendering near end users", "keep single-digit-millisecond latency to a metro area"],
+      "facts": ["A Local Zone is an extension of a parent Region — you enable it, then launch subnets into it from that Region's VPC."],
+      "myths": ["Local Zones are separate Regions with their own account and console — they are extensions of an existing Region."],
+      "pricing": ["Per-resource, similar to the parent Region"]
+    },
+    {
+      "id": "wavelength", "name": "AWS Wavelength", "category": "edge",
+      "tags": ["compute", "edge", "performance"],
+      "purpose": "runs AWS compute inside telecom providers' 5G networks for ultra-low-latency mobile applications",
+      "useCases": ["AR/VR delivered to mobile devices", "connected-vehicle and IoT workloads needing minimal round trips"],
+      "facts": ["Traffic from 5G devices to a Wavelength Zone never leaves the carrier network, which is what removes the latency."],
+      "myths": ["Wavelength is a content delivery network — that is CloudFront; Wavelength runs your compute at the carrier edge."],
+      "pricing": ["Per-resource"]
+    },
+    {
+      "id": "s3", "name": "Amazon S3", "category": "storage",
+      "tags": ["storage", "cost", "resilience", "performance", "encryption"],
+      "purpose": "stores any amount of data as objects in buckets, reachable over HTTPS APIs",
+      "useCases": ["host static website assets and media", "build a data lake for analytics", "store backups and log archives"],
+      "facts": [
+        "S3 is object storage — you cannot mount a bucket as a block device or a file system for an operating system.",
+        "S3 Standard is designed for 99.999999999% (eleven nines) durability by storing objects across multiple Availability Zones.",
+        "S3 Intelligent-Tiering moves objects between access tiers automatically for a small monitoring fee, with no retrieval charges."
+      ],
+      "myths": [
+        "S3 buckets are public by default — new buckets block public access by default and must be explicitly opened.",
+        "S3 One Zone-IA is as resilient as S3 Standard — it stores data in a single Availability Zone and is lost if that AZ is destroyed."
+      ],
+      "pricing": ["Per GB stored per storage class", "Per request", "Data transfer out", "Retrieval fees on infrequent/archive tiers"]
+    },
+    {
+      "id": "s3-glacier", "name": "Amazon S3 Glacier storage classes", "category": "storage",
+      "tags": ["storage", "cost", "compliance"],
+      "purpose": "archives data at very low cost in exchange for slower and charged retrieval",
+      "useCases": ["keep regulatory records for years at minimum cost", "long-term retention of backups that are rarely read"],
+      "facts": [
+        "Glacier Instant Retrieval reads in milliseconds; Flexible Retrieval takes minutes to hours; Deep Archive takes up to 12 hours.",
+        "Archive classes carry minimum storage durations — deleting early still incurs the remainder of that minimum."
+      ],
+      "myths": ["Glacier is a separate service from S3 — the archive tiers are S3 storage classes applied to objects in a bucket."],
+      "pricing": ["Very low per-GB storage", "Retrieval fee per GB and per request", "Minimum storage duration"]
+    },
+    {
+      "id": "ebs", "name": "Amazon EBS", "category": "storage",
+      "tags": ["storage", "performance", "resilience", "encryption"],
+      "purpose": "provides network-attached block volumes that behave like a hard disk for a single EC2 instance",
+      "useCases": ["boot volume for an EC2 instance", "the data disk under a self-managed database"],
+      "facts": [
+        "An EBS volume lives in one Availability Zone and can only attach to instances in that same AZ.",
+        "EBS snapshots are stored in S3 and are incremental — only changed blocks are stored after the first snapshot.",
+        "gp3 lets you set IOPS and throughput independently of volume size, which gp2 could not."
+      ],
+      "myths": [
+        "EBS can be shared by many instances like a file share — only Multi-Attach io1/io2 volumes attach to several instances, and only within one AZ; for shared file access use EFS.",
+        "EBS volumes are backed up automatically — you must schedule snapshots, for example with AWS Backup or Data Lifecycle Manager."
+      ],
+      "pricing": ["Per GB-month provisioned", "Provisioned IOPS and throughput", "Snapshot storage"]
+    },
+    {
+      "id": "efs", "name": "Amazon EFS", "category": "storage",
+      "tags": ["storage", "resilience", "performance"],
+      "purpose": "provides an elastic NFS file system that many Linux instances can mount at the same time",
+      "useCases": ["shared content root for a fleet of web servers", "home directories or shared scratch space across instances"],
+      "facts": [
+        "EFS grows and shrinks automatically as you add and remove files; there is no size to provision.",
+        "EFS is regional — mount targets in multiple Availability Zones let instances across AZs use the same file system."
+      ],
+      "myths": [
+        "EFS works with Windows instances — EFS is NFS and targets Linux; for SMB/Windows use Amazon FSx for Windows File Server.",
+        "EFS is cheaper than EBS per GB — it is generally more expensive per GB; you pay for shared access and elasticity."
+      ],
+      "pricing": ["Per GB-month by storage class", "Optional provisioned throughput"]
+    },
+    {
+      "id": "fsx", "name": "Amazon FSx", "category": "storage",
+      "tags": ["storage", "performance", "migration"],
+      "purpose": "runs fully managed third-party file systems such as Windows File Server, Lustre, NetApp ONTAP and OpenZFS",
+      "useCases": ["SMB file shares for Windows workloads with Active Directory integration", "high-performance Lustre scratch storage for HPC and ML training"],
+      "facts": [
+        "FSx for Windows File Server speaks SMB and integrates with Active Directory, which EFS cannot do.",
+        "FSx for Lustre can present an S3 bucket as a file system and lazily load objects as they are read."
+      ],
+      "myths": ["FSx is one file system with options — it is a family of distinct file systems with very different characteristics."],
+      "pricing": ["Per GB-month provisioned", "Throughput capacity", "Backups"]
+    },
+    {
+      "id": "storage-gateway", "name": "AWS Storage Gateway", "category": "storage",
+      "tags": ["storage", "migration", "resilience"],
+      "purpose": "gives on-premises applications local access to storage that is actually backed by AWS",
+      "useCases": ["replace a physical tape library with a virtual one backed by S3 Glacier", "cache frequently used files locally while storing everything in S3"],
+      "facts": ["Gateway types are File Gateway (NFS/SMB to S3), Volume Gateway (iSCSI blocks) and Tape Gateway (virtual tape library)."],
+      "myths": ["Storage Gateway moves data one way only — it provides ongoing hybrid access, not a one-off transfer."],
+      "pricing": ["Per GB stored in AWS", "Per GB written", "Data transfer"]
+    },
+    {
+      "id": "aws-backup", "name": "AWS Backup", "category": "storage",
+      "tags": ["storage", "resilience", "compliance", "management"],
+      "purpose": "centralises backup policy, scheduling and retention across many AWS services from one place",
+      "useCases": ["apply one retention policy across EBS, RDS, DynamoDB, EFS and FSx", "prove backup compliance across an organisation"],
+      "facts": [
+        "Backup Vault Lock can make backups immutable so that even an administrator cannot delete them before their retention expires.",
+        "AWS Backup can copy backups to another Region or another account for disaster recovery."
+      ],
+      "myths": ["AWS Backup protects every AWS service — supported services are an explicit list; check it before relying on it."],
+      "pricing": ["Per GB of backup storage", "Restore and cross-Region copy charges"]
+    },
+    {
+      "id": "snow-family", "name": "AWS Snow Family", "category": "migration",
+      "tags": ["storage", "migration"],
+      "purpose": "ships physical devices to move very large data sets into AWS when the network would be too slow",
+      "useCases": ["move petabytes out of a data centre with limited bandwidth", "collect and pre-process data in a disconnected or harsh location"],
+      "facts": ["Data on Snow devices is encrypted with KMS keys and the device is tamper-evident in transit."],
+      "myths": ["Snow devices are the fastest option for any large transfer — for a well-connected site, DataSync or Direct Connect is usually faster end to end."],
+      "pricing": ["Per job and per day of device use", "Shipping"]
+    },
+    {
+      "id": "datasync", "name": "AWS DataSync", "category": "migration",
+      "tags": ["storage", "migration"],
+      "purpose": "moves large amounts of data over the network between on-premises storage and AWS storage services",
+      "useCases": ["one-off migration of an NFS or SMB share into S3 or EFS", "recurring replication of a file server into AWS"],
+      "facts": ["DataSync handles encryption in transit, integrity verification and retries automatically, which a plain script would not."],
+      "myths": ["DataSync gives applications live access to AWS storage — that is Storage Gateway; DataSync is a transfer service."],
+      "pricing": ["Per GB transferred"]
+    },
+    {
+      "id": "rds", "name": "Amazon RDS", "category": "database",
+      "tags": ["database", "resilience", "performance", "cost"],
+      "purpose": "runs managed relational databases (MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, Db2) with patching and backups handled",
+      "useCases": ["move a self-managed relational database off EC2", "run a transactional application store with automated backups"],
+      "facts": [
+        "Multi-AZ is for high availability: the standby is a synchronous replica you cannot read from and it fails over automatically.",
+        "Read replicas are for scaling reads and use asynchronous replication, so they can lag behind the primary.",
+        "You still choose and pay for the instance class and storage — RDS is managed, not serverless, unless you use Aurora Serverless."
+      ],
+      "myths": [
+        "A Multi-AZ standby can serve read traffic to spread load — it cannot; use read replicas for that.",
+        "RDS lets you connect to the underlying operating system — you get database access only, not shell access."
+      ],
+      "pricing": ["Instance hours", "Storage and IOPS", "Backup storage beyond the free allowance", "Reserved Instances"]
+    },
+    {
+      "id": "aurora", "name": "Amazon Aurora", "category": "database",
+      "tags": ["database", "resilience", "performance"],
+      "purpose": "is AWS's MySQL- and PostgreSQL-compatible relational engine with a distributed, self-healing storage layer",
+      "useCases": ["a relational workload needing higher throughput than stock MySQL or PostgreSQL", "fast failover and low-lag read scaling"],
+      "facts": [
+        "Aurora keeps six copies of your data across three Availability Zones and repairs damaged blocks automatically.",
+        "Aurora Serverless v2 scales capacity in fine-grained increments in response to load.",
+        "Aurora storage grows automatically up to its maximum — you do not provision volume size."
+      ],
+      "myths": ["Aurora is a fork of MySQL only — it has both MySQL-compatible and PostgreSQL-compatible editions."],
+      "pricing": ["Instance hours or Aurora Capacity Units", "Storage consumed", "I/O requests (except on I/O-Optimized)"]
+    },
+    {
+      "id": "dynamodb", "name": "Amazon DynamoDB", "category": "database",
+      "tags": ["database", "performance", "resilience", "cost"],
+      "purpose": "is a serverless key-value and document database delivering single-digit-millisecond reads at any scale",
+      "useCases": ["session, cart and user-profile stores", "high-write telemetry and event stores", "serverless application back ends"],
+      "facts": [
+        "DynamoDB replicates every write across three Availability Zones inside a Region with no configuration from you.",
+        "On-demand capacity charges per request with no capacity planning; provisioned capacity is cheaper for steady, predictable traffic.",
+        "Global Tables give multi-Region, multi-active replication of a table."
+      ],
+      "myths": [
+        "DynamoDB supports SQL joins across tables — it does not; access patterns must be designed into the key schema and indexes.",
+        "DAX is built in — DynamoDB Accelerator is a separate cluster you provision when you need microsecond cached reads."
+      ],
+      "pricing": ["On-demand per request", "Provisioned capacity units", "Storage", "Streams and backups"]
+    },
+    {
+      "id": "elasticache", "name": "Amazon ElastiCache", "category": "database",
+      "tags": ["database", "caching", "performance"],
+      "purpose": "runs managed in-memory Redis OSS/Valkey or Memcached caches in front of slower data stores",
+      "useCases": ["cache expensive database query results", "hold session state outside the application servers", "leaderboards and rate counters"],
+      "facts": [
+        "Redis-compatible ElastiCache supports replication, snapshots and failover; Memcached is a simpler, purely ephemeral cache.",
+        "Caching is a common first fix when a read-heavy database is the bottleneck, before scaling the database itself."
+      ],
+      "myths": ["ElastiCache persists data durably like a database — treat it as a cache; nodes can be replaced and data lost."],
+      "pricing": ["Node hours", "Reserved nodes", "Serverless capacity"]
+    },
+    {
+      "id": "memorydb", "name": "Amazon MemoryDB", "category": "database",
+      "tags": ["database", "caching", "performance", "resilience"],
+      "purpose": "is a Redis-compatible in-memory database that is durable enough to be a primary data store",
+      "useCases": ["microservices that need in-memory speed but cannot lose writes", "replace a cache plus separate database pairing"],
+      "facts": ["MemoryDB writes to a multi-AZ transaction log, which is what makes it durable where ElastiCache is not."],
+      "myths": ["MemoryDB and ElastiCache are interchangeable — MemoryDB is priced and designed as a durable primary store."],
+      "pricing": ["Node hours", "Written data", "Snapshot storage"]
+    },
+    {
+      "id": "redshift", "name": "Amazon Redshift", "category": "database",
+      "tags": ["database", "analytics", "performance", "cost"],
+      "purpose": "is a petabyte-scale columnar data warehouse for complex analytic SQL over large data sets",
+      "useCases": ["business-intelligence reporting over years of history", "joining and aggregating billions of rows for dashboards"],
+      "facts": [
+        "Redshift is built for analytical (OLAP) queries; it is a poor fit for high-concurrency transactional (OLTP) workloads.",
+        "Redshift Spectrum queries data left in S3 without loading it into the cluster first."
+      ],
+      "myths": ["Redshift is a drop-in replacement for RDS — its columnar design serves reporting, not per-row transactions."],
+      "pricing": ["Node hours or Serverless RPU-hours", "Managed storage", "Spectrum scanned data"]
+    },
+    {
+      "id": "documentdb", "name": "Amazon DocumentDB", "category": "database",
+      "tags": ["database", "performance"],
+      "purpose": "runs a managed document database with MongoDB compatibility",
+      "useCases": ["move a MongoDB workload to a managed service", "content catalogues and user profiles stored as JSON documents"],
+      "facts": ["Storage scales automatically in 10 GB increments and is replicated six ways across three Availability Zones."],
+      "myths": ["DocumentDB is MongoDB — it is compatible with the MongoDB API, not the same engine, so some features differ."],
+      "pricing": ["Instance hours", "Storage and I/O", "Backups"]
+    },
+    {
+      "id": "neptune", "name": "Amazon Neptune", "category": "database",
+      "tags": ["database", "performance"],
+      "purpose": "is a managed graph database for highly connected data",
+      "useCases": ["fraud-ring detection", "recommendation engines", "knowledge graphs and network topology"],
+      "facts": ["Neptune supports the property-graph query languages Gremlin and openCypher as well as SPARQL for RDF."],
+      "myths": ["A graph database is just a relational database with more joins — Neptune stores relationships as first-class data for traversal speed."],
+      "pricing": ["Instance hours or Serverless capacity", "Storage and I/O"]
+    },
+    {
+      "id": "keyspaces", "name": "Amazon Keyspaces", "category": "database",
+      "tags": ["database", "performance"],
+      "purpose": "is a serverless, Apache Cassandra-compatible wide-column database",
+      "useCases": ["migrate a Cassandra workload without managing a ring", "high-write time-series and device data"],
+      "facts": ["Keyspaces is serverless — there are no nodes to size, and tables scale capacity up and down on their own."],
+      "myths": ["Keyspaces requires you to manage Cassandra nodes — it removes the cluster entirely."],
+      "pricing": ["On-demand or provisioned capacity", "Storage"]
+    },
+    {
+      "id": "timestream", "name": "Amazon Timestream", "category": "database",
+      "tags": ["database", "analytics", "performance"],
+      "purpose": "is a purpose-built time-series database with automatic tiering from memory to cost-optimised storage",
+      "useCases": ["IoT sensor telemetry", "application and infrastructure metrics kept for long analysis windows"],
+      "facts": ["Timestream automatically moves older data from the in-memory store to the magnetic store based on your retention policy."],
+      "myths": ["Any relational table with a timestamp column is equivalent — time-series engines index and compress on time specifically."],
+      "pricing": ["Writes", "Stored data by tier", "Queries scanned"]
+    },
+    {
+      "id": "dms", "name": "AWS Database Migration Service", "category": "migration",
+      "tags": ["database", "migration"],
+      "purpose": "migrates databases into AWS with the source staying online during the move",
+      "useCases": ["move an on-premises Oracle database into RDS or Aurora", "continuously replicate a database into a data lake"],
+      "facts": [
+        "DMS supports homogeneous moves (Oracle to Oracle) and heterogeneous moves when paired with the Schema Conversion Tool.",
+        "Change data capture lets DMS keep replicating after the initial full load, which is how cutover downtime stays short."
+      ],
+      "myths": ["DMS converts application code and stored procedures — it moves data; schema and code conversion is the Schema Conversion Tool's job."],
+      "pricing": ["Replication instance hours", "Log storage"]
+    },
+    {
+      "id": "vpc", "name": "Amazon VPC", "category": "networking",
+      "tags": ["networking", "security", "resilience"],
+      "purpose": "is your logically isolated private network in AWS where you control subnets, routing and gateways",
+      "useCases": ["separate public web tiers from private application and database tiers", "connect to an on-premises network privately"],
+      "facts": [
+        "A subnet lives in exactly one Availability Zone, so multi-AZ resilience means multiple subnets.",
+        "A subnet is 'public' only because its route table sends 0.0.0.0/0 to an internet gateway — there is no public checkbox.",
+        "VPC Flow Logs record accepted and rejected traffic metadata, not packet contents."
+      ],
+      "myths": [
+        "Security groups and network ACLs work the same way — security groups are stateful and attach to resources; network ACLs are stateless and attach to subnets.",
+        "You can change a VPC's primary CIDR block after creation — you cannot; you can only add secondary CIDRs."
+      ],
+      "pricing": ["No charge for the VPC itself", "NAT gateways, endpoints and data transfer are charged"]
+    },
+    {
+      "id": "nat-gateway", "name": "NAT Gateway", "category": "networking",
+      "tags": ["networking", "cost", "security"],
+      "purpose": "lets instances in a private subnet reach the internet for outbound traffic without being reachable from it",
+      "useCases": ["let private application servers download patches and call external APIs"],
+      "facts": [
+        "A NAT gateway is zonal — for resilience you deploy one per Availability Zone with matching route tables.",
+        "NAT gateways charge an hourly rate plus a per-GB processing charge, which makes them a frequent surprise on bills."
+      ],
+      "myths": ["A NAT gateway allows inbound connections from the internet — it only allows responses to outbound connections."],
+      "pricing": ["Per hour", "Per GB processed"]
+    },
+    {
+      "id": "vpc-endpoints", "name": "VPC endpoints", "category": "networking",
+      "tags": ["networking", "security", "cost"],
+      "purpose": "let resources in a VPC reach AWS services privately, without the traffic crossing the internet",
+      "useCases": ["reach S3 from a private subnet without a NAT gateway", "keep API traffic to AWS services off the public internet"],
+      "facts": [
+        "Gateway endpoints exist for S3 and DynamoDB, are free, and work by adding a route table prefix-list entry.",
+        "Interface endpoints are elastic network interfaces powered by PrivateLink and are charged per hour and per GB."
+      ],
+      "myths": ["All VPC endpoints cost the same — gateway endpoints are free, interface endpoints are not."],
+      "pricing": ["Gateway endpoints free", "Interface endpoints per hour and per GB"]
+    },
+    {
+      "id": "privatelink", "name": "AWS PrivateLink", "category": "networking",
+      "tags": ["networking", "security"],
+      "purpose": "exposes a service privately inside a VPC through an elastic network interface, with no internet gateway or peering",
+      "useCases": ["let a customer VPC consume your SaaS service privately", "reach a partner service without opening public routes"],
+      "facts": ["PrivateLink connections are one-directional: the consumer initiates to the provider's endpoint service."],
+      "myths": ["PrivateLink is the same as VPC peering — peering joins whole address spaces, PrivateLink exposes a single service endpoint."],
+      "pricing": ["Per endpoint-hour", "Per GB processed"]
+    },
+    {
+      "id": "transit-gateway", "name": "AWS Transit Gateway", "category": "networking",
+      "tags": ["networking", "resilience", "management"],
+      "purpose": "acts as a regional hub that connects many VPCs and on-premises networks through one attachment each",
+      "useCases": ["replace a mesh of VPC peering connections", "give hundreds of VPCs shared access to an on-premises network"],
+      "facts": ["Transit Gateway removes the n-squared growth of peering connections by giving every network one attachment to a hub."],
+      "myths": ["VPC peering is transitive if you chain it — it is not; that limitation is exactly why Transit Gateway exists."],
+      "pricing": ["Per attachment-hour", "Per GB processed"]
+    },
+    {
+      "id": "direct-connect", "name": "AWS Direct Connect", "category": "networking",
+      "tags": ["networking", "performance", "resilience", "migration"],
+      "purpose": "provides a dedicated private network link between your premises and AWS",
+      "useCases": ["consistent low-latency bandwidth for hybrid workloads", "large steady data transfer at lower per-GB cost than the internet"],
+      "facts": [
+        "Direct Connect offers consistent bandwidth and latency because the traffic never traverses the public internet.",
+        "A single Direct Connect connection is not highly available — resilience needs a second connection or a VPN backup."
+      ],
+      "myths": ["Direct Connect is encrypted by default — it is private but not encrypted; run a VPN or application-level encryption over it if required."],
+      "pricing": ["Port hours", "Data transfer out"]
+    },
+    {
+      "id": "site-to-site-vpn", "name": "AWS Site-to-Site VPN", "category": "networking",
+      "tags": ["networking", "security", "resilience"],
+      "purpose": "creates an encrypted IPsec tunnel from your network to AWS over the public internet",
+      "useCases": ["connect a branch office to a VPC quickly", "act as a backup path for a Direct Connect link"],
+      "facts": ["Each Site-to-Site VPN connection is delivered as two tunnels to two endpoints for redundancy."],
+      "myths": ["A VPN gives the same predictable performance as Direct Connect — it rides the public internet, so latency varies."],
+      "pricing": ["Per connection-hour", "Data transfer out"]
+    },
+    {
+      "id": "elb", "name": "Elastic Load Balancing", "category": "networking",
+      "tags": ["networking", "resilience", "performance", "security"],
+      "purpose": "distributes incoming traffic across healthy targets in multiple Availability Zones",
+      "useCases": ["spread HTTP traffic across a web fleet", "terminate TLS in front of application servers", "route by path or hostname to different services"],
+      "facts": [
+        "Application Load Balancer works at layer 7 and can route on host, path, header and query string.",
+        "Network Load Balancer works at layer 4, handles millions of requests per second and can give you a static IP per AZ.",
+        "The load balancer's health checks are what stop traffic reaching a failed instance."
+      ],
+      "myths": [
+        "A load balancer scales your fleet — it only distributes traffic; adding capacity is the Auto Scaling group's job.",
+        "An Application Load Balancer can balance UDP traffic — it cannot; use a Network Load Balancer."
+      ],
+      "pricing": ["Per hour", "Per capacity unit (LCU/NLCU)"]
+    },
+    {
+      "id": "route53", "name": "Amazon Route 53", "category": "networking",
+      "tags": ["networking", "resilience", "edge", "performance"],
+      "purpose": "is AWS's DNS service, with health checks and traffic-routing policies as well as domain registration",
+      "useCases": ["fail traffic over to a second Region on a health-check failure", "route users to the nearest endpoint by latency or geography"],
+      "facts": [
+        "Routing policies include simple, weighted, latency-based, failover, geolocation, geoproximity and multivalue answer.",
+        "Alias records point at AWS resources such as CloudFront or an ALB and, unlike CNAMEs, work at the zone apex and cost nothing to query."
+      ],
+      "myths": ["Route 53 load balances requests — it answers DNS queries; the client then connects directly to whatever address it received."],
+      "pricing": ["Per hosted zone per month", "Per million queries", "Health checks", "Domain registration"]
+    },
+    {
+      "id": "cloudfront", "name": "Amazon CloudFront", "category": "edge",
+      "tags": ["edge", "performance", "caching", "security", "cost"],
+      "purpose": "is AWS's content delivery network, caching and serving content from hundreds of edge locations",
+      "useCases": ["speed up a global website or video delivery", "reduce origin load and egress cost", "put WAF and TLS in front of an origin"],
+      "facts": [
+        "CloudFront can front S3, an ALB, EC2 or any HTTP origin — including origins outside AWS.",
+        "Origin Access Control lets a bucket serve CloudFront only, so users cannot bypass the CDN by hitting S3 directly.",
+        "Data transfer out through CloudFront is usually cheaper than transferring the same bytes directly from the origin."
+      ],
+      "myths": [
+        "CloudFront only works with S3 — any reachable HTTP origin works.",
+        "CloudFront caches everything automatically — cache behaviour depends on TTLs and the headers, cookies and query strings you tell it to consider."
+      ],
+      "pricing": ["Data transfer out per Region", "Per request", "Invalidations beyond the free allowance"]
+    },
+    {
+      "id": "global-accelerator", "name": "AWS Global Accelerator", "category": "edge",
+      "tags": ["edge", "performance", "resilience", "networking"],
+      "purpose": "gives you static anycast IP addresses and routes user traffic onto the AWS backbone at the nearest edge",
+      "useCases": ["improve latency and failover for non-HTTP applications such as gaming or VoIP", "provide fixed IPs in front of regional endpoints"],
+      "facts": ["Global Accelerator improves network path quality; it does not cache content the way CloudFront does."],
+      "myths": ["Global Accelerator is a CDN — it accelerates and fails over TCP/UDP traffic but stores no cached copies."],
+      "pricing": ["Fixed hourly fee per accelerator", "Per GB data transfer premium"]
+    },
+    {
+      "id": "api-gateway", "name": "Amazon API Gateway", "category": "networking",
+      "tags": ["networking", "integration", "security", "developer-tools"],
+      "purpose": "creates, publishes and secures REST, HTTP and WebSocket APIs in front of your back ends",
+      "useCases": ["expose Lambda functions as an HTTP API", "apply throttling, API keys and authorisation in one place", "version and stage APIs"],
+      "facts": [
+        "API Gateway can throttle and cache requests, and enforce authorisation with IAM, Cognito or a Lambda authorizer.",
+        "HTTP APIs are cheaper and lower-latency than REST APIs but support fewer features."
+      ],
+      "myths": ["API Gateway requires Lambda behind it — it can front any HTTP endpoint, an ALB, or AWS service integrations directly."],
+      "pricing": ["Per million requests", "Caching per hour", "Data transfer"]
+    },
+    {
+      "id": "network-firewall", "name": "AWS Network Firewall", "category": "security",
+      "tags": ["networking", "security"],
+      "purpose": "is a managed stateful network firewall and intrusion prevention service for VPC traffic",
+      "useCases": ["filter outbound traffic by domain name", "apply Suricata-compatible intrusion prevention rules at the VPC edge"],
+      "facts": ["Network Firewall inspects traffic at the VPC level, which security groups and network ACLs cannot do with deep rules."],
+      "myths": ["AWS WAF and Network Firewall overlap — WAF inspects HTTP(S) requests at the application layer; Network Firewall inspects network traffic."],
+      "pricing": ["Per firewall endpoint-hour", "Per GB processed"]
+    },
+    {
+      "id": "iam", "name": "AWS IAM", "category": "identity",
+      "tags": ["identity", "security"],
+      "purpose": "controls who is authenticated and what they are authorised to do in your AWS account",
+      "useCases": ["give an EC2 instance permission to read one S3 bucket via a role", "enforce MFA and least privilege for human users"],
+      "facts": [
+        "IAM is a global service — users, groups, roles and policies are not tied to a Region.",
+        "An explicit Deny in any applicable policy always wins over any Allow.",
+        "Roles provide temporary credentials, which is why applications should assume roles rather than embed access keys."
+      ],
+      "myths": [
+        "IAM is free but limited by cost — IAM itself has no charge at all.",
+        "The root user is just the first IAM user — it is a separate identity that cannot be restricted by IAM policies and should be locked away with MFA."
+      ],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "iam-identity-center", "name": "AWS IAM Identity Center", "category": "identity",
+      "tags": ["identity", "security", "management"],
+      "purpose": "centrally manages workforce sign-in and permissions across many AWS accounts and applications",
+      "useCases": ["single sign-on to every account in an organisation", "connect an existing identity provider such as Entra ID or Okta"],
+      "facts": ["Identity Center assigns permission sets to users for specific accounts, which is how you avoid creating IAM users per account."],
+      "myths": ["Identity Center replaces IAM — it sits on top of IAM and still relies on IAM roles inside each account."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "organizations", "name": "AWS Organizations", "category": "management",
+      "tags": ["management", "identity", "cost", "compliance"],
+      "purpose": "groups multiple AWS accounts under one management account for governance and consolidated billing",
+      "useCases": ["apply guardrails across every account", "get one bill and share volume discounts across accounts"],
+      "facts": [
+        "Service control policies set the maximum permissions an account can ever use — they never grant permissions on their own.",
+        "Consolidated billing pools usage across accounts, so volume tiers and Reserved Instance discounts apply across the organisation."
+      ],
+      "myths": ["A service control policy can give a user access they do not already have — it can only restrict what IAM already allows."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "cognito", "name": "Amazon Cognito", "category": "identity",
+      "tags": ["identity", "security", "developer-tools"],
+      "purpose": "handles sign-up, sign-in and access control for your application's end users",
+      "useCases": ["add social or SAML login to a web or mobile app", "exchange a login for temporary AWS credentials"],
+      "facts": ["User pools authenticate users and issue tokens; identity pools exchange tokens for temporary AWS credentials."],
+      "myths": ["Cognito manages your staff's access to the AWS console — that is IAM Identity Center; Cognito is for application end users."],
+      "pricing": ["Per monthly active user, with a free tier"]
+    },
+    {
+      "id": "kms", "name": "AWS KMS", "category": "security",
+      "tags": ["encryption", "security", "compliance"],
+      "purpose": "creates and controls the encryption keys that AWS services use to encrypt your data",
+      "useCases": ["encrypt S3 objects, EBS volumes and RDS databases with a key you control", "audit every use of a key through CloudTrail"],
+      "facts": [
+        "AWS managed keys are created and rotated for you; customer managed keys let you set the policy, rotation and grants.",
+        "KMS keys are regional — you cannot use a key from one Region to decrypt data in another.",
+        "Every KMS API call is logged to CloudTrail, giving an audit trail of who decrypted what."
+      ],
+      "myths": ["KMS stores your data — it stores and controls keys; your data stays in the service that encrypted it."],
+      "pricing": ["Per customer managed key per month", "Per API request"]
+    },
+    {
+      "id": "cloudhsm", "name": "AWS CloudHSM", "category": "security",
+      "tags": ["encryption", "security", "compliance"],
+      "purpose": "gives you dedicated, FIPS 140-3 validated hardware security modules that only you can access",
+      "useCases": ["meet a regulation that requires single-tenant key hardware", "offload TLS or run a private certificate authority"],
+      "facts": ["With CloudHSM you control the keys entirely — AWS cannot recover them if you lose your credentials."],
+      "myths": ["CloudHSM is just a more expensive KMS — it is single-tenant hardware with no AWS access to the key material."],
+      "pricing": ["Per HSM instance-hour"]
+    },
+    {
+      "id": "secrets-manager", "name": "AWS Secrets Manager", "category": "security",
+      "tags": ["security", "identity", "developer-tools", "encryption"],
+      "purpose": "stores, encrypts and automatically rotates secrets such as database credentials and API keys",
+      "useCases": ["rotate an RDS password on a schedule with no code change", "keep credentials out of source control and environment variables"],
+      "facts": ["Built-in rotation with Lambda is the main thing Secrets Manager offers over Systems Manager Parameter Store."],
+      "myths": ["Parameter Store and Secrets Manager are identical — Parameter Store is free for standard parameters but does not rotate secrets for you."],
+      "pricing": ["Per secret per month", "Per 10,000 API calls"]
+    },
+    {
+      "id": "acm", "name": "AWS Certificate Manager", "category": "security",
+      "tags": ["encryption", "security", "networking"],
+      "purpose": "provisions, manages and renews TLS certificates for AWS services",
+      "useCases": ["put a free public certificate on an ALB, CloudFront distribution or API Gateway"],
+      "facts": [
+        "Public certificates issued by ACM are free and renew automatically as long as validation stays in place.",
+        "A certificate used by CloudFront must be requested in the us-east-1 Region regardless of where your origin is."
+      ],
+      "myths": ["ACM certificates can be exported and installed on your own EC2 web server — public ACM certificates cannot be exported."],
+      "pricing": ["Public certificates free", "Private CA charged"]
+    },
+    {
+      "id": "waf", "name": "AWS WAF", "category": "security",
+      "tags": ["security", "edge", "networking"],
+      "purpose": "filters HTTP and HTTPS requests before they reach your application, by rule",
+      "useCases": ["block SQL injection and cross-site scripting patterns", "rate-limit a noisy IP address", "geo-block regions"],
+      "facts": ["WAF attaches to CloudFront, an Application Load Balancer, API Gateway, AppSync or Cognito user pools — not directly to EC2."],
+      "myths": ["WAF stops volumetric network floods — that is Shield's job; WAF inspects application-layer requests."],
+      "pricing": ["Per web ACL", "Per rule", "Per million requests"]
+    },
+    {
+      "id": "shield", "name": "AWS Shield", "category": "security",
+      "tags": ["security", "edge", "resilience"],
+      "purpose": "protects AWS-hosted applications against distributed denial-of-service attacks",
+      "useCases": ["absorb volumetric network floods", "get 24/7 response-team support during an attack (Advanced)"],
+      "facts": [
+        "Shield Standard is enabled for every AWS customer at no extra cost.",
+        "Shield Advanced adds cost protection for scaling charges during an attack and access to the Shield Response Team."
+      ],
+      "myths": ["You must enable Shield Standard — it is already on for every account by default."],
+      "pricing": ["Standard free", "Advanced monthly subscription plus data transfer"]
+    },
+    {
+      "id": "guardduty", "name": "Amazon GuardDuty", "category": "security",
+      "tags": ["security", "management", "compliance"],
+      "purpose": "continuously analyses account and network telemetry to detect threats using machine learning and threat intelligence",
+      "useCases": ["spot cryptomining, credential compromise or unusual API calls", "monitor every account in an organisation from one place"],
+      "facts": ["GuardDuty reads CloudTrail, VPC Flow Logs and DNS logs directly — you do not have to enable or ship those logs to it."],
+      "myths": ["GuardDuty blocks the attacks it finds — it detects and reports; remediation is up to you or an automation you build."],
+      "pricing": ["Per volume of events and logs analysed"]
+    },
+    {
+      "id": "inspector", "name": "Amazon Inspector", "category": "security",
+      "tags": ["security", "compliance", "management"],
+      "purpose": "continuously scans workloads for software vulnerabilities and unintended network exposure",
+      "useCases": ["find known CVEs in EC2 instances, container images and Lambda functions", "prioritise patching by real risk score"],
+      "facts": ["Inspector scans automatically and continuously as new CVEs are published, not only when you ask it to."],
+      "myths": ["Inspector detects live attacks — that is GuardDuty; Inspector finds vulnerabilities before they are exploited."],
+      "pricing": ["Per resource scanned per month"]
+    },
+    {
+      "id": "macie", "name": "Amazon Macie", "category": "security",
+      "tags": ["security", "compliance", "storage"],
+      "purpose": "discovers and classifies sensitive data such as personal information stored in S3",
+      "useCases": ["find buckets containing credit-card or health data", "prove where regulated data lives before an audit"],
+      "facts": ["Macie is specific to Amazon S3 — it does not scan EBS volumes, databases or file systems."],
+      "myths": ["Macie scans all your storage services — it is S3-focused."],
+      "pricing": ["Per bucket evaluated", "Per GB of objects inspected"]
+    },
+    {
+      "id": "security-hub", "name": "AWS Security Hub", "category": "security",
+      "tags": ["security", "compliance", "management"],
+      "purpose": "aggregates findings from AWS security services into one dashboard and checks them against standards",
+      "useCases": ["one view of GuardDuty, Inspector, Macie and partner findings", "continuous CIS or AWS Foundational Security Best Practices scoring"],
+      "facts": ["Security Hub normalises findings into a common format so tools with different output can be compared and routed."],
+      "myths": ["Security Hub replaces GuardDuty and Inspector — it consumes their findings; it does not detect on its own."],
+      "pricing": ["Per security check", "Per finding ingested"]
+    },
+    {
+      "id": "detective", "name": "Amazon Detective", "category": "security",
+      "tags": ["security", "management"],
+      "purpose": "builds linked graphs from your logs so you can investigate the root cause of a security finding",
+      "useCases": ["trace how a compromised credential was used over time", "investigate a GuardDuty finding without hand-writing log queries"],
+      "facts": ["Detective automatically ingests CloudTrail, VPC Flow Logs and GuardDuty findings to build its behaviour graph."],
+      "myths": ["Detective generates findings — it explains findings that other services generated."],
+      "pricing": ["Per GB of data ingested"]
+    },
+    {
+      "id": "artifact", "name": "AWS Artifact", "category": "security",
+      "tags": ["compliance", "security"],
+      "purpose": "is the self-service portal for AWS's compliance reports and agreements",
+      "useCases": ["download the SOC 2 or ISO 27001 report for an auditor", "accept a business associate addendum"],
+      "facts": ["Artifact is where AWS's own audit evidence lives — it says nothing about whether your workloads are compliant."],
+      "myths": ["Artifact audits your account for compliance — that is Config, Audit Manager and Security Hub; Artifact only serves AWS's documents."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "resource-access-manager", "name": "AWS Resource Access Manager", "category": "management",
+      "tags": ["management", "identity", "networking"],
+      "purpose": "shares specific resources such as subnets and Transit Gateways with other AWS accounts",
+      "useCases": ["run a shared-VPC model where one account owns the network", "share a Transit Gateway or licence configuration organisation-wide"],
+      "facts": ["Sharing with RAM avoids duplicating resources per account, which reduces both cost and configuration drift."],
+      "myths": ["RAM copies resources into the other account — the resource stays owned by one account and is used by the others."],
+      "pricing": ["No charge for the service"]
+    },
+    {
+      "id": "cloudwatch", "name": "Amazon CloudWatch", "category": "management",
+      "tags": ["management", "performance", "resilience"],
+      "purpose": "collects metrics, logs, traces and alarms so you can see and react to how your systems behave",
+      "useCases": ["alarm when CPU or error rate crosses a threshold", "centralise application logs", "trigger Auto Scaling from a metric"],
+      "facts": [
+        "Memory and disk usage inside an EC2 instance are not collected by default — that needs the CloudWatch agent.",
+        "A CloudWatch alarm can trigger Auto Scaling, publish to SNS or run an EC2 action such as reboot.",
+        "CloudWatch Logs Insights lets you query log groups with a purpose-built query language."
+      ],
+      "myths": [
+        "CloudWatch records who called an AWS API — that is CloudTrail; CloudWatch records what systems are doing.",
+        "All CloudWatch metrics are one-minute by default — basic monitoring for EC2 is five-minute; detailed monitoring is charged."
+      ],
+      "pricing": ["Per metric", "Per GB of logs ingested and stored", "Per alarm", "Per dashboard"]
+    },
+    {
+      "id": "cloudtrail", "name": "AWS CloudTrail", "category": "management",
+      "tags": ["management", "security", "compliance"],
+      "purpose": "records the API calls made in your account: who did what, when, and from where",
+      "useCases": ["investigate who deleted a resource", "keep an immutable audit trail for compliance"],
+      "facts": [
+        "Management events are recorded for the last 90 days in Event history for free; longer retention needs a trail writing to S3.",
+        "Data events, such as individual S3 object reads, are not logged by default and are charged separately."
+      ],
+      "myths": ["CloudTrail monitors performance — it audits API activity; CloudWatch handles metrics and logs."],
+      "pricing": ["First management-event trail free", "Data events and additional trails charged"]
+    },
+    {
+      "id": "config", "name": "AWS Config", "category": "management",
+      "tags": ["management", "compliance", "security"],
+      "purpose": "records resource configuration over time and evaluates it against rules you define",
+      "useCases": ["prove no S3 bucket was public at any point last quarter", "auto-remediate resources that drift out of policy"],
+      "facts": ["Config keeps a configuration timeline per resource, so you can see exactly what changed and when."],
+      "myths": ["Config records API calls — it records resource state; CloudTrail records the calls that changed it."],
+      "pricing": ["Per configuration item recorded", "Per rule evaluation"]
+    },
+    {
+      "id": "cloudformation", "name": "AWS CloudFormation", "category": "management",
+      "tags": ["management", "developer-tools", "migration"],
+      "purpose": "provisions and updates AWS resources from declarative templates as a single stack",
+      "useCases": ["stand up identical environments for dev, test and production", "roll a whole environment back when a deployment fails"],
+      "facts": [
+        "A failed stack update rolls back to the previous state by default, which is a major reason to use it over scripts.",
+        "Change sets show you what a template update would do before you apply it.",
+        "StackSets deploy the same stack across many accounts and Regions at once."
+      ],
+      "myths": ["CloudFormation has a charge per stack — the service is free; you pay only for the resources created."],
+      "pricing": ["No charge for the service", "Third-party extension usage charged"]
+    },
+    {
+      "id": "cdk", "name": "AWS Cloud Development Kit (CDK)", "category": "developer-tools",
+      "tags": ["developer-tools", "management"],
+      "purpose": "lets you define infrastructure in TypeScript, Python, Java, Go or C#, which it compiles into CloudFormation",
+      "useCases": ["reuse infrastructure patterns as code constructs", "keep infrastructure in the same language as the application"],
+      "facts": ["CDK synthesises to a CloudFormation template, so every CDK deployment is ultimately a CloudFormation stack."],
+      "myths": ["CDK is a replacement for CloudFormation — it is a higher-level authoring layer on top of it."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "systems-manager", "name": "AWS Systems Manager", "category": "management",
+      "tags": ["management", "security", "compute"],
+      "purpose": "gives you operational control of your fleet: patching, run commands, session access and parameter storage",
+      "useCases": ["patch a fleet on a maintenance window", "open a shell on an instance without SSH or a bastion", "store configuration in Parameter Store"],
+      "facts": [
+        "Session Manager gives shell access with no open inbound port, no bastion host and full session logging.",
+        "Parameter Store holds configuration and secrets; standard parameters are free."
+      ],
+      "myths": ["Systems Manager needs SSH access to work — it uses an outbound-only agent, which is why it removes bastion hosts."],
+      "pricing": ["Core features free", "Advanced parameters and some capabilities charged"]
+    },
+    {
+      "id": "trusted-advisor", "name": "AWS Trusted Advisor", "category": "management",
+      "tags": ["cost", "security", "management", "performance", "resilience"],
+      "purpose": "inspects your account and recommends improvements across cost, performance, security, fault tolerance, limits and operations",
+      "useCases": ["find idle resources wasting money", "spot security groups open to the world", "check service quota headroom"],
+      "facts": ["The full set of Trusted Advisor checks requires a Business, Enterprise On-Ramp or Enterprise Support plan."],
+      "myths": ["Trusted Advisor fixes the problems it finds — it recommends; you or an automation must act."],
+      "pricing": ["Core checks free", "Full checks require paid Support plan"]
+    },
+    {
+      "id": "control-tower", "name": "AWS Control Tower", "category": "management",
+      "tags": ["management", "compliance", "identity", "security"],
+      "purpose": "sets up and governs a secure multi-account AWS environment using prescriptive best practices",
+      "useCases": ["stand up a landing zone with logging, audit and guardrail accounts", "enforce controls as new accounts are vended"],
+      "facts": ["Control Tower builds on Organizations, IAM Identity Center, Config and CloudTrail rather than replacing them."],
+      "myths": ["Control Tower is required for multi-account setups — Organizations alone is enough; Control Tower adds an opinionated landing zone."],
+      "pricing": ["No charge for the service; underlying services charged"]
+    },
+    {
+      "id": "service-catalog", "name": "AWS Service Catalog", "category": "management",
+      "tags": ["management", "compliance", "cost"],
+      "purpose": "publishes an approved catalogue of products that users can launch without broad permissions",
+      "useCases": ["let developers self-serve an approved database stack", "constrain what sizes and Regions users may deploy"],
+      "facts": ["Users launch products through Service Catalog's own permissions, so they never need permission to create the resources directly."],
+      "myths": ["Service Catalog is the AWS Marketplace — Marketplace sells third-party software; Service Catalog publishes your own approved stacks."],
+      "pricing": ["Per API call beyond the free tier"]
+    },
+    {
+      "id": "health-dashboard", "name": "AWS Health Dashboard", "category": "management",
+      "tags": ["management", "resilience", "support"],
+      "purpose": "shows AWS service health and events that specifically affect your account's resources",
+      "useCases": ["get notified about scheduled maintenance on your instances", "check whether an outage is AWS-side or yours"],
+      "facts": ["The account-specific view lists events affecting your own resources, which the public service-status page does not."],
+      "myths": ["The Health Dashboard only shows global outages — the personalised view is resource-specific."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "compute-optimizer", "name": "AWS Compute Optimizer", "category": "cost",
+      "tags": ["cost", "performance", "management"],
+      "purpose": "recommends optimal resource sizes for EC2, Auto Scaling groups, EBS, Lambda and ECS on Fargate from real usage",
+      "useCases": ["find over-provisioned instances", "right-size Lambda memory for cost or speed"],
+      "facts": ["Compute Optimizer bases recommendations on observed CloudWatch metrics, so it needs a usage history to be useful."],
+      "myths": ["Compute Optimizer applies its recommendations — it only recommends."],
+      "pricing": ["No charge for standard recommendations"]
+    },
+    {
+      "id": "well-architected-tool", "name": "AWS Well-Architected Tool", "category": "management",
+      "tags": ["well-architected", "management", "compliance"],
+      "purpose": "guides you through reviewing a workload against the Well-Architected Framework pillars and tracks the improvement plan",
+      "useCases": ["run a structured architecture review", "track risks and remediation over time"],
+      "facts": ["The tool produces a risk list per pillar; the framework itself is a whitepaper, the tool is the workflow around it."],
+      "myths": ["The Well-Architected Tool scans your account automatically — it is a questionnaire-driven review."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "license-manager", "name": "AWS License Manager", "category": "management",
+      "tags": ["management", "cost", "compliance"],
+      "purpose": "tracks and enforces software licence usage across AWS and on-premises",
+      "useCases": ["stop launching instances once a licence limit is hit", "report on bring-your-own-licence usage for an audit"],
+      "facts": ["License Manager can hard-stop non-compliant launches, not merely report on them."],
+      "myths": ["License Manager buys licences for you — it tracks and enforces the ones you already hold."],
+      "pricing": ["No charge for the service"]
+    },
+    {
+      "id": "cost-explorer", "name": "AWS Cost Explorer", "category": "cost",
+      "tags": ["cost", "billing"],
+      "purpose": "visualises and analyses your AWS spending and usage over time, with forecasts",
+      "useCases": ["find which service or account drove a spike", "forecast next month's bill", "review Savings Plans recommendations"],
+      "facts": ["Cost Explorer can break spend down by tag, which is why a consistent tagging policy matters for cost allocation."],
+      "myths": ["Cost Explorer stops spending — it reports; Budgets alerts and Organizations policies constrain."],
+      "pricing": ["Console use free", "API requests charged per request"]
+    },
+    {
+      "id": "budgets", "name": "AWS Budgets", "category": "cost",
+      "tags": ["cost", "billing", "management"],
+      "purpose": "sets cost, usage, Reserved Instance and Savings Plans thresholds and alerts you when they are approached or exceeded",
+      "useCases": ["email or SNS alert when monthly spend passes a limit", "alert on forecast, before the money is actually spent"],
+      "facts": ["Budgets can alert on forecast spend as well as actual spend, which is what gives you time to react."],
+      "myths": ["A budget caps your spending — it notifies; it does not stop resources running unless you wire up a Budget Action."],
+      "pricing": ["First budgets free", "Small monthly charge per budget beyond that"]
+    },
+    {
+      "id": "cost-and-usage-report", "name": "AWS Cost and Usage Report", "category": "cost",
+      "tags": ["cost", "billing", "analytics"],
+      "purpose": "delivers the most detailed, line-item breakdown of your AWS usage and cost into an S3 bucket",
+      "useCases": ["feed billing data into Athena or QuickSight", "do chargeback to internal teams by tag"],
+      "facts": ["The report is the authoritative, line-item source — more granular than anything Cost Explorer shows."],
+      "myths": ["The report appears in the console — it is delivered as files to S3 for you to query."],
+      "pricing": ["No charge for the report; S3 storage charged"]
+    },
+    {
+      "id": "pricing-calculator", "name": "AWS Pricing Calculator", "category": "cost",
+      "tags": ["cost", "billing"],
+      "purpose": "estimates the cost of an architecture before you build it",
+      "useCases": ["produce a cost estimate for a proposal", "compare two designs on price"],
+      "facts": ["The calculator is for estimating future cost; Cost Explorer reports what you have already spent."],
+      "myths": ["The calculator reads your account and prices it — you enter the configuration yourself."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "marketplace", "name": "AWS Marketplace", "category": "cost",
+      "tags": ["cost", "billing", "management"],
+      "purpose": "is a curated catalogue of third-party software you can buy and deploy, billed through your AWS account",
+      "useCases": ["buy a commercial firewall appliance AMI", "subscribe to a SaaS product on one consolidated bill"],
+      "facts": ["Marketplace purchases appear on your normal AWS bill, which simplifies procurement."],
+      "myths": ["Marketplace software is built and supported by AWS — it is third-party software sold through AWS."],
+      "pricing": ["Varies by product; charged to your AWS bill"]
+    },
+    {
+      "id": "sqs", "name": "Amazon SQS", "category": "integration",
+      "tags": ["integration", "decoupling", "resilience"],
+      "purpose": "is a fully managed message queue that decouples producers from consumers",
+      "useCases": ["buffer bursts of work so the back end is not overwhelmed", "let a failed consumer retry without losing the message"],
+      "facts": [
+        "SQS is pull-based: consumers poll the queue, and a message stays invisible for the visibility timeout while being processed.",
+        "FIFO queues guarantee ordering and exactly-once processing; standard queues offer higher throughput with at-least-once delivery.",
+        "A dead-letter queue captures messages that repeatedly fail so they can be inspected instead of lost."
+      ],
+      "myths": [
+        "SQS pushes messages to subscribers — that is SNS; SQS consumers poll.",
+        "Standard queues preserve order — only FIFO queues do."
+      ],
+      "pricing": ["Per million requests", "Data transfer"]
+    },
+    {
+      "id": "sns", "name": "Amazon SNS", "category": "integration",
+      "tags": ["integration", "decoupling"],
+      "purpose": "is a publish/subscribe service that pushes one message to many subscribers",
+      "useCases": ["fan a single event out to several queues and Lambda functions", "send operational alerts by email or SMS"],
+      "facts": [
+        "SNS is push-based and delivers to subscribers such as SQS queues, Lambda functions, HTTPS endpoints, email and SMS.",
+        "The common fan-out pattern is SNS publishing to several SQS queues so each consumer processes independently."
+      ],
+      "myths": ["SNS stores messages until a consumer is ready — it delivers immediately; use SQS when you need durable buffering."],
+      "pricing": ["Per million requests", "Per delivery by protocol"]
+    },
+    {
+      "id": "eventbridge", "name": "Amazon EventBridge", "category": "integration",
+      "tags": ["integration", "decoupling", "management"],
+      "purpose": "routes events from AWS services, your applications and SaaS partners to targets based on rules",
+      "useCases": ["react to an AWS service event such as an instance state change", "schedule jobs on a cron expression", "route SaaS events into your systems"],
+      "facts": [
+        "EventBridge rules match on the event's JSON content, so routing logic lives in the bus rather than in your code.",
+        "The schema registry and archive/replay features are what set EventBridge apart from plain SNS."
+      ],
+      "myths": ["EventBridge is just a renamed CloudWatch Events — it began there but adds custom buses, partner sources, schemas and replay."],
+      "pricing": ["Per million events published", "Schema discovery and replay charged"]
+    },
+    {
+      "id": "step-functions", "name": "AWS Step Functions", "category": "integration",
+      "tags": ["integration", "decoupling", "developer-tools"],
+      "purpose": "coordinates multiple services into serverless workflows with visual state machines, retries and error handling",
+      "useCases": ["orchestrate a multi-step order pipeline", "add retry and catch logic without writing it in every function"],
+      "facts": [
+        "Standard workflows are durable for up to a year and are billed per state transition; Express workflows are cheaper for high-volume, short runs.",
+        "Step Functions can call over 200 AWS services directly, avoiding glue Lambda functions."
+      ],
+      "myths": ["Step Functions replaces Lambda — it orchestrates Lambda and other services; it does not run your business logic itself."],
+      "pricing": ["Per state transition (Standard)", "Per request and duration (Express)"]
+    },
+    {
+      "id": "appsync", "name": "AWS AppSync", "category": "integration",
+      "tags": ["integration", "developer-tools", "performance"],
+      "purpose": "is a managed GraphQL service that combines multiple data sources behind one API, with real-time subscriptions",
+      "useCases": ["give a mobile app one query endpoint over several tables and services", "push live updates to connected clients"],
+      "facts": ["AppSync resolvers can talk directly to DynamoDB, Aurora, OpenSearch, Lambda and HTTP endpoints."],
+      "myths": ["AppSync is API Gateway for GraphQL — API Gateway can front a GraphQL server, but AppSync adds resolvers, caching and subscriptions natively."],
+      "pricing": ["Per million query and mutation operations", "Real-time updates and connection minutes"]
+    },
+    {
+      "id": "amazon-mq", "name": "Amazon MQ", "category": "integration",
+      "tags": ["integration", "decoupling", "migration"],
+      "purpose": "runs managed Apache ActiveMQ or RabbitMQ brokers for applications that need standard messaging protocols",
+      "useCases": ["migrate an existing JMS or AMQP application without rewriting it"],
+      "facts": ["Amazon MQ exists mainly for migration: it speaks industry-standard protocols that SQS and SNS do not."],
+      "myths": ["Amazon MQ is the default choice for new AWS applications — for new work SQS/SNS/EventBridge scale better and cost less."],
+      "pricing": ["Broker instance-hours", "Storage"]
+    },
+    {
+      "id": "amplify", "name": "AWS Amplify", "category": "developer-tools",
+      "tags": ["developer-tools", "compute", "edge"],
+      "purpose": "builds, deploys and hosts full-stack web and mobile front ends with a connected AWS back end",
+      "useCases": ["host a React or Next.js site with CI/CD from a Git branch", "wire a front end to Cognito, AppSync and S3 quickly"],
+      "facts": ["Amplify Hosting builds from your Git repository on push and serves through a managed CDN."],
+      "myths": ["Amplify is only a hosting service — it also generates and manages back-end resources."],
+      "pricing": ["Build minutes", "Hosting storage and data served"]
+    },
+    {
+      "id": "kinesis-data-streams", "name": "Amazon Kinesis Data Streams", "category": "analytics",
+      "tags": ["analytics", "integration", "performance"],
+      "purpose": "ingests and stores large real-time data streams for multiple consumers to read",
+      "useCases": ["clickstream and telemetry ingestion", "let several applications process the same stream independently"],
+      "facts": [
+        "Records stay in the stream for a retention period (24 hours by default, up to 365 days), so multiple consumers can replay them.",
+        "Throughput scales by shard in provisioned mode, or automatically in on-demand mode."
+      ],
+      "myths": ["Kinesis Data Streams delivers straight into S3 or Redshift — that is Firehose; Data Streams is a stream you read from."],
+      "pricing": ["Shard-hours or on-demand throughput", "PUT payload units", "Extended retention"]
+    },
+    {
+      "id": "firehose", "name": "Amazon Data Firehose", "category": "analytics",
+      "tags": ["analytics", "integration", "storage"],
+      "purpose": "delivers streaming data to destinations such as S3, Redshift, OpenSearch and Splunk with no code",
+      "useCases": ["land raw event data in S3 in near real time", "buffer, compress and convert records on the way to storage"],
+      "facts": ["Firehose is fully managed and near real time — it buffers by size or time before delivering, so it is not sub-second."],
+      "myths": ["Firehose lets several consumers read the same records — it is a delivery pipeline to a destination, not a replayable stream."],
+      "pricing": ["Per GB ingested", "Format conversion"]
+    },
+    {
+      "id": "msk", "name": "Amazon MSK", "category": "analytics",
+      "tags": ["analytics", "integration"],
+      "purpose": "runs fully managed Apache Kafka clusters",
+      "useCases": ["move an existing Kafka workload to AWS unchanged", "high-throughput event streaming with the Kafka ecosystem"],
+      "facts": ["MSK runs real open-source Kafka, so existing Kafka clients, connectors and tooling work as-is."],
+      "myths": ["MSK is Kinesis with a different name — it is genuine Apache Kafka with its own APIs and operational model."],
+      "pricing": ["Broker instance-hours", "Storage", "Serverless throughput"]
+    },
+    {
+      "id": "athena", "name": "Amazon Athena", "category": "analytics",
+      "tags": ["analytics", "cost", "storage"],
+      "purpose": "runs standard SQL directly against data in S3 with no infrastructure to manage",
+      "useCases": ["query log or CUR data in place", "ad-hoc analysis of a data lake without loading a warehouse"],
+      "facts": [
+        "Athena charges per terabyte of data scanned, so partitioning and columnar formats such as Parquet cut cost dramatically.",
+        "Athena uses the AWS Glue Data Catalog for table definitions."
+      ],
+      "myths": ["Athena copies your data into a database first — it reads directly from S3."],
+      "pricing": ["Per TB scanned", "Or provisioned capacity"]
+    },
+    {
+      "id": "glue", "name": "AWS Glue", "category": "analytics",
+      "tags": ["analytics", "integration", "management"],
+      "purpose": "is a serverless data integration service providing a data catalog, crawlers and ETL jobs",
+      "useCases": ["crawl S3 and infer table schemas", "transform raw data into partitioned Parquet for querying"],
+      "facts": ["The Glue Data Catalog is a shared metadata store used by Athena, EMR, Redshift Spectrum and Lake Formation."],
+      "myths": ["Glue is only an ETL runner — its catalog is arguably its most widely used component."],
+      "pricing": ["Per DPU-hour for jobs and crawlers", "Catalog storage and requests"]
+    },
+    {
+      "id": "emr", "name": "Amazon EMR", "category": "analytics",
+      "tags": ["analytics", "compute", "cost"],
+      "purpose": "runs big-data frameworks such as Spark, Hive and Presto on managed clusters",
+      "useCases": ["large-scale Spark transformations", "existing Hadoop workloads moved to AWS"],
+      "facts": ["EMR clusters can run task nodes on Spot Instances, which is a major cost lever for tolerant batch work."],
+      "myths": ["EMR is serverless by default — EMR Serverless exists, but classic EMR provisions a real cluster you size."],
+      "pricing": ["EC2 or EKS capacity plus an EMR per-instance surcharge", "EMR Serverless per vCPU/GB-hour"]
+    },
+    {
+      "id": "lake-formation", "name": "AWS Lake Formation", "category": "analytics",
+      "tags": ["analytics", "security", "compliance", "identity"],
+      "purpose": "builds and secures a data lake with fine-grained permissions down to table, column and row level",
+      "useCases": ["grant analysts access to some columns but not others", "centralise data-lake permissions across accounts"],
+      "facts": ["Lake Formation permissions are enforced by the query engines (Athena, Redshift Spectrum, EMR) that read the catalog."],
+      "myths": ["Lake Formation stores your data — the data stays in S3; Lake Formation governs access to it."],
+      "pricing": ["No charge for permissions; underlying services charged"]
+    },
+    {
+      "id": "opensearch", "name": "Amazon OpenSearch Service", "category": "analytics",
+      "tags": ["analytics", "performance", "management", "genai"],
+      "purpose": "runs managed OpenSearch clusters for search, log analytics and vector similarity queries",
+      "useCases": ["full-text search over a product catalogue", "centralised log analytics with dashboards", "vector store for retrieval-augmented generation"],
+      "facts": ["OpenSearch supports k-nearest-neighbour vector search, which is why it appears in generative-AI reference architectures."],
+      "myths": ["OpenSearch is a relational database — it is a search and analytics engine with a different consistency and query model."],
+      "pricing": ["Instance-hours or Serverless OCUs", "Storage"]
+    },
+    {
+      "id": "quicksight", "name": "Amazon QuickSight", "category": "analytics",
+      "tags": ["analytics", "cost"],
+      "purpose": "is a serverless business-intelligence service for dashboards and visualisations",
+      "useCases": ["publish dashboards over Redshift, Athena or S3 data", "embed analytics in an application"],
+      "facts": ["The SPICE in-memory engine caches data so dashboards stay fast without hitting the source on every view."],
+      "myths": ["QuickSight requires a data warehouse — it can query S3 through Athena, or several other sources directly."],
+      "pricing": ["Per author and per reader per month", "SPICE capacity"]
+    },
+    {
+      "id": "sagemaker", "name": "Amazon SageMaker AI", "category": "ml",
+      "tags": ["ml", "compute", "management"],
+      "purpose": "covers the full machine-learning lifecycle: prepare data, train, tune, deploy and monitor models",
+      "useCases": ["train a custom model on your own data", "host a real-time inference endpoint", "run automated ML pipelines"],
+      "facts": [
+        "SageMaker is the build-your-own-model service; Bedrock is the use-someone-else's-foundation-model service.",
+        "Real-time endpoints bill for the instance while it exists, so idle endpoints are a common source of waste."
+      ],
+      "myths": ["SageMaker is a single tool — it is a family of capabilities (Studio, Training, Endpoints, Pipelines, Feature Store and more)."],
+      "pricing": ["Per instance-hour by capability", "Storage and data processing"]
+    },
+    {
+      "id": "bedrock", "name": "Amazon Bedrock", "category": "ml",
+      "tags": ["ml", "genai", "integration"],
+      "purpose": "gives API access to foundation models from several providers, plus knowledge bases, agents and guardrails",
+      "useCases": ["add text generation or summarisation to an application", "build retrieval-augmented generation over your own documents"],
+      "facts": [
+        "Bedrock is serverless — there is no model infrastructure to provision for on-demand inference.",
+        "Guardrails apply content filters and topic restrictions independently of which model you use.",
+        "Knowledge Bases handle the chunking, embedding and retrieval steps of a RAG pipeline for you."
+      ],
+      "myths": ["Bedrock trains models on your prompts — AWS states customer prompts and outputs are not used to train the base models."],
+      "pricing": ["Per input and output token", "Provisioned Throughput"]
+    },
+    {
+      "id": "rekognition", "name": "Amazon Rekognition", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "analyses images and video for objects, scenes, text, faces and unsafe content",
+      "useCases": ["moderate user-uploaded images", "detect and index faces in a media library"],
+      "facts": ["Rekognition is a pre-trained API — you call it without training a model, though Custom Labels allows your own classes."],
+      "myths": ["Rekognition needs training data before it works — the standard APIs are pre-trained."],
+      "pricing": ["Per image or per minute of video analysed"]
+    },
+    {
+      "id": "comprehend", "name": "Amazon Comprehend", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "extracts meaning from text: entities, key phrases, sentiment, language and PII",
+      "useCases": ["score support tickets for sentiment", "redact personal data from documents"],
+      "facts": ["Comprehend can detect and redact personally identifiable information, which is often used as a compliance control."],
+      "myths": ["Comprehend translates text — that is Amazon Translate."],
+      "pricing": ["Per unit of text analysed"]
+    },
+    {
+      "id": "textract", "name": "Amazon Textract", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "extracts text, forms and tables from scanned documents",
+      "useCases": ["digitise invoices and claim forms", "pull structured key-value pairs from PDFs"],
+      "facts": ["Textract preserves structure — forms and tables come back as related fields, not one flat blob of text."],
+      "myths": ["Textract is plain OCR — it also understands form and table structure."],
+      "pricing": ["Per page processed by feature"]
+    },
+    {
+      "id": "transcribe", "name": "Amazon Transcribe", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "converts speech in audio and video into text",
+      "useCases": ["subtitle recorded media", "transcribe and analyse contact-centre calls"],
+      "facts": ["Transcribe supports speaker identification and custom vocabularies for domain-specific terms."],
+      "myths": ["Transcribe reads text aloud — that is Amazon Polly, the opposite direction."],
+      "pricing": ["Per second of audio"]
+    },
+    {
+      "id": "polly", "name": "Amazon Polly", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "turns text into lifelike speech",
+      "useCases": ["voice responses in an application", "audio versions of written articles"],
+      "facts": ["Polly can return speech marks describing word timing, which is used to synchronise captions or animation."],
+      "myths": ["Polly transcribes speech — that is Amazon Transcribe."],
+      "pricing": ["Per character synthesised"]
+    },
+    {
+      "id": "translate", "name": "Amazon Translate", "category": "ml",
+      "tags": ["ml"],
+      "purpose": "performs neural machine translation between languages",
+      "useCases": ["localise user-generated content", "translate support conversations in real time"],
+      "facts": ["Custom terminology lets you force specific translations for brand and product names."],
+      "myths": ["Translate detects sentiment — that is Amazon Comprehend."],
+      "pricing": ["Per character translated"]
+    },
+    {
+      "id": "lex", "name": "Amazon Lex", "category": "ml",
+      "tags": ["ml", "integration"],
+      "purpose": "builds conversational interfaces — chatbots and voice bots — using intents and slots",
+      "useCases": ["automate common contact-centre questions", "add a chat assistant to an application"],
+      "facts": ["Lex uses the same automatic speech recognition and natural language understanding technology as Alexa."],
+      "myths": ["Lex is a foundation-model chatbot — it is intent-and-slot based; for open-ended generation use Bedrock."],
+      "pricing": ["Per speech or text request"]
+    },
+    {
+      "id": "kendra", "name": "Amazon Kendra", "category": "ml",
+      "tags": ["ml", "genai", "analytics"],
+      "purpose": "provides intelligent enterprise search across your document repositories using natural language",
+      "useCases": ["search across SharePoint, S3 and Confluence from one place", "retrieve context for a generative-AI answer"],
+      "facts": ["Kendra returns ranked passages and direct answers, which makes it a common retrieval source in RAG architectures."],
+      "myths": ["Kendra is a keyword search index — it interprets natural-language questions rather than matching terms."],
+      "pricing": ["Per index-hour by edition", "Connector sync"]
+    },
+    {
+      "id": "amazon-q", "name": "Amazon Q", "category": "ml",
+      "tags": ["ml", "genai", "developer-tools"],
+      "purpose": "is a generative-AI assistant that answers questions over your business data and helps developers write and update code",
+      "useCases": ["answer staff questions grounded in internal documents", "explain or refactor code in an IDE"],
+      "facts": ["Amazon Q comes in variants aimed at business users and at developers, with different data connectors."],
+      "myths": ["Amazon Q is the same product as Bedrock — Bedrock is the model platform you build on; Q is a finished assistant."],
+      "pricing": ["Per user per month by edition"]
+    },
+    {
+      "id": "codepipeline", "name": "AWS CodePipeline", "category": "developer-tools",
+      "tags": ["developer-tools", "management"],
+      "purpose": "models and runs continuous delivery pipelines as a sequence of stages and actions",
+      "useCases": ["build, test and deploy on every commit", "add a manual approval gate before production"],
+      "facts": ["CodePipeline orchestrates; the actual build and deploy work is done by CodeBuild, CodeDeploy, CloudFormation or third-party actions."],
+      "myths": ["CodePipeline compiles your code — CodeBuild does that."],
+      "pricing": ["Per active pipeline per month, or per action execution"]
+    },
+    {
+      "id": "codebuild", "name": "AWS CodeBuild", "category": "developer-tools",
+      "tags": ["developer-tools"],
+      "purpose": "compiles source, runs tests and produces deployable artifacts on managed build servers",
+      "useCases": ["run unit tests on every pull request", "build container images and push them to ECR"],
+      "facts": ["CodeBuild bills per build minute by compute type, so there is no idle build fleet to pay for."],
+      "myths": ["CodeBuild deploys your application — deployment is CodeDeploy's or CloudFormation's job."],
+      "pricing": ["Per build minute by compute type"]
+    },
+    {
+      "id": "codedeploy", "name": "AWS CodeDeploy", "category": "developer-tools",
+      "tags": ["developer-tools", "resilience"],
+      "purpose": "automates application deployments to EC2, on-premises servers, Lambda and ECS with controlled rollout strategies",
+      "useCases": ["blue/green deployment with automatic rollback on alarm", "canary shift of Lambda traffic"],
+      "facts": ["CodeDeploy supports in-place, blue/green, canary and linear traffic-shifting strategies with automatic rollback."],
+      "myths": ["CodeDeploy only works on EC2 — it also deploys to Lambda, ECS and on-premises servers."],
+      "pricing": ["Free to EC2/Lambda/ECS; per on-premises instance update"]
+    },
+    {
+      "id": "x-ray", "name": "AWS X-Ray", "category": "developer-tools",
+      "tags": ["developer-tools", "management", "performance"],
+      "purpose": "traces requests as they travel through a distributed application, showing where latency and errors occur",
+      "useCases": ["find which microservice is slow in a chain of calls", "visualise a service map of dependencies"],
+      "facts": ["X-Ray shows per-request traces across services, which aggregate CloudWatch metrics cannot."],
+      "myths": ["X-Ray replaces CloudWatch Logs — it complements them with request-level tracing."],
+      "pricing": ["Per trace recorded", "Per trace scanned or retrieved"]
+    },
+    {
+      "id": "cli", "name": "AWS CLI", "category": "developer-tools",
+      "tags": ["developer-tools", "management"],
+      "purpose": "is the command-line tool for controlling AWS services and scripting operations",
+      "useCases": ["script repeatable operational tasks", "manage resources from a terminal or CI job"],
+      "facts": ["The CLI uses the same public APIs and the same IAM permissions as the console."],
+      "myths": ["The CLI can do less than the console — it typically exposes new API capability before the console does."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "sdk", "name": "AWS SDKs", "category": "developer-tools",
+      "tags": ["developer-tools"],
+      "purpose": "are the language-specific libraries that let your application code call AWS APIs",
+      "useCases": ["call S3 or DynamoDB from application code", "handle retries, signing and pagination correctly"],
+      "facts": ["SDKs implement request signing, retries with backoff and credential resolution so you do not hand-roll them."],
+      "myths": ["You must embed access keys to use an SDK — on AWS compute the SDK picks up role credentials automatically."],
+      "pricing": ["No charge"]
+    },
+    {
+      "id": "migration-hub", "name": "AWS Migration Hub", "category": "migration",
+      "tags": ["migration", "management"],
+      "purpose": "tracks the progress of application migrations across AWS and partner migration tools in one place",
+      "useCases": ["report migration status to stakeholders", "group servers into applications and follow their move"],
+      "facts": ["Migration Hub aggregates status from tools such as Application Migration Service and DMS rather than moving data itself."],
+      "myths": ["Migration Hub performs the migration — it tracks migrations performed by other tools."],
+      "pricing": ["No charge for the hub"]
+    },
+    {
+      "id": "application-migration-service", "name": "AWS Application Migration Service", "category": "migration",
+      "tags": ["migration", "compute"],
+      "purpose": "lifts and shifts physical, virtual and cloud servers onto EC2 with continuous block-level replication",
+      "useCases": ["rehost a data centre onto EC2 with minimal downtime", "test a cutover without disrupting the source"],
+      "facts": ["Continuous replication means cutover downtime is measured in minutes rather than the length of a full copy."],
+      "myths": ["It refactors applications for the cloud — it rehosts them as-is; modernisation is a separate exercise."],
+      "pricing": ["Per replicating source server per hour, with a free period"]
+    }
+  ],
+  "concepts": [
+    {
+      "id": "regions-azs", "name": "Regions and Availability Zones", "category": "concept",
+      "tags": ["cloud-concepts", "resilience", "networking"],
+      "purpose": "describes how AWS divides the world into Regions, each containing multiple isolated Availability Zones",
+      "facts": [
+        "An Availability Zone is one or more discrete data centres with independent power, cooling and networking.",
+        "Availability Zones within a Region are close enough for synchronous replication but far enough apart to fail independently.",
+        "Deploying across at least two Availability Zones is the baseline for high availability inside one Region."
+      ],
+      "myths": [
+        "An Availability Zone is a single data centre — it is one or more.",
+        "Data is copied between Regions automatically — cross-Region replication is always something you configure."
+      ]
+    },
+    {
+      "id": "edge-locations", "name": "Edge locations", "category": "concept",
+      "tags": ["cloud-concepts", "edge", "performance"],
+      "purpose": "are the global points of presence used to cache content and terminate connections close to users",
+      "facts": ["Edge locations serve CloudFront, Route 53, Global Accelerator, WAF and Shield, and vastly outnumber Regions."],
+      "myths": ["You launch EC2 instances in edge locations — you do not; edge locations run AWS edge services."]
+    },
+    {
+      "id": "shared-responsibility-model", "name": "Shared responsibility model", "category": "concept",
+      "tags": ["cloud-concepts", "security", "compliance"],
+      "purpose": "divides security duties: AWS secures the cloud itself, you secure what you put in it",
+      "facts": [
+        "AWS is responsible for security OF the cloud: hardware, the global infrastructure, and the managed service software.",
+        "You are responsible for security IN the cloud: your data, identity and access, OS patching where applicable, and network configuration.",
+        "The boundary moves with the service — with Lambda you never patch an OS, with EC2 you always do."
+      ],
+      "myths": [
+        "AWS encrypts all your data automatically — you choose and configure encryption for most services.",
+        "Moving to managed services removes all your security duties — IAM, data classification and access control stay yours in every service."
+      ]
+    },
+    {
+      "id": "well-architected-pillars", "name": "AWS Well-Architected Framework pillars", "category": "concept",
+      "tags": ["cloud-concepts", "well-architected"],
+      "purpose": "gives six pillars for evaluating an architecture",
+      "facts": [
+        "The six pillars are Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization and Sustainability.",
+        "Sustainability was added as the sixth pillar in 2021."
+      ],
+      "myths": ["There are five pillars — Sustainability made it six."]
+    },
+    {
+      "id": "cloud-advantages", "name": "Advantages of cloud computing", "category": "concept",
+      "tags": ["cloud-concepts", "economics", "cost"],
+      "purpose": "are the benefits AWS cites for moving from owned data centres to cloud",
+      "facts": [
+        "Trading capital expense for variable expense means you pay only for what you consume.",
+        "Massive economies of scale mean AWS's aggregate buying power produces lower per-unit prices than any one customer could reach.",
+        "You stop guessing capacity, gain speed and agility, stop spending money running data centres, and go global in minutes."
+      ],
+      "myths": ["Cloud is always cheaper than on-premises — it changes the cost model; steady predictable workloads can be cheaper owned."]
+    },
+    {
+      "id": "deployment-models", "name": "Cloud deployment models", "category": "concept",
+      "tags": ["cloud-concepts", "migration"],
+      "purpose": "describes whether a workload runs entirely in the cloud, entirely on-premises, or across both",
+      "facts": ["The three models are cloud-based, on-premises (private cloud), and hybrid, which combines the two."],
+      "myths": ["Hybrid means running two separate systems — it means connecting them, typically with Direct Connect or VPN."]
+    },
+    {
+      "id": "migration-strategies", "name": "The migration strategies (the 7 Rs)", "category": "concept",
+      "tags": ["migration", "cloud-concepts"],
+      "purpose": "names the standard options for what to do with each application when moving to AWS",
+      "facts": ["The seven are rehost, replatform, refactor, repurchase, retire, retain and relocate."],
+      "myths": ["Rehost and replatform are the same — rehost lifts the server as-is, replatform makes small optimisations such as moving to RDS."]
+    },
+    {
+      "id": "ec2-pricing-models", "name": "EC2 purchasing options", "category": "concept",
+      "tags": ["cost", "billing", "compute", "economics"],
+      "purpose": "are the ways you can pay for EC2 capacity, each trading flexibility for discount",
+      "facts": [
+        "On-Demand has no commitment and the highest per-hour rate; it suits unpredictable or short workloads.",
+        "Reserved Instances and Savings Plans give large discounts for a one- or three-year commitment.",
+        "Spot Instances offer the deepest discount but can be interrupted with two minutes' notice.",
+        "Dedicated Hosts give you a physical server, which is usually about licensing compliance rather than performance."
+      ],
+      "myths": [
+        "Spot Instances are cheaper Reserved Instances — Spot is interruptible spare capacity with no commitment or guarantee.",
+        "A Savings Plan locks you to one instance type — Compute Savings Plans apply across instance families, Regions, Lambda and Fargate."
+      ]
+    },
+    {
+      "id": "support-plans", "name": "AWS Support plans", "category": "concept",
+      "tags": ["support", "billing", "cost"],
+      "purpose": "are the tiers of technical support AWS sells, differing in response time and included services",
+      "facts": [
+        "The tiers are Basic, Developer, Business, Enterprise On-Ramp and Enterprise.",
+        "A Technical Account Manager is included with Enterprise On-Ramp (pooled) and Enterprise (designated), not with Business.",
+        "Business and above include 24/7 phone, chat and email access to Cloud Support Engineers, plus the full Trusted Advisor check set."
+      ],
+      "myths": [
+        "Basic Support includes technical help with your architecture — Basic covers billing and account questions plus service health, not technical troubleshooting.",
+        "Developer Support gives you 24/7 phone support — it gives business-hours email access to Cloud Support Associates."
+      ]
+    },
+    {
+      "id": "security-group-vs-nacl", "name": "Security groups versus network ACLs", "category": "concept",
+      "tags": ["networking", "security"],
+      "purpose": "distinguishes the two VPC firewall layers that candidates most often confuse",
+      "facts": [
+        "Security groups are stateful: allow traffic in and the response is automatically allowed out.",
+        "Network ACLs are stateless: you must write both the inbound and the outbound rule.",
+        "Security groups only support allow rules; network ACLs support both allow and deny rules."
+      ],
+      "myths": [
+        "Security groups can explicitly deny an IP address — they cannot; use a network ACL or AWS WAF for that.",
+        "Network ACLs attach to instances — they attach to subnets."
+      ]
+    },
+    {
+      "id": "scaling", "name": "Horizontal and vertical scaling", "category": "concept",
+      "tags": ["performance", "resilience", "compute", "cloud-concepts"],
+      "purpose": "describes the two directions you can add capacity",
+      "facts": [
+        "Scaling out (horizontal) adds more instances; scaling up (vertical) makes one instance bigger.",
+        "Horizontal scaling is what gives both elasticity and fault tolerance, because the work survives one instance failing."
+      ],
+      "myths": ["Vertical scaling has no downtime on EC2 — changing instance type requires stopping the instance."]
+    },
+    {
+      "id": "high-availability-vs-dr", "name": "High availability, fault tolerance and disaster recovery", "category": "concept",
+      "tags": ["resilience", "cloud-concepts"],
+      "purpose": "separates three commonly conflated resilience goals",
+      "facts": [
+        "High availability minimises downtime, usually across Availability Zones; disaster recovery restores service after a larger failure, usually across Regions.",
+        "RPO is how much data you can afford to lose; RTO is how long you can afford to be down.",
+        "The four common DR strategies, from cheapest and slowest to most expensive and fastest, are backup and restore, pilot light, warm standby, and multi-site active/active."
+      ],
+      "myths": [
+        "Multi-AZ is a disaster recovery strategy — it is high availability within one Region; DR normally implies a second Region.",
+        "Backups alone give you a low RTO — restoring large data sets takes time, which is exactly what pilot light and warm standby buy down."
+      ]
+    },
+    {
+      "id": "durability-vs-availability", "name": "Durability versus availability", "category": "concept",
+      "tags": ["storage", "resilience", "cloud-concepts"],
+      "purpose": "separates the chance of losing data from the chance of not being able to reach it",
+      "facts": ["Durability is the probability an object survives; availability is the probability you can access it right now. S3 Standard quotes eleven nines of durability and four nines of availability."],
+      "myths": ["Higher durability implies higher availability — S3 One Zone-IA keeps the same durability design but lower availability."]
+    },
+    {
+      "id": "encryption-states", "name": "Encryption at rest and in transit", "category": "concept",
+      "tags": ["encryption", "security"],
+      "purpose": "distinguishes protecting stored data from protecting data moving over a network",
+      "facts": [
+        "Encryption at rest protects stored data, typically with KMS keys; encryption in transit protects data on the wire, typically with TLS.",
+        "Server-side encryption is done by the AWS service; client-side encryption happens in your application before the data is sent."
+      ],
+      "myths": ["Enabling encryption at rest also encrypts traffic to the service — they are separate controls."]
+    },
+    {
+      "id": "least-privilege", "name": "Least privilege and IAM best practice", "category": "concept",
+      "tags": ["identity", "security"],
+      "purpose": "is the principle of granting only the permissions a task actually needs",
+      "facts": [
+        "Grant permissions to roles and groups rather than to individual users, and prefer temporary credentials over long-lived access keys.",
+        "Enable MFA on the root user, remove its access keys, and use it only for the few tasks that require it."
+      ],
+      "myths": ["Attaching AdministratorAccess to a role is fine if only a few people can assume it — least privilege applies to the role's permissions, not only to who can assume it."]
+    },
+    {
+      "id": "iac", "name": "Infrastructure as code", "category": "concept",
+      "tags": ["management", "developer-tools", "well-architected"],
+      "purpose": "means defining infrastructure in version-controlled templates rather than clicking through a console",
+      "facts": ["Infrastructure as code makes environments reproducible and changes reviewable, and is a core Operational Excellence practice."],
+      "myths": ["Infrastructure as code is only for large teams — reproducibility matters at any size."]
+    },
+    {
+      "id": "tagging", "name": "Tagging and cost allocation", "category": "concept",
+      "tags": ["cost", "billing", "management"],
+      "purpose": "attaches key-value metadata to resources so they can be grouped for cost, automation and access control",
+      "facts": [
+        "Cost allocation tags must be activated in the billing console before they appear in Cost Explorer and the Cost and Usage Report.",
+        "Tags can drive IAM conditions and automation as well as cost reporting."
+      ],
+      "myths": ["Tags apply retroactively to past bills — activated cost allocation tags only affect data from activation onwards."]
+    },
+    {
+      "id": "service-quotas", "name": "Service quotas", "category": "concept",
+      "tags": ["management", "resilience"],
+      "purpose": "are the per-account, per-Region limits AWS applies to resource counts and API rates",
+      "facts": ["Many quotas are soft and can be raised on request; some are hard limits that cannot be changed."],
+      "myths": ["Quotas are global — most are per-Region as well as per-account."]
+    },
+    {
+      "id": "decoupling", "name": "Loose coupling", "category": "concept",
+      "tags": ["decoupling", "integration", "resilience", "well-architected"],
+      "purpose": "means components communicate through a queue, topic or load balancer rather than calling each other directly",
+      "facts": ["Decoupling with SQS or SNS lets one component fail or slow down without taking the rest of the system with it."],
+      "myths": ["Decoupling always improves latency — it improves resilience and scalability, often at the cost of added latency."]
+    },
+    {
+      "id": "statelessness", "name": "Stateless application design", "category": "concept",
+      "tags": ["compute", "resilience", "performance"],
+      "purpose": "keeps session data outside the application server so any instance can serve any request",
+      "facts": ["Storing session state in DynamoDB or ElastiCache is what allows instances to be added and removed freely."],
+      "myths": ["Sticky sessions solve statelessness — they work around it and undermine even load distribution and instance replacement."]
+    },
+    {
+      "id": "caching", "name": "Caching strategy", "category": "concept",
+      "tags": ["caching", "performance", "cost"],
+      "purpose": "stores frequently read data closer to the consumer to cut latency, load and cost",
+      "facts": ["Caching happens at several layers: CloudFront at the edge, ElastiCache in front of a database, and DAX in front of DynamoDB."],
+      "myths": ["Caching everything is always a win — stale data and cache invalidation costs are real design problems."]
+    },
+    {
+      "id": "capex-opex", "name": "Capital versus operating expenditure", "category": "concept",
+      "tags": ["economics", "cost", "billing"],
+      "purpose": "contrasts buying assets up front with paying for consumption",
+      "facts": ["Cloud converts up-front capital expenditure on hardware into variable operating expenditure billed on usage."],
+      "myths": ["Reserved Instances are a capital expense — they are still operating expense, just committed."]
+    },
+    {
+      "id": "tco", "name": "Total cost of ownership", "category": "concept",
+      "tags": ["economics", "cost", "billing"],
+      "purpose": "accounts for every cost of running a workload, not just the visible server price",
+      "facts": ["A fair on-premises comparison must include power, cooling, floor space, hardware refresh and the staff who run it."],
+      "myths": ["Comparing an EC2 bill to a server's purchase price is a valid TCO comparison — it ignores the majority of on-premises costs."]
+    }
+  ],
+  "sharedResponsibility": [
+    { "item": "Physical security of AWS data centres", "owner": "aws" },
+    { "item": "Hardware and the global infrastructure that runs AWS services", "owner": "aws" },
+    { "item": "Virtualisation and hypervisor patching", "owner": "aws" },
+    { "item": "Managed service software patching for services such as RDS and DynamoDB", "owner": "aws" },
+    { "item": "Decommissioning and destroying storage media", "owner": "aws" },
+    { "item": "Guest operating system patching on EC2 instances", "owner": "customer" },
+    { "item": "Configuring security groups and network ACLs", "owner": "customer" },
+    { "item": "Managing IAM users, roles and permissions", "owner": "customer" },
+    { "item": "Classifying your data and choosing whether to encrypt it", "owner": "customer" },
+    { "item": "Application code and its vulnerabilities", "owner": "customer" },
+    { "item": "Client-side and server-side encryption configuration for your data", "owner": "customer" },
+    { "item": "Setting S3 bucket policies and access controls", "owner": "customer" },
+    { "item": "Account-level credentials, including MFA on the root user", "owner": "customer" },
+    { "item": "Patch management, where responsibility depends on the service model", "owner": "shared" },
+    { "item": "Configuration management of infrastructure and applications", "owner": "shared" },
+    { "item": "Awareness and training of the people who operate the environment", "owner": "shared" }
+  ],
+  "scenarioGroups": [
+    {
+      "id": "storage-choice", "tags": ["storage"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "s3", "needs": ["store user-uploaded images that a web application retrieves over HTTPS", "build a data lake that Athena can query in place", "keep versioned backups of application artifacts with lifecycle rules"] },
+        { "service": "ebs", "needs": ["attach a persistent block volume to a single EC2 instance as its database disk", "provide a boot volume with predictable provisioned IOPS"] },
+        { "service": "efs", "needs": ["share one POSIX file system across dozens of Linux EC2 instances at the same time", "give a fleet of web servers a common content directory that grows automatically"] },
+        { "service": "fsx", "needs": ["provide an SMB file share to Windows servers that authenticate against Active Directory", "supply a high-performance Lustre scratch file system for an HPC cluster"] },
+        { "service": "s3-glacier", "needs": ["retain compliance records for seven years at the lowest possible storage cost"] }
+      ]
+    },
+    {
+      "id": "database-choice", "tags": ["database"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "rds", "needs": ["run a managed PostgreSQL database with automated backups and a standby for failover", "move a self-managed MySQL server off EC2 without changing the application"] },
+        { "service": "dynamodb", "needs": ["serve single-digit-millisecond key lookups for a shopping cart at unpredictable scale", "store session state for a stateless web tier without managing servers"] },
+        { "service": "aurora", "needs": ["run a MySQL-compatible database that needs higher throughput and faster failover than stock MySQL"] },
+        { "service": "redshift", "needs": ["run complex analytic SQL joining billions of rows for a business-intelligence dashboard"] },
+        { "service": "elasticache", "needs": ["cut repeated expensive read queries against a relational database by caching results in memory"] },
+        { "service": "neptune", "needs": ["traverse highly connected relationship data to detect a fraud ring"] },
+        { "service": "documentdb", "needs": ["run a managed document store that speaks the MongoDB API"] }
+      ]
+    },
+    {
+      "id": "compute-choice", "tags": ["compute"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "ec2", "needs": ["run an application that requires a specific kernel module and root access to the operating system"] },
+        { "service": "lambda", "needs": ["run a short function whenever an object is uploaded to S3, paying nothing when idle", "handle sporadic API requests without keeping any server running"] },
+        { "service": "fargate", "needs": ["run containers on demand with no EC2 hosts to patch or right-size"] },
+        { "service": "elastic-beanstalk", "needs": ["deploy a standard web application from uploaded code without designing the stack by hand"] },
+        { "service": "batch", "needs": ["process a long queue of multi-hour simulation jobs on interruptible capacity"] },
+        { "service": "eks", "needs": ["run existing Kubernetes manifests and Helm charts with a managed control plane"] }
+      ]
+    },
+    {
+      "id": "integration-choice", "tags": ["integration", "decoupling"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "sqs", "needs": ["buffer a burst of orders so a slower back end can process them at its own pace", "retry failed processing without losing the work item"] },
+        { "service": "sns", "needs": ["deliver one published event to several independent subscribers at once", "send an operational alert to an email distribution list"] },
+        { "service": "eventbridge", "needs": ["route AWS service events to different targets based on the content of the event", "trigger a job on a cron schedule without running a server"] },
+        { "service": "step-functions", "needs": ["coordinate a multi-step workflow with retries, branching and error handling defined outside the code"] },
+        { "service": "kinesis-data-streams", "needs": ["let several independent applications read the same real-time record stream and replay it"] }
+      ]
+    },
+    {
+      "id": "security-detection-choice", "tags": ["security"], "tiers": ["foundational", "associate", "specialty"],
+      "members": [
+        { "service": "guardduty", "needs": ["continuously detect unusual API activity and possible credential compromise from existing logs"] },
+        { "service": "inspector", "needs": ["continuously scan EC2 instances and container images for known software vulnerabilities"] },
+        { "service": "macie", "needs": ["discover which S3 buckets contain personally identifiable information"] },
+        { "service": "security-hub", "needs": ["aggregate findings from several security services into one prioritised dashboard"] },
+        { "service": "detective", "needs": ["investigate the root cause and timeline behind an existing security finding"] },
+        { "service": "config", "needs": ["prove that no resource has drifted out of a required configuration over the last quarter"] },
+        { "service": "cloudtrail", "needs": ["find out which identity deleted a resource and from which IP address"] }
+      ]
+    },
+    {
+      "id": "network-connectivity-choice", "tags": ["networking"], "tiers": ["associate", "professional"],
+      "members": [
+        { "service": "direct-connect", "needs": ["get consistent, private bandwidth between a data centre and AWS that does not cross the internet"] },
+        { "service": "site-to-site-vpn", "needs": ["connect a branch office to a VPC quickly over an encrypted tunnel across the internet"] },
+        { "service": "transit-gateway", "needs": ["connect two hundred VPCs and an on-premises network without building a mesh of peering connections"] },
+        { "service": "privatelink", "needs": ["expose one internal service to another account's VPC without joining the two address spaces"] },
+        { "service": "vpc-endpoints", "needs": ["let instances in a private subnet reach S3 without a NAT gateway or internet access"] },
+        { "service": "global-accelerator", "needs": ["give a UDP-based game static anycast IP addresses and fast regional failover"] },
+        { "service": "cloudfront", "needs": ["cache static assets close to users worldwide and cut origin egress cost"] }
+      ]
+    },
+    {
+      "id": "cost-tool-choice", "tags": ["cost", "billing"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "cost-explorer", "needs": ["visualise which service caused last month's spending increase"] },
+        { "service": "budgets", "needs": ["be alerted by email when forecast monthly spend will exceed a threshold"] },
+        { "service": "cost-and-usage-report", "needs": ["get line-item billing data into S3 so it can be queried with Athena"] },
+        { "service": "pricing-calculator", "needs": ["estimate what a proposed architecture will cost before building it"] },
+        { "service": "compute-optimizer", "needs": ["identify over-provisioned EC2 instances from observed utilisation"] },
+        { "service": "trusted-advisor", "needs": ["get a broad account review covering idle resources, open security groups and quota headroom"] }
+      ]
+    },
+    {
+      "id": "ai-service-choice", "tags": ["ml", "genai"], "tiers": ["foundational", "associate", "professional"],
+      "members": [
+        { "service": "bedrock", "needs": ["call a hosted foundation model through an API to summarise text, with content guardrails"] },
+        { "service": "sagemaker", "needs": ["train, tune and host a custom machine-learning model on your own labelled data"] },
+        { "service": "rekognition", "needs": ["detect unsafe content in user-uploaded images without training a model"] },
+        { "service": "textract", "needs": ["pull key-value form fields and tables out of scanned PDF invoices"] },
+        { "service": "comprehend", "needs": ["detect sentiment and redact personal information from free-text support tickets"] },
+        { "service": "transcribe", "needs": ["convert recorded call audio into searchable text"] },
+        { "service": "polly", "needs": ["generate spoken audio from written article text"] },
+        { "service": "kendra", "needs": ["let staff ask natural-language questions across SharePoint and S3 document repositories"] }
+      ]
+    },
+    {
+      "id": "monitoring-choice", "tags": ["management"], "tiers": ["foundational", "associate"],
+      "members": [
+        { "service": "cloudwatch", "needs": ["alarm when an application's error rate crosses a threshold and notify an on-call topic"] },
+        { "service": "cloudtrail", "needs": ["keep an auditable record of every API call made in the account"] },
+        { "service": "config", "needs": ["continuously evaluate whether resources match required configuration rules"] },
+        { "service": "x-ray", "needs": ["find which service in a chain of microservice calls is adding the latency"] },
+        { "service": "health-dashboard", "needs": ["see AWS-side events and scheduled maintenance affecting your own resources"] }
+      ]
+    }
+  ]
+}

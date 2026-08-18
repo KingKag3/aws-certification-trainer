@@ -1,0 +1,28 @@
+# Dependencies (this project has none at runtime, but tooling may add some)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local dev artefacts
+.cache/
+dist/
+build/
+coverage/
+*.log
+npm-debug.log*
+
+# Local environment
+.env
+.env.local
+
+# Claude Code local settings (launch.json is committed on purpose)
+.claude/settings.local.json

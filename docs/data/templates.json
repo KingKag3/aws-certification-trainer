@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "sourceNote": "Stems were written to match the phrasing style AWS uses in its own published sample questions (scenario-first, one best answer). No sample-question text or scenario was copied.",
+  "templates": [
+    {
+      "id": "svc-purpose",
+      "kind": "service-purpose",
+      "label": "Service identification",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 3,
+      "stems": [
+        "Which AWS service {purpose}?",
+        "A team needs the AWS service that {purpose}. Which service should they use?",
+        "Identify the AWS service that {purpose}."
+      ],
+      "explanationLead": "{name} {purpose}."
+    },
+    {
+      "id": "svc-usecase",
+      "kind": "service-usecase",
+      "label": "Use case matching",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 3,
+      "stems": [
+        "A company wants to {useCase}. Which AWS service is the best fit?",
+        "Which AWS service is designed to {useCase}?",
+        "An architect is asked to {useCase}. Which service should they choose?"
+      ],
+      "explanationLead": "{name} {purpose}."
+    },
+    {
+      "id": "svc-category",
+      "kind": "service-category",
+      "label": "Service category",
+      "tiers": ["foundational", "associate"],
+      "weight": 1,
+      "stems": [
+        "Into which AWS service category does {name} fall?",
+        "{name} belongs to which category of AWS services?"
+      ],
+      "explanationLead": "{name} is categorised under {categoryLabel}. It {purpose}."
+    },
+    {
+      "id": "fact-tf",
+      "kind": "true-false",
+      "label": "True or false",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 2,
+      "stems": [
+        "True or false: {statement}",
+        "Is the following statement about AWS correct? \"{statement}\""
+      ],
+      "explanationLead": "About {name}:"
+    },
+    {
+      "id": "not-true",
+      "kind": "odd-statement",
+      "label": "Which statement is NOT true",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 2,
+      "stems": [
+        "Which of the following statements about {name} is NOT true?",
+        "All of the following are true of {name} EXCEPT which one?"
+      ],
+      "explanationLead": "The incorrect statement is the answer. About {name}:"
+    },
+    {
+      "id": "scenario-choice",
+      "kind": "scenario",
+      "label": "Scenario",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 4,
+      "stems": [
+        "A company needs to {need}. Which AWS service best meets this requirement?",
+        "A solutions architect must {need}. Which service should they select?",
+        "Which AWS service should a team use when they need to {need}?"
+      ],
+      "explanationLead": "{name} {purpose}."
+    },
+    {
+      "id": "shared-resp",
+      "kind": "shared-responsibility",
+      "label": "Shared responsibility model",
+      "tiers": ["foundational", "associate"],
+      "weight": 2,
+      "stems": [
+        "Under the AWS shared responsibility model, who is responsible for {item}?",
+        "In the AWS shared responsibility model, {item} is whose responsibility?"
+      ],
+      "explanationLead": "AWS is responsible for security OF the cloud; the customer is responsible for security IN the cloud."
+    },
+    {
+      "id": "pricing-model",
+      "kind": "pricing",
+      "label": "Pricing and billing",
+      "tiers": ["foundational", "associate"],
+      "weight": 1,
+      "stems": [
+        "How are you charged for {name}?",
+        "Which statement best describes the pricing model for {name}?"
+      ],
+      "explanationLead": "{name} is billed as follows:"
+    },
+    {
+      "id": "concept-def",
+      "kind": "concept-definition",
+      "label": "Core concept",
+      "tiers": ["foundational", "associate", "professional", "specialty"],
+      "weight": 2,
+      "stems": [
+        "Which AWS concept {purpose}?",
+        "Which of the following {purpose}?"
+      ],
+      "explanationLead": "{name} {purpose}."
+    },
+    {
+      "id": "category-odd",
+      "kind": "category-odd-one-out",
+      "label": "Odd one out",
+      "tiers": ["foundational", "associate"],
+      "weight": 1,
+      "stems": [
+        "Which of the following is NOT a {categoryLabel} service?",
+        "Three of these are {categoryLabel} services. Which one is not?"
+      ],
+      "explanationLead": "The odd one out is the answer."
+    }
+  ],
+  "trueFalseOptions": ["True", "False"],
+  "responsibilityOptions": [
+    { "value": "aws", "label": "AWS" },
+    { "value": "customer", "label": "The customer" },
+    { "value": "shared", "label": "Shared between AWS and the customer" }
+  ]
+}
