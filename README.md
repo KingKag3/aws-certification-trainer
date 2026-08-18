@@ -365,6 +365,55 @@ paths for Jekyll to skip. Subsequent pushes to `main` redeploy automatically.
 
 ---
 
+## Working across machines
+
+The repository is <https://github.com/KingKag3/aws-certification-trainer>, deployed from `main`
+`/docs`. `CHANGELOG.md` records what was built and when each AWS certification fact was verified;
+`CLAUDE.md` carries the project invariants so an agent picks up the same constraints on any machine.
+
+**First time on a new PC:**
+
+```bash
+git clone https://github.com/KingKag3/aws-certification-trainer.git
+```
+
+Then serve it and run the engine test to confirm the checkout is sound:
+
+```bash
+python -m http.server 8766 --directory docs
+```
+
+```bash
+node tools/test-generator.mjs
+```
+
+**Every session after that — pull before you start:**
+
+```bash
+git pull --rebase
+```
+
+**Push when you finish:**
+
+```bash
+git add -A && git commit -m "your message" && git push
+```
+
+`--rebase` keeps history linear, which matters when the same project is edited from two machines:
+without it, pulling after committing locally creates a merge bubble every single time.
+
+If you edited on both machines and the pull stops with a conflict, resolve the files, then:
+
+```bash
+git add -A && git rebase --continue
+```
+
+Progress data (streaks, accuracy, weak spots) is **not** in the repository — it lives in each
+browser's `localStorage`. To carry it between machines, use Profile → **Export progress** on one and
+**Import progress** on the other, or add one of the sync backends described above.
+
+---
+
 ## Certification data as of 18 August 2026
 
 Verified against the official AWS exam guides on the date shown. **Re-check before booking** — AWS
