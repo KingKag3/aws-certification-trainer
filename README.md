@@ -46,8 +46,16 @@ official exam facts, and links to the official exam page and exam guide.
 | Weak spots | A quiz built only from topics you have previously missed |
 | Domain drill | Pick one exam domain and quiz only that |
 
+**Members** — several people can share one browser. Each member keeps their own progress, weak
+spots, streak and roadmap state; switching member switches the whole app. A leaderboard ranks
+everyone by certifications mastered, average readiness, questions answered, accuracy or current
+streak, with a podium for the top three. Members are created, renamed, recoloured and removed from
+the Members page, and the header chip shows who the app is currently recording for.
+
+Accuracy ranking ignores anyone with fewer than 20 answers — a 3-for-3 start is not a 100% record.
+
 **Profile** — study streak, activity heatmap, per-certification table, and JSON export/import so you
-can move progress between browsers.
+can move progress between browsers. Export covers every member on the device.
 
 Also: dark mode (saved, defaults to your OS setting), full keyboard support in quiz and flashcard
 modes, and a layout that works from 375 px up.
@@ -127,12 +135,12 @@ node tools/test-generator.mjs SAA-C03 25
 │   └── js/
 │       ├── app.js            bootstrap, data loading, theme, route dispatch
 │       ├── router.js         hash router
-│       ├── store.js          progressStore — the ONLY module that touches storage
+│       ├── store.js          progressStore + member roster — the ONLY module that touches storage
 │       ├── generator.js      the question engine (pure, Node-testable)
 │       ├── progression.js    readiness, unlock state, roadmap graph layout (pure)
 │       ├── charts.js         hand-rolled SVG radar / bars / ring / heatmap
 │       ├── icons.js          inline SVG icon set
-│       └── views/            roadmap, cert, quiz, flashcards, profile
+│       └── views/            roadmap, cert, quiz, flashcards, members, profile
 ├── tools/test-generator.mjs  standalone engine smoke test
 └── README.md
 ```
@@ -304,7 +312,18 @@ stems and domains that can no longer produce questions.
 ## Storage and the optional sync layer
 
 All state — per-certification progress, weak spots, streaks, theme — is in `localStorage` under the
-`awsstudy:v1:` prefix, namespaced per certification (`awsstudy:v1:cert:SAA-C03`).
+`awsstudy:v1:` prefix, namespaced per **member** and then per certification:
+
+```
+awsstudy:v1:members                     roster + which member is active
+awsstudy:v1:u:<memberId>:cert:SAA-C03   that member's progress on one exam
+awsstudy:v1:u:<memberId>:profile        that member's streak, totals and day counts
+awsstudy:v1:prefs                       device level (theme)
+```
+
+`store.ensureRoster()` handles two cases automatically: a fresh install gets a default member named
+"You", and an install predating the members feature has its `awsstudy:v1:cert:*` and
+`awsstudy:v1:profile` keys migrated into that first member rather than orphaned.
 
 **Every read and write goes through `docs/js/store.js`.** Its methods are async on purpose, even
 though localStorage is synchronous, so a network-backed adapter is a drop-in. The bottom of that
@@ -315,7 +334,10 @@ export const progressStore = createProgressStore(new LocalStorageAdapter());
 ```
 
 To add cross-device sync later, write an adapter exposing `get`, `set`, `remove` and `keys`, and
-change that one line. Nothing else in the app touches storage. Reasonable free-tier options:
+change that one line. Nothing else in the app touches storage. The members layer is deliberately
+shaped like an account system — a roster of identities, progress keyed by identity id, and a
+`memberSummary()` that is a pure function — so cloud accounts replace the roster rather than
+requiring the rest of the app to change. Reasonable free-tier options:
 
 - **Firebase (Firestore + Auth)** — easiest bolt-on to a static site; client SDK via a script tag, no server.
 - **Supabase** — Postgres-backed with a client SDK; more setup, nicer if you later want relational data.
@@ -408,9 +430,9 @@ If you edited on both machines and the pull stops with a conflict, resolve the f
 git add -A && git rebase --continue
 ```
 
-Progress data (streaks, accuracy, weak spots) is **not** in the repository — it lives in each
-browser's `localStorage`. To carry it between machines, use Profile → **Export progress** on one and
-**Import progress** on the other, or add one of the sync backends described above.
+Progress data (members, streaks, accuracy, weak spots) is **not** in the repository — it lives in
+each browser's `localStorage`. To carry it between machines, use Profile → **Export all members** on
+one and **Import progress** on the other, or add one of the sync backends described above.
 
 ---
 

@@ -5,12 +5,27 @@
  * Supabase or a Cloudflare Worker later means writing a new adapter with the
  * same five methods and changing the one line at the bottom of this file.
  * Nothing else in the app touches storage directly.
+ *
+ * Keys are namespaced per member so several people can share one browser:
+ *
+ *   awsstudy:v1:members                       roster + who is active
+ *   awsstudy:v1:u:<memberId>:cert:<CODE>      that member's progress per exam
+ *   awsstudy:v1:u:<memberId>:profile          that member's streak and totals
+ *   awsstudy:v1:prefs                         device-level (theme)
  */
 
 const NAMESPACE = 'awsstudy';
 const VERSION = 'v1';
+const PREFIX = `${NAMESPACE}:${VERSION}:`;
 
-const key = (...parts) => [NAMESPACE, VERSION, ...parts].join(':');
+const key = (...parts) => PREFIX + parts.join(':');
+const memberKey = (memberId, ...parts) => key('u', memberId, ...parts);
+
+/** Palette for member avatars — AWS orange first, then distinguishable hues. */
+export const MEMBER_COLORS = [
+  '#FF9900', '#527FFF', '#1A7F4B', '#C925D1', '#DD344C',
+  '#01A88D', '#8C4FFF', '#B7791F', '#0B62C4', '#E7157B',
+];
 
 /* ------------------------------------------------------------------ */
 /* Adapter: browser localStorage                                       */
@@ -94,6 +109,13 @@ export const defaultPrefs = () => ({
   quizLength: 10,
 });
 
+export const emptyRoster = () => ({ members: [], activeId: null });
+
+function makeId() {
+  if (globalThis.crypto?.randomUUID) return 'm_' + globalThis.crypto.randomUUID().slice(0, 8);
+  return 'm_' + Math.random().toString(36).slice(2, 10);
+}
+
 /* ------------------------------------------------------------------ */
 /* Store                                                               */
 /* ------------------------------------------------------------------ */
@@ -108,7 +130,7 @@ export function createProgressStore(adapter) {
       return () => listeners.delete(fn);
     },
 
-    /* prefs ------------------------------------------------------- */
+    /* prefs (device level, shared by all members) ------------------- */
     async getPrefs() {
       return { ...defaultPrefs(), ...(await adapter.get(key('prefs'), {})) };
     },
@@ -119,38 +141,165 @@ export function createProgressStore(adapter) {
       return next;
     },
 
-    /* per-certification progress ---------------------------------- */
+    /* members ------------------------------------------------------ */
+    async getRoster() {
+      return { ...emptyRoster(), ...(await adapter.get(key('members'), {})) };
+    },
+    async saveRoster(roster) {
+      await adapter.set(key('members'), roster);
+      notify({ type: 'members', value: roster });
+      return roster;
+    },
+
+    /**
+     * Guarantees a usable roster: migrates any pre-members progress into a
+     * first member, and creates a default member on a fresh install so the app
+     * never presents an empty shell.
+     */
+    async ensureRoster() {
+      let roster = await store.getRoster();
+      if (roster.members.length) {
+        if (!roster.members.some((m) => m.id === roster.activeId)) {
+          roster = { ...roster, activeId: roster.members[0].id };
+          await store.saveRoster(roster);
+        }
+        return roster;
+      }
+
+      const member = {
+        id: makeId(),
+        name: 'You',
+        color: MEMBER_COLORS[0],
+        createdAt: Date.now(),
+        lastActiveAt: Date.now(),
+      };
+
+      // Adopt progress written before members existed, so nothing is lost.
+      const legacy = (await adapter.keys(PREFIX)).filter(
+        (k) => /^awsstudy:v1:cert:/.test(k) || k === key('profile')
+      );
+      for (const k of legacy) {
+        const value = await adapter.get(k);
+        const suffix = k.slice(PREFIX.length); // "cert:SAA-C03" or "profile"
+        await adapter.set(memberKey(member.id, suffix), value);
+        await adapter.remove(k);
+      }
+
+      roster = { members: [member], activeId: member.id };
+      await store.saveRoster(roster);
+      return roster;
+    },
+
+    async getActiveMember() {
+      const roster = await store.ensureRoster();
+      return roster.members.find((m) => m.id === roster.activeId) || roster.members[0];
+    },
+
+    async addMember(name) {
+      const roster = await store.ensureRoster();
+      const clean = String(name || '').trim().slice(0, 24) || `Member ${roster.members.length + 1}`;
+      const member = {
+        id: makeId(),
+        name: clean,
+        color: MEMBER_COLORS[roster.members.length % MEMBER_COLORS.length],
+        createdAt: Date.now(),
+        lastActiveAt: Date.now(),
+      };
+      await store.saveRoster({ members: [...roster.members, member], activeId: roster.activeId });
+      return member;
+    },
+
+    async renameMember(id, name) {
+      const roster = await store.ensureRoster();
+      const clean = String(name || '').trim().slice(0, 24);
+      if (!clean) return roster;
+      return store.saveRoster({
+        ...roster,
+        members: roster.members.map((m) => (m.id === id ? { ...m, name: clean } : m)),
+      });
+    },
+
+    async setMemberColor(id, color) {
+      const roster = await store.ensureRoster();
+      return store.saveRoster({
+        ...roster,
+        members: roster.members.map((m) => (m.id === id ? { ...m, color } : m)),
+      });
+    },
+
+    /** Removes the member and every key belonging to them. */
+    async removeMember(id) {
+      const roster = await store.ensureRoster();
+      const remaining = roster.members.filter((m) => m.id !== id);
+      for (const k of await adapter.keys(memberKey(id, ''))) await adapter.remove(k);
+      const next = {
+        members: remaining,
+        activeId: roster.activeId === id ? remaining[0]?.id ?? null : roster.activeId,
+      };
+      await store.saveRoster(next);
+      if (!remaining.length) await store.ensureRoster();
+      return next;
+    },
+
+    async setActiveMember(id) {
+      const roster = await store.ensureRoster();
+      if (!roster.members.some((m) => m.id === id)) return roster;
+      return store.saveRoster({
+        ...roster,
+        activeId: id,
+        members: roster.members.map((m) => (m.id === id ? { ...m, lastActiveAt: Date.now() } : m)),
+      });
+    },
+
+    /* per-certification progress (active member) ------------------- */
     async getCert(certCode) {
-      return { ...emptyCertProgress(), ...(await adapter.get(key('cert', certCode), {})) };
+      const m = await store.getActiveMember();
+      return store.getCertFor(m.id, certCode);
     },
     async setCert(certCode, value) {
-      await adapter.set(key('cert', certCode), value);
-      notify({ type: 'cert', certCode, value });
+      const m = await store.getActiveMember();
+      await adapter.set(memberKey(m.id, 'cert', certCode), value);
+      notify({ type: 'cert', memberId: m.id, certCode, value });
       return value;
     },
     async resetCert(certCode) {
-      await adapter.remove(key('cert', certCode));
-      notify({ type: 'cert', certCode, value: emptyCertProgress() });
+      const m = await store.getActiveMember();
+      await adapter.remove(memberKey(m.id, 'cert', certCode));
+      notify({ type: 'cert', memberId: m.id, certCode, value: emptyCertProgress() });
     },
     async allCerts(codes) {
+      const m = await store.getActiveMember();
+      return store.allCertsFor(m.id, codes);
+    },
+
+    /* per-certification progress (any member — used by the leaderboard) */
+    async getCertFor(memberId, certCode) {
+      return { ...emptyCertProgress(), ...(await adapter.get(memberKey(memberId, 'cert', certCode), {})) };
+    },
+    async allCertsFor(memberId, codes) {
       const out = {};
-      for (const code of codes) out[code] = await store.getCert(code);
+      for (const code of codes) out[code] = await store.getCertFor(memberId, code);
       return out;
     },
 
     /* profile ------------------------------------------------------ */
     async getProfile() {
-      return { ...emptyProfile(), ...(await adapter.get(key('profile'), {})) };
+      const m = await store.getActiveMember();
+      return store.getProfileFor(m.id);
     },
     async setProfile(value) {
-      await adapter.set(key('profile'), value);
-      notify({ type: 'profile', value });
+      const m = await store.getActiveMember();
+      await adapter.set(memberKey(m.id, 'profile'), value);
+      notify({ type: 'profile', memberId: m.id, value });
       return value;
+    },
+    async getProfileFor(memberId) {
+      return { ...emptyProfile(), ...(await adapter.get(memberKey(memberId, 'profile'), {})) };
     },
 
     /* bulk --------------------------------------------------------- */
     async exportAll() {
-      const ks = await adapter.keys(`${NAMESPACE}:${VERSION}:`);
+      const ks = await adapter.keys(PREFIX);
       const data = {};
       for (const k of ks) data[k] = await adapter.get(k);
       return { exportedAt: new Date().toISOString(), version: VERSION, data };
@@ -160,9 +309,13 @@ export function createProgressStore(adapter) {
       for (const [k, v] of Object.entries(payload.data)) await adapter.set(k, v);
       notify({ type: 'import' });
     },
+    /** Clears one member's progress but keeps them on the roster. */
+    async clearMemberProgress(memberId) {
+      for (const k of await adapter.keys(memberKey(memberId, ''))) await adapter.remove(k);
+      notify({ type: 'clear', memberId });
+    },
     async clearAll() {
-      const ks = await adapter.keys(`${NAMESPACE}:${VERSION}:`);
-      for (const k of ks) await adapter.remove(k);
+      for (const k of await adapter.keys(PREFIX)) await adapter.remove(k);
       notify({ type: 'clear' });
     },
   };

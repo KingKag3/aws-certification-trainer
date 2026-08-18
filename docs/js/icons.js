@@ -34,6 +34,11 @@ const paths = {
   download: '<path d="M12 4v11M7 12l5 5 5-5M4 20h16"/>',
   upload: '<path d="M12 20V9M7 12l5-5 5 5M4 20h16"/>',
   trash: '<path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.4A6.5 6.5 0 0 1 21.5 20"/>',
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 5.5H5.5A2.5 2.5 0 0 0 8 10M16 5.5h2.5A2.5 2.5 0 0 1 16 10"/><path d="M12 13v4M9 20h6M10 17h4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  edit: '<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/>',
+  swap: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
 };
 
 export function icon(name, { size = 20, className = '', strokeWidth = 1.7 } = {}) {

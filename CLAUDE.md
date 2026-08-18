@@ -30,9 +30,9 @@ docs/            everything GitHub Pages serves
   js/
     generator.js   question engine (pure: no DOM, no network — this is why Node can test it)
     progression.js readiness, unlock state, roadmap graph (pure)
-    store.js       progressStore — the ONLY module that touches storage
+    store.js       progressStore + member roster — the ONLY module that touches storage
     charts.js      hand-rolled SVG radar / bars / ring / heatmap
-    views/         roadmap, cert, quiz, flashcards, profile
+    views/         roadmap, cert, quiz, flashcards, members, profile
 tools/test-generator.mjs
 ```
 
@@ -60,6 +60,17 @@ test depends on this.
 
 **All storage goes through `store.js`.** Its async API is deliberate so a cloud adapter can be
 dropped in by changing one line at the bottom of that file. Do not call `localStorage` elsewhere.
+
+**Storage is namespaced per member** — `awsstudy:v1:u:<memberId>:cert:<CODE>`. Anything reading or
+writing progress must go through the member-aware store methods; `getCert`/`setCert`/`getProfile`
+act on the active member, and `getCertFor`/`getProfileFor` take an explicit member id for the
+leaderboard. `ensureRoster()` migrates pre-members keys into a first member — do not remove that
+migration, older installs depend on it.
+
+**The next planned step is cloud accounts** (Firebase, chosen over Supabase because Supabase's free
+tier pauses a project after 7 days of database inactivity). The member roster is deliberately shaped
+like an account system so cloud identities replace it without changes elsewhere. Note that account
+creation is the user's job — never attempt to sign up for a provider or enter credentials.
 
 **Charts stay hand-rolled SVG.** No Chart.js, no CDN — the app is intended to work offline and with
 a strict CSP.

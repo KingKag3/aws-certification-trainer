@@ -9,6 +9,8 @@ import * as certView from './views/cert.js';
 import * as quizView from './views/quiz.js';
 import * as flashcardsView from './views/flashcards.js';
 import * as profileView from './views/profile.js';
+import * as membersView from './views/members.js';
+import { avatar } from './views/members.js';
 
 const DATA_FILES = ['services.json', 'certifications.json', 'templates.json'];
 
@@ -61,10 +63,19 @@ function runCleanups() {
   cleanups = [];
 }
 
+/** The header chip showing who the app is currently recording progress for. */
+function renderMemberChip(member) {
+  const el = document.getElementById('member-chip');
+  if (!el || !member) return;
+  el.innerHTML = `${avatar(member, 24)}<span class="chip-name">${member.name.replace(/[<>&]/g, '')}</span>`;
+  el.title = `Studying as ${member.name} — switch member`;
+}
+
 function routeToView(route) {
   const [first, code, sub] = route.segments;
   if (!first) return { view: roadmapView, params: {} };
   if (first === 'profile') return { view: profileView, params: {} };
+  if (first === 'members') return { view: membersView, params: {} };
   if (first === 'cert' && code) {
     if (sub === 'quiz') return { view: quizView, params: { code, sub } };
     if (sub === 'flashcards') return { view: flashcardsView, params: { code, sub } };
@@ -77,9 +88,12 @@ async function renderRoute(route) {
   runCleanups();
 
   const codes = certData.certifications.map((c) => c.code);
+  const activeMember = await progressStore.getActiveMember();
   const progressByCert = await progressStore.allCerts(codes);
   const profile = await progressStore.getProfile();
   const state = buildProgressionState(certData, progressByCert);
+
+  renderMemberChip(activeMember);
 
   const { view, params } = routeToView(route);
 
@@ -90,6 +104,7 @@ async function renderRoute(route) {
     store: progressStore,
     progressByCert,
     profile,
+    activeMember,
     params,
     query: route.query,
     refresh: () => renderRoute(parseHash()),
@@ -100,15 +115,18 @@ async function renderRoute(route) {
   view.mount?.(ctx, app);
 
   // Header nav highlighting.
-  const isProfile = route.segments[0] === 'profile';
-  document.getElementById('nav-roadmap')?.classList.toggle('current', !isProfile);
-  document.getElementById('nav-profile')?.classList.toggle('current', isProfile);
+  const first = route.segments[0];
+  document.getElementById('nav-roadmap')?.classList.toggle('current', first !== 'profile' && first !== 'members');
+  document.getElementById('nav-members')?.classList.toggle('current', first === 'members');
+  document.getElementById('nav-profile')?.classList.toggle('current', first === 'profile');
 
   document.title = params.code
     ? `${params.code} · AWS Certification Trainer`
-    : isProfile
+    : first === 'profile'
       ? 'Profile · AWS Certification Trainer'
-      : 'AWS Certification Trainer';
+      : first === 'members'
+        ? 'Members · AWS Certification Trainer'
+        : 'AWS Certification Trainer';
 
   if (!route.query.keepScroll) window.scrollTo({ top: 0 });
 }

@@ -26,8 +26,8 @@ export function render(ctx) {
   return `
     <section class="page-head">
       <div>
-        <h2>${icon('user', { size: 22 })} Your profile</h2>
-        <p class="muted">Everything here lives in this browser’s local storage. Clearing site data wipes it, and it does not follow you to another device.</p>
+        <h2>${icon('user', { size: 22 })} ${esc(ctx.activeMember?.name || 'Your')}${ctx.activeMember ? '’s profile' : ' profile'}</h2>
+        <p class="muted">Progress for the member you are currently studying as. Everything here lives in this browser’s local storage — clearing site data wipes it, and it does not follow you to another device. <a href="${buildHash(['members'])}">Switch member</a></p>
       </div>
     </section>
 
@@ -84,10 +84,11 @@ export function render(ctx) {
 
     <section class="panel danger-zone">
       <h3>Your data</h3>
-      <p class="muted small">Progress is stored under the <code>awsstudy:v1:</code> key prefix in this browser. Export gives you a JSON file you can import into another browser.</p>
+      <p class="muted small">Progress is stored under the <code>awsstudy:v1:</code> key prefix in this browser, namespaced per member. Export covers <strong>every member on this device</strong> and gives you a JSON file you can import into another browser.</p>
       <div class="quiz-actions">
-        <button class="btn" data-action="export">${icon('download', { size: 15 })} Export progress</button>
+        <button class="btn" data-action="export">${icon('download', { size: 15 })} Export all members</button>
         <button class="btn" data-action="import">${icon('upload', { size: 15 })} Import progress</button>
+        <button class="btn ghost" data-action="clear-me">${icon('refresh', { size: 15 })} Reset ${esc(ctx.activeMember?.name || 'this member')}</button>
         <button class="btn ghost" data-action="clear">${icon('trash', { size: 15 })} Clear everything</button>
       </div>
       <input type="file" id="import-file" accept="application/json" hidden>
@@ -120,8 +121,15 @@ export function mount(ctx, root) {
     }
   });
 
+  root.querySelector('[data-action="clear-me"]')?.addEventListener('click', async () => {
+    const name = ctx.activeMember?.name || 'this member';
+    if (!window.confirm(`Delete all of ${name}'s progress across every certification? Other members are unaffected. This cannot be undone.`)) return;
+    await ctx.store.clearMemberProgress(ctx.activeMember.id);
+    ctx.refresh();
+  });
+
   root.querySelector('[data-action="clear"]')?.addEventListener('click', async () => {
-    if (!window.confirm('Delete all progress for every certification? This cannot be undone.')) return;
+    if (!window.confirm('Delete every member and all of their progress on this device? This cannot be undone.')) return;
     await ctx.store.clearAll();
     ctx.refresh();
   });

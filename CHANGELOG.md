@@ -8,6 +8,54 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.2.0] — 2026-08-18
+
+Members and a leaderboard. Several people can now share one browser, each keeping their own
+progress, with a ranked board across them. Still entirely local — this is the first half of a
+two-step plan, with cloud accounts to follow once a Firebase project exists.
+
+### Added
+
+- **Member roster** in `store.js`. Storage keys are now namespaced per member:
+  `awsstudy:v1:u:<memberId>:cert:<CODE>` and `awsstudy:v1:u:<memberId>:profile`, with the roster and
+  active member in `awsstudy:v1:members`. Device-level preferences (theme) stay global.
+  - `ensureRoster()` creates a default member named "You" on a fresh install, and **migrates**
+    pre-members keys (`awsstudy:v1:cert:*`, `awsstudy:v1:profile`) into that first member so
+    existing progress is adopted rather than orphaned.
+  - Added `addMember`, `renameMember`, `setMemberColor`, `removeMember`, `setActiveMember`,
+    `getCertFor`, `allCertsFor`, `getProfileFor` and `clearMemberProgress`. Removing a member
+    deletes every key belonging to them; the last remaining member cannot be removed.
+- **Members page** (`views/members.js`): roster with add / rename / recolour / remove / switch, and
+  a leaderboard sortable by certifications mastered, average readiness, questions answered,
+  accuracy or current streak, with a three-place podium.
+  - Accuracy ranking excludes members with fewer than 20 answers, so a 3-for-3 start cannot top the
+    board. They are still listed, labelled "unranked".
+- **`memberSummary()` and `LEADERBOARD_SORTS`** in `progression.js` — pure, so the same code will
+  serve a cloud roster later.
+- Header now carries a **member chip** showing who progress is being recorded for, linking to the
+  members page, plus a Members nav entry.
+- Profile page is titled with the active member's name, and gained a "Reset this member" action
+  distinct from "Clear everything". Export now explicitly covers every member on the device.
+
+### Fixed
+
+- Header overflowed horizontally at 375 px once the Members link and member chip were added. Added
+  staged breakpoints at 820 / 640 / 430 px that shed the brand subtitle, then the chip's name text,
+  then the brand wordmark. Verified no horizontal scroll on any page at 375, 768 and desktop widths.
+
+### Notes
+
+- Members are local to one browser. Progress still does not sync between devices; Profile →
+  Export/Import remains the way to move it. The roster is shaped deliberately like an account system
+  so that cloud accounts replace it without touching the rest of the app.
+- Free-tier costs were checked before choosing this path: Firebase Spark (50k reads / 20k writes per
+  day, no card required, stops rather than bills on quota) and Supabase Free (500 MB, 50k MAU, no
+  card) are both effectively free at this scale. Supabase pauses a project after 7 days of database
+  inactivity, which suits a burst-used study app poorly — Firebase is the intended target when the
+  cloud step happens.
+
+---
+
 ## [0.1.0] — 2026-08-18
 
 First working version. Static, dependency-free study app covering all currently active AWS
@@ -115,4 +163,5 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.2.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.2.0
 [0.1.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.1.0

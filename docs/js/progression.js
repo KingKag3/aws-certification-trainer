@@ -99,6 +99,104 @@ export function buildProgressionState(certData, progressByCert) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Member summary — one row of the leaderboard                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Rolls one member's per-certification records plus their profile into the
+ * figures the members page ranks on. Pure, so the same function serves the
+ * local roster today and a cloud roster later.
+ */
+export function memberSummary(member, certData, progressByCert, profile, now = new Date()) {
+  const state = buildProgressionState(certData, progressByCert);
+  const certs = certData.certifications;
+
+  let answered = 0;
+  let correct = 0;
+  let lastStudiedAt = 0;
+  let started = 0;
+  const readinessValues = [];
+
+  for (const cert of certs) {
+    const p = progressByCert[cert.code] || {};
+    answered += p.answered || 0;
+    correct += p.correct || 0;
+    if (p.answered) started++;
+    if (p.lastStudiedAt && p.lastStudiedAt > lastStudiedAt) lastStudiedAt = p.lastStudiedAt;
+    readinessValues.push(state.readiness[cert.code].overall);
+  }
+
+  const mastered = state.masteredCodes.size;
+  const bestCert = certs
+    .map((c) => ({ cert: c, readiness: state.readiness[c.code] }))
+    .filter((x) => x.readiness.answered > 0)
+    .sort((a, b) => b.readiness.overall - a.readiness.overall)[0] || null;
+
+  return {
+    member,
+    state,
+    answered,
+    correct,
+    accuracy: answered ? Math.round((correct / answered) * 100) : 0,
+    started,
+    mastered,
+    inProgress: certs.filter((c) => state.status[c.code] === 'in-progress').length,
+    // Averaged across every certification, so breadth counts as well as depth.
+    avgReadiness: Math.round(readinessValues.reduce((a, b) => a + b, 0) / (certs.length || 1)),
+    peakReadiness: Math.max(0, ...readinessValues),
+    bestCert,
+    streak: currentStreakFrom(profile, now),
+    longestStreak: profile.longestStreak || 0,
+    daysStudied: Object.keys(profile.days || {}).length,
+    lastStudiedAt,
+  };
+}
+
+/** Local copy of the streak rule so progression.js stays free of store imports. */
+function currentStreakFrom(profile, now) {
+  if (!profile?.lastStudyDate) return 0;
+  const toUtc = (s) => {
+    const [y, m, d] = s.split('-').map(Number);
+    return Date.UTC(y, m - 1, d);
+  };
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const gap = Math.round((toUtc(today) - toUtc(profile.lastStudyDate)) / 86400000);
+  return gap <= 1 ? profile.streak || 0 : 0;
+}
+
+export const LEADERBOARD_SORTS = {
+  mastered: {
+    label: 'Certs mastered',
+    compare: (a, b) => b.mastered - a.mastered || b.avgReadiness - a.avgReadiness || b.answered - a.answered,
+    format: (s) => `${s.mastered} mastered`,
+  },
+  readiness: {
+    label: 'Average readiness',
+    compare: (a, b) => b.avgReadiness - a.avgReadiness || b.answered - a.answered,
+    format: (s) => `${s.avgReadiness}% avg readiness`,
+  },
+  answered: {
+    label: 'Questions answered',
+    compare: (a, b) => b.answered - a.answered || b.accuracy - a.accuracy,
+    format: (s) => `${s.answered} answered`,
+  },
+  accuracy: {
+    // Guard against someone topping the board on three lucky answers.
+    compare: (a, b) => {
+      const qualify = (s) => (s.answered >= 20 ? 1 : 0);
+      return qualify(b) - qualify(a) || b.accuracy - a.accuracy || b.answered - a.answered;
+    },
+    label: 'Accuracy',
+    format: (s) => `${s.accuracy}% accuracy${s.answered < 20 ? ' (unranked, under 20 answers)' : ''}`,
+  },
+  streak: {
+    label: 'Current streak',
+    compare: (a, b) => b.streak - a.streak || b.longestStreak - a.longestStreak || b.answered - a.answered,
+    format: (s) => `${s.streak} day streak`,
+  },
+};
+
+/* ------------------------------------------------------------------ */
 /* Recommendations                                                     */
 /* ------------------------------------------------------------------ */
 
