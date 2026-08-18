@@ -41,10 +41,17 @@ official exam facts, and links to the official exam page and exam guide.
 
 | Mode | What it does |
 | --- | --- |
+| Concepts | A read-it-start-to-finish glossary in plain English, grouped by exam domain then by service category |
 | Quiz | 10 (or 20) generated questions, domain-weighted to match the real exam split |
-| Flashcards | Every in-scope service and concept: purpose, use cases, gotchas, commonly-confused points, billing basis |
+| Flashcards | Every in-scope service and concept: plain-English explanation first, then purpose, use cases, gotchas, commonly-confused points, billing basis |
 | Weak spots | A quiz built only from topics you have previously missed |
 | Domain drill | Pick one exam domain and quiz only that |
+
+**Explain it like I'm new** — every service and concept carries a plain-English explanation written for
+someone who has never used a cloud platform, using an everyday analogy rather than jargon. It appears
+on the back of every flashcard (above the technical detail), behind a collapsed toggle on quiz answer
+screens, and throughout the Concepts page. The existing "gotcha" facts stay as the deeper follow-up
+layer rather than being replaced.
 
 **Members** — several people can share one browser. Each member keeps their own progress, weak
 spots, streak and roadmap state; switching member switches the whole app. A leaderboard ranks
@@ -84,6 +91,24 @@ than understanding the material. If you contribute, do not paste content from su
 
 Where a value could not be confirmed from an official page it is `null` in the data and rendered as
 `—` in the UI, rather than guessed. (Currently: duration and price for AIP-C01.)
+
+### Video links: verified or clearly labelled, never guessed
+
+Each entry carries a video field. A fabricated YouTube ID produces a broken or — worse — a plausible
+but wrong link, so nothing is written from memory. The rule enforced in the data:
+
+- Videos are only sourced from four channels: **Amazon Web Services**, **freeCodeCamp.org**,
+  **Stephane Maarek** and **ExamPro**.
+- Every specific `videoUrl` had its **channel and title confirmed** through YouTube's oEmbed endpoint
+  before being written to the JSON. This is not optional — during the first pass, a search result
+  presented as a Stephane Maarek video turned out to be a re-upload on an unrelated channel covering
+  the *retired* CLF-C01 exam. Verification caught it; a guess would not have.
+- Anything without a confirmed match gets `videoIsSearchFallback: true` and a YouTube **search link**,
+  rendered with a dashed border and "Search YouTube" rather than a title. 27 entries are verified;
+  the rest are honest search links.
+
+If you add a video, verify it the same way — the current state is recorded in
+`services.json → beginnerLayer`.
 
 ---
 
@@ -139,8 +164,9 @@ node tools/test-generator.mjs SAA-C03 25
 │       ├── generator.js      the question engine (pure, Node-testable)
 │       ├── progression.js    readiness, unlock state, roadmap graph layout (pure)
 │       ├── charts.js         hand-rolled SVG radar / bars / ring / heatmap
+│       ├── learn.js          shared rendering for the beginner layer + video links
 │       ├── icons.js          inline SVG icon set
-│       └── views/            roadmap, cert, quiz, flashcards, members, profile
+│       └── views/            roadmap, cert, concepts, quiz, flashcards, members, profile
 ├── tools/test-generator.mjs  standalone engine smoke test
 └── README.md
 ```
@@ -278,6 +304,11 @@ cannot confirm the domain weightings from an official guide, mark the certificat
   "category": "compute",
   "tags": ["compute", "cost"],
   "purpose": "runs something useful without you managing servers",
+  "beginner": "Two to four sentences with an everyday analogy and no jargon, for someone who has never used a cloud platform.",
+  "videoUrl": "https://www.youtube.com/results?search_query=Amazon%20Example%20AWS%20explained",
+  "videoTitle": null,
+  "videoChannel": null,
+  "videoIsSearchFallback": true,
   "useCases": ["do the obvious thing", "do the other thing"],
   "facts": ["A true statement people get wrong."],
   "myths": ["A false claim people believe — and the correction after an em dash."],
@@ -288,7 +319,17 @@ cannot confirm the domain weightings from an official guide, mark the certificat
 Rules that matter: `purpose` must read as a verb clause (it is spliced into "Which AWS service
 *{purpose}*?"), `facts` must be **true**, and each `myths` entry must be
 `false claim` + ` — ` + `correction` — the generator splits on that em dash to build both the
-question and its explanation.
+question and its explanation. `beginner` is the first-contact explanation and is deliberately
+separate from `facts`, which stay as the deeper follow-up.
+
+For `videoUrl`, either supply a **search link** with `videoIsSearchFallback: true`, or verify a real
+video first and record its title and channel:
+
+```js
+// run on a youtube.com tab; returns the true title and channel, 400s on a bad id
+fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=VIDEO_ID&format=json')
+  .then(r => r.json())
+```
 
 Then add the id to the `scope` array of every certification that covers it.
 

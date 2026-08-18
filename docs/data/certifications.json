@@ -3,10 +3,26 @@
   "sourcedOn": "2026-08-18",
   "sourceNote": "Exam codes, domain names and domain weightings below were read from the official AWS exam guides on docs.aws.amazon.com/aws-certification and the per-certification pages on aws.amazon.com/certification. No exam-dump material was used anywhere in this project.",
   "tiers": {
-    "foundational": { "label": "Foundational", "order": 1, "blurb": "AWS Cloud fundamentals. No prior experience needed." },
-    "associate": { "label": "Associate", "order": 2, "blurb": "Core AWS skills for a specific job role. ~1 year hands-on recommended." },
-    "professional": { "label": "Professional", "order": 3, "blurb": "Advanced design and operations. 2+ years AWS experience recommended." },
-    "specialty": { "label": "Specialty", "order": 4, "blurb": "Deep expertise in one technical area." }
+    "foundational": {
+      "label": "Foundational",
+      "order": 1,
+      "blurb": "AWS Cloud fundamentals. No prior experience needed."
+    },
+    "associate": {
+      "label": "Associate",
+      "order": 2,
+      "blurb": "Core AWS skills for a specific job role. ~1 year hands-on recommended."
+    },
+    "professional": {
+      "label": "Professional",
+      "order": 3,
+      "blurb": "Advanced design and operations. 2+ years AWS experience recommended."
+    },
+    "specialty": {
+      "label": "Specialty",
+      "order": 4,
+      "blurb": "Deep expertise in one technical area."
+    }
   },
   "readiness": {
     "masteryThreshold": 85,
@@ -27,9 +43,25 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/cloud-practitioner-02.html",
       "tagline": "Explain the value of the AWS Cloud, its core services, security model and billing.",
       "targetCandidate": "Up to 6 months of exposure to AWS Cloud design, implementation and/or operations.",
-      "exam": { "minutes": 90, "questions": 65, "scoredQuestions": 50, "passingScore": 700, "scoreRange": [100, 1000], "priceUsd": 100 },
+      "exam": {
+        "minutes": 90,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 700,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 100
+      },
       "recommendedBefore": [],
-      "unlocks": ["SAA-C03", "DVA-C02", "SOA-C03", "DEA-C01", "AIF-C01"],
+      "unlocks": [
+        "SAA-C03",
+        "DVA-C02",
+        "SOA-C03",
+        "DEA-C01",
+        "AIF-C01"
+      ],
       "whyNext": {
         "SAA-C03": "Solutions Architect – Associate takes the service catalogue you just learned to name and asks you to choose between options under real constraints.",
         "DVA-C02": "Developer – Associate builds directly on Cloud Practitioner and adds hands-on SDK, deployment and application-security knowledge.",
@@ -38,25 +70,170 @@
         "AIF-C01": "AI Practitioner is the other foundational exam. Same difficulty level, different subject matter — an easy second credential."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Cloud Concepts", "weight": 24, "tags": ["cloud-concepts", "well-architected", "economics", "migration"] },
-        { "id": "d2", "number": 2, "name": "Security and Compliance", "weight": 30, "tags": ["security", "identity", "compliance", "encryption"] },
-        { "id": "d3", "number": 3, "name": "Cloud Technology and Services", "weight": 34, "tags": ["compute", "storage", "database", "networking", "analytics", "ml", "integration", "management", "developer-tools", "migration", "edge"] },
-        { "id": "d4", "number": 4, "name": "Billing, Pricing, and Support", "weight": 12, "tags": ["cost", "support", "billing"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Cloud Concepts",
+          "weight": 24,
+          "tags": [
+            "cloud-concepts",
+            "well-architected",
+            "economics",
+            "migration"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Security and Compliance",
+          "weight": 30,
+          "tags": [
+            "security",
+            "identity",
+            "compliance",
+            "encryption"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Cloud Technology and Services",
+          "weight": 34,
+          "tags": [
+            "compute",
+            "storage",
+            "database",
+            "networking",
+            "analytics",
+            "ml",
+            "integration",
+            "management",
+            "developer-tools",
+            "migration",
+            "edge"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Billing, Pricing, and Support",
+          "weight": 12,
+          "tags": [
+            "cost",
+            "support",
+            "billing"
+          ]
+        }
       ],
       "scope": [
-        "ec2", "lambda", "ecs", "eks", "fargate", "elastic-beanstalk", "lightsail", "batch", "auto-scaling",
-        "s3", "s3-glacier", "ebs", "efs", "fsx", "storage-gateway", "aws-backup", "snow-family",
-        "rds", "aurora", "dynamodb", "elasticache", "redshift", "neptune", "documentdb", "dms",
-        "vpc", "route53", "cloudfront", "elb", "api-gateway", "direct-connect", "site-to-site-vpn", "transit-gateway", "global-accelerator",
-        "iam", "iam-identity-center", "organizations", "cognito", "kms", "secrets-manager", "acm", "waf", "shield", "guardduty", "inspector", "macie", "security-hub", "artifact", "detective",
-        "cloudwatch", "cloudtrail", "config", "cloudformation", "systems-manager", "trusted-advisor", "control-tower", "health-dashboard", "compute-optimizer", "well-architected-tool", "license-manager",
-        "cost-explorer", "budgets", "cost-and-usage-report", "pricing-calculator", "marketplace",
-        "sqs", "sns", "eventbridge", "step-functions", "amplify",
-        "kinesis-data-streams", "firehose", "athena", "glue", "emr", "quicksight", "opensearch",
-        "sagemaker", "bedrock", "rekognition", "comprehend", "textract", "transcribe", "polly", "translate", "lex", "kendra", "amazon-q",
-        "codepipeline", "codebuild", "codedeploy", "x-ray", "cdk", "cli", "sdk",
-        "migration-hub", "application-migration-service", "datasync", "outposts", "local-zones", "wavelength"
-      ]
+        "ec2",
+        "lambda",
+        "ecs",
+        "eks",
+        "fargate",
+        "elastic-beanstalk",
+        "lightsail",
+        "batch",
+        "auto-scaling",
+        "s3",
+        "s3-glacier",
+        "ebs",
+        "efs",
+        "fsx",
+        "storage-gateway",
+        "aws-backup",
+        "snow-family",
+        "rds",
+        "aurora",
+        "dynamodb",
+        "elasticache",
+        "redshift",
+        "neptune",
+        "documentdb",
+        "dms",
+        "vpc",
+        "route53",
+        "cloudfront",
+        "elb",
+        "api-gateway",
+        "direct-connect",
+        "site-to-site-vpn",
+        "transit-gateway",
+        "global-accelerator",
+        "iam",
+        "iam-identity-center",
+        "organizations",
+        "cognito",
+        "kms",
+        "secrets-manager",
+        "acm",
+        "waf",
+        "shield",
+        "guardduty",
+        "inspector",
+        "macie",
+        "security-hub",
+        "artifact",
+        "detective",
+        "cloudwatch",
+        "cloudtrail",
+        "config",
+        "cloudformation",
+        "systems-manager",
+        "trusted-advisor",
+        "control-tower",
+        "health-dashboard",
+        "compute-optimizer",
+        "well-architected-tool",
+        "license-manager",
+        "cost-explorer",
+        "budgets",
+        "cost-and-usage-report",
+        "pricing-calculator",
+        "marketplace",
+        "sqs",
+        "sns",
+        "eventbridge",
+        "step-functions",
+        "amplify",
+        "kinesis-data-streams",
+        "firehose",
+        "athena",
+        "glue",
+        "emr",
+        "quicksight",
+        "opensearch",
+        "sagemaker",
+        "bedrock",
+        "rekognition",
+        "comprehend",
+        "textract",
+        "transcribe",
+        "polly",
+        "translate",
+        "lex",
+        "kendra",
+        "amazon-q",
+        "codepipeline",
+        "codebuild",
+        "codedeploy",
+        "x-ray",
+        "cdk",
+        "cli",
+        "sdk",
+        "migration-hub",
+        "application-migration-service",
+        "datasync",
+        "outposts",
+        "local-zones",
+        "wavelength"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/watch?v=NhDYbskXRgc",
+        "videoTitle": "AWS Certified Cloud Practitioner Certification Course (CLF-C02) - Pass the Exam!",
+        "videoChannel": "freeCodeCamp.org",
+        "videoIsSearchFallback": false
+      }
     },
     {
       "code": "AIF-C01",
@@ -68,21 +245,109 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html",
       "tagline": "Foundational understanding of AI, ML and generative AI concepts and AWS AI tooling.",
       "targetCandidate": "Up to 6 months of exposure to AI/ML technologies on AWS. Uses, but does not necessarily build, AI/ML solutions.",
-      "exam": { "minutes": 90, "questions": 65, "scoredQuestions": 50, "passingScore": 700, "scoreRange": [100, 1000], "priceUsd": 100 },
-      "recommendedBefore": ["CLF-C02"],
-      "unlocks": ["MLA-C01", "AIP-C01"],
+      "exam": {
+        "minutes": 90,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 700,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 100
+      },
+      "recommendedBefore": [
+        "CLF-C02"
+      ],
+      "unlocks": [
+        "MLA-C01",
+        "AIP-C01"
+      ],
       "whyNext": {
         "MLA-C01": "ML Engineer – Associate is the hands-on build-and-operate version of the concepts AI Practitioner only asks you to recognise.",
         "AIP-C01": "Generative AI Developer – Professional goes straight at the Bedrock/RAG/agent material AI Practitioner introduces."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Fundamentals of AI and ML", "weight": 20, "tags": ["ml", "cloud-concepts"] },
-        { "id": "d2", "number": 2, "name": "Fundamentals of GenAI", "weight": 24, "tags": ["ml", "genai"] },
-        { "id": "d3", "number": 3, "name": "Applications of Foundation Models", "weight": 28, "tags": ["ml", "genai"] },
-        { "id": "d4", "number": 4, "name": "Guidelines for Responsible AI", "weight": 14, "tags": ["genai", "compliance"] },
-        { "id": "d5", "number": 5, "name": "Security, Compliance, and Governance for AI Solutions", "weight": 14, "tags": ["security", "compliance", "identity", "encryption"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Fundamentals of AI and ML",
+          "weight": 20,
+          "tags": [
+            "ml",
+            "cloud-concepts"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Fundamentals of GenAI",
+          "weight": 24,
+          "tags": [
+            "ml",
+            "genai"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Applications of Foundation Models",
+          "weight": 28,
+          "tags": [
+            "ml",
+            "genai"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Guidelines for Responsible AI",
+          "weight": 14,
+          "tags": [
+            "genai",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d5",
+          "number": 5,
+          "name": "Security, Compliance, and Governance for AI Solutions",
+          "weight": 14,
+          "tags": [
+            "security",
+            "compliance",
+            "identity",
+            "encryption"
+          ]
+        }
       ],
-      "scope": ["bedrock", "sagemaker", "rekognition", "comprehend", "textract", "transcribe", "polly", "translate", "lex", "kendra", "amazon-q", "s3", "iam", "kms", "cloudwatch", "opensearch", "glue", "lambda"]
+      "scope": [
+        "bedrock",
+        "sagemaker",
+        "rekognition",
+        "comprehend",
+        "textract",
+        "transcribe",
+        "polly",
+        "translate",
+        "lex",
+        "kendra",
+        "amazon-q",
+        "s3",
+        "iam",
+        "kms",
+        "cloudwatch",
+        "opensearch",
+        "glue",
+        "lambda"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20AI%20Practitioner%20full%20course%20AIF-C01",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "SAA-C03",
@@ -94,32 +359,191 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-associate-03/solutions-architect-associate-03.html",
       "tagline": "Design secure, resilient, high-performing and cost-optimised architectures on AWS.",
       "targetCandidate": "At least 1 year of hands-on experience designing cloud solutions that use AWS services.",
-      "exam": { "minutes": 130, "questions": 65, "scoredQuestions": 50, "passingScore": 720, "scoreRange": [100, 1000], "priceUsd": 150 },
-      "recommendedBefore": ["CLF-C02"],
-      "unlocks": ["SAP-C02", "SCS-C03"],
+      "exam": {
+        "minutes": 130,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 720,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 150
+      },
+      "recommendedBefore": [
+        "CLF-C02"
+      ],
+      "unlocks": [
+        "SAP-C02",
+        "SCS-C03"
+      ],
       "whyNext": {
         "SAP-C02": "Solutions Architect – Professional is the same job at organisational scale: multi-account, multi-region, migration and modernisation.",
         "SCS-C03": "Security – Specialty goes deep on the one domain that already carries the heaviest weighting (30%) on the Associate exam."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Design Secure Architectures", "weight": 30, "tags": ["security", "identity", "encryption", "networking", "compliance"] },
-        { "id": "d2", "number": 2, "name": "Design Resilient Architectures", "weight": 26, "tags": ["resilience", "decoupling", "integration", "storage", "database", "compute"] },
-        { "id": "d3", "number": 3, "name": "Design High-Performing Architectures", "weight": 24, "tags": ["performance", "caching", "compute", "storage", "database", "networking", "analytics", "edge"] },
-        { "id": "d4", "number": 4, "name": "Design Cost-Optimized Architectures", "weight": 20, "tags": ["cost", "storage", "compute", "billing"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Design Secure Architectures",
+          "weight": 30,
+          "tags": [
+            "security",
+            "identity",
+            "encryption",
+            "networking",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Design Resilient Architectures",
+          "weight": 26,
+          "tags": [
+            "resilience",
+            "decoupling",
+            "integration",
+            "storage",
+            "database",
+            "compute"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Design High-Performing Architectures",
+          "weight": 24,
+          "tags": [
+            "performance",
+            "caching",
+            "compute",
+            "storage",
+            "database",
+            "networking",
+            "analytics",
+            "edge"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Design Cost-Optimized Architectures",
+          "weight": 20,
+          "tags": [
+            "cost",
+            "storage",
+            "compute",
+            "billing"
+          ]
+        }
       ],
       "scope": [
-        "ec2", "lambda", "ecs", "eks", "fargate", "elastic-beanstalk", "batch", "auto-scaling", "outposts", "local-zones",
-        "s3", "s3-glacier", "ebs", "efs", "fsx", "storage-gateway", "aws-backup", "snow-family", "datasync",
-        "rds", "aurora", "dynamodb", "elasticache", "redshift", "neptune", "documentdb", "memorydb", "dms", "keyspaces", "timestream",
-        "vpc", "route53", "cloudfront", "elb", "api-gateway", "direct-connect", "site-to-site-vpn", "transit-gateway", "global-accelerator", "privatelink", "nat-gateway", "network-firewall", "vpc-endpoints",
-        "iam", "iam-identity-center", "organizations", "cognito", "kms", "cloudhsm", "secrets-manager", "acm", "waf", "shield", "guardduty", "inspector", "macie", "security-hub", "detective", "resource-access-manager",
-        "cloudwatch", "cloudtrail", "config", "cloudformation", "systems-manager", "trusted-advisor", "control-tower", "service-catalog", "compute-optimizer", "well-architected-tool",
-        "cost-explorer", "budgets", "cost-and-usage-report", "pricing-calculator",
-        "sqs", "sns", "eventbridge", "step-functions", "appsync", "amazon-mq", "amplify",
-        "kinesis-data-streams", "firehose", "athena", "glue", "emr", "quicksight", "opensearch", "lake-formation", "msk",
-        "migration-hub", "application-migration-service",
-        "codepipeline", "codebuild", "codedeploy", "x-ray", "cdk", "cli", "sdk"
-      ]
+        "ec2",
+        "lambda",
+        "ecs",
+        "eks",
+        "fargate",
+        "elastic-beanstalk",
+        "batch",
+        "auto-scaling",
+        "outposts",
+        "local-zones",
+        "s3",
+        "s3-glacier",
+        "ebs",
+        "efs",
+        "fsx",
+        "storage-gateway",
+        "aws-backup",
+        "snow-family",
+        "datasync",
+        "rds",
+        "aurora",
+        "dynamodb",
+        "elasticache",
+        "redshift",
+        "neptune",
+        "documentdb",
+        "memorydb",
+        "dms",
+        "keyspaces",
+        "timestream",
+        "vpc",
+        "route53",
+        "cloudfront",
+        "elb",
+        "api-gateway",
+        "direct-connect",
+        "site-to-site-vpn",
+        "transit-gateway",
+        "global-accelerator",
+        "privatelink",
+        "nat-gateway",
+        "network-firewall",
+        "vpc-endpoints",
+        "iam",
+        "iam-identity-center",
+        "organizations",
+        "cognito",
+        "kms",
+        "cloudhsm",
+        "secrets-manager",
+        "acm",
+        "waf",
+        "shield",
+        "guardduty",
+        "inspector",
+        "macie",
+        "security-hub",
+        "detective",
+        "resource-access-manager",
+        "cloudwatch",
+        "cloudtrail",
+        "config",
+        "cloudformation",
+        "systems-manager",
+        "trusted-advisor",
+        "control-tower",
+        "service-catalog",
+        "compute-optimizer",
+        "well-architected-tool",
+        "cost-explorer",
+        "budgets",
+        "cost-and-usage-report",
+        "pricing-calculator",
+        "sqs",
+        "sns",
+        "eventbridge",
+        "step-functions",
+        "appsync",
+        "amazon-mq",
+        "amplify",
+        "kinesis-data-streams",
+        "firehose",
+        "athena",
+        "glue",
+        "emr",
+        "quicksight",
+        "opensearch",
+        "lake-formation",
+        "msk",
+        "migration-hub",
+        "application-migration-service",
+        "codepipeline",
+        "codebuild",
+        "codedeploy",
+        "x-ray",
+        "cdk",
+        "cli",
+        "sdk"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/watch?v=c3Cn4xYfxJY",
+        "videoTitle": "AWS Solutions Architect Associate Certification (SAA-C03) – Full Course to PASS the Exam",
+        "videoChannel": "freeCodeCamp.org",
+        "videoIsSearchFallback": false
+      }
     },
     {
       "code": "DVA-C02",
@@ -131,19 +555,109 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html",
       "tagline": "Develop, package, deploy and debug AWS Cloud applications with CI/CD workflows.",
       "targetCandidate": "1 or more years of hands-on experience developing and maintaining applications with AWS services.",
-      "exam": { "minutes": 130, "questions": 65, "scoredQuestions": 50, "passingScore": 720, "scoreRange": [100, 1000], "priceUsd": 150 },
-      "recommendedBefore": ["CLF-C02"],
-      "unlocks": ["DOP-C02"],
+      "exam": {
+        "minutes": 130,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 720,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 150
+      },
+      "recommendedBefore": [
+        "CLF-C02"
+      ],
+      "unlocks": [
+        "DOP-C02"
+      ],
       "whyNext": {
         "DOP-C02": "DevOps Engineer – Professional extends the CI/CD and deployment material into pipeline design, IaC at scale and incident response."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Development with AWS Services", "weight": 32, "tags": ["compute", "integration", "database", "developer-tools"] },
-        { "id": "d2", "number": 2, "name": "Security", "weight": 26, "tags": ["security", "identity", "encryption"] },
-        { "id": "d3", "number": 3, "name": "Deployment", "weight": 24, "tags": ["developer-tools", "management", "compute"] },
-        { "id": "d4", "number": 4, "name": "Troubleshooting and Optimization", "weight": 18, "tags": ["management", "performance", "caching"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Development with AWS Services",
+          "weight": 32,
+          "tags": [
+            "compute",
+            "integration",
+            "database",
+            "developer-tools"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Security",
+          "weight": 26,
+          "tags": [
+            "security",
+            "identity",
+            "encryption"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Deployment",
+          "weight": 24,
+          "tags": [
+            "developer-tools",
+            "management",
+            "compute"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Troubleshooting and Optimization",
+          "weight": 18,
+          "tags": [
+            "management",
+            "performance",
+            "caching"
+          ]
+        }
       ],
-      "scope": ["lambda", "api-gateway", "dynamodb", "s3", "sqs", "sns", "eventbridge", "step-functions", "appsync", "ecs", "fargate", "elastic-beanstalk", "cognito", "iam", "kms", "secrets-manager", "cloudwatch", "x-ray", "cloudformation", "cdk", "codepipeline", "codebuild", "codedeploy", "elasticache", "cli", "sdk", "amplify"]
+      "scope": [
+        "lambda",
+        "api-gateway",
+        "dynamodb",
+        "s3",
+        "sqs",
+        "sns",
+        "eventbridge",
+        "step-functions",
+        "appsync",
+        "ecs",
+        "fargate",
+        "elastic-beanstalk",
+        "cognito",
+        "iam",
+        "kms",
+        "secrets-manager",
+        "cloudwatch",
+        "x-ray",
+        "cloudformation",
+        "cdk",
+        "codepipeline",
+        "codebuild",
+        "codedeploy",
+        "elasticache",
+        "cli",
+        "sdk",
+        "amplify"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Developer%20%E2%80%93%20Associate%20full%20course%20DVA-C02",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "SOA-C03",
@@ -155,22 +669,127 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/sysops-administrator-associate-03/sysops-administrator-associate-03.html",
       "tagline": "Deploy, manage and operate workloads on AWS. Renamed from SysOps Administrator – Associate.",
       "targetCandidate": "1 year of deployment, management, troubleshooting, networking and security experience on AWS.",
-      "exam": { "minutes": 130, "questions": 65, "scoredQuestions": 50, "passingScore": 720, "scoreRange": [100, 1000], "priceUsd": 150 },
+      "exam": {
+        "minutes": 130,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 720,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 150
+      },
       "formerName": "AWS Certified SysOps Administrator – Associate (SOA-C02)",
-      "recommendedBefore": ["CLF-C02"],
-      "unlocks": ["DOP-C02", "SCS-C03"],
+      "recommendedBefore": [
+        "CLF-C02"
+      ],
+      "unlocks": [
+        "DOP-C02",
+        "SCS-C03"
+      ],
       "whyNext": {
         "DOP-C02": "DevOps Engineer – Professional is the natural step up from day-two operations into automated delivery and self-healing systems.",
         "SCS-C03": "Security – Specialty deepens the detection, incident-response and compliance work CloudOps already touches."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization", "weight": 22, "tags": ["management", "performance"] },
-        { "id": "d2", "number": 2, "name": "Reliability and Business Continuity", "weight": 22, "tags": ["resilience", "storage", "database"] },
-        { "id": "d3", "number": 3, "name": "Deployment, Provisioning, and Automation", "weight": 22, "tags": ["management", "compute", "developer-tools"] },
-        { "id": "d4", "number": 4, "name": "Security and Compliance", "weight": 16, "tags": ["security", "identity", "encryption", "compliance"] },
-        { "id": "d5", "number": 5, "name": "Networking and Content Delivery", "weight": 18, "tags": ["networking", "edge"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+          "weight": 22,
+          "tags": [
+            "management",
+            "performance"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Reliability and Business Continuity",
+          "weight": 22,
+          "tags": [
+            "resilience",
+            "storage",
+            "database"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Deployment, Provisioning, and Automation",
+          "weight": 22,
+          "tags": [
+            "management",
+            "compute",
+            "developer-tools"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Security and Compliance",
+          "weight": 16,
+          "tags": [
+            "security",
+            "identity",
+            "encryption",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d5",
+          "number": 5,
+          "name": "Networking and Content Delivery",
+          "weight": 18,
+          "tags": [
+            "networking",
+            "edge"
+          ]
+        }
       ],
-      "scope": ["ec2", "auto-scaling", "elb", "ebs", "s3", "efs", "aws-backup", "rds", "dynamodb", "vpc", "route53", "cloudfront", "nat-gateway", "vpc-endpoints", "direct-connect", "site-to-site-vpn", "transit-gateway", "cloudwatch", "cloudtrail", "config", "cloudformation", "systems-manager", "trusted-advisor", "organizations", "iam", "kms", "guardduty", "inspector", "security-hub", "cost-explorer", "budgets", "health-dashboard", "license-manager"]
+      "scope": [
+        "ec2",
+        "auto-scaling",
+        "elb",
+        "ebs",
+        "s3",
+        "efs",
+        "aws-backup",
+        "rds",
+        "dynamodb",
+        "vpc",
+        "route53",
+        "cloudfront",
+        "nat-gateway",
+        "vpc-endpoints",
+        "direct-connect",
+        "site-to-site-vpn",
+        "transit-gateway",
+        "cloudwatch",
+        "cloudtrail",
+        "config",
+        "cloudformation",
+        "systems-manager",
+        "trusted-advisor",
+        "organizations",
+        "iam",
+        "kms",
+        "guardduty",
+        "inspector",
+        "security-hub",
+        "cost-explorer",
+        "budgets",
+        "health-dashboard",
+        "license-manager"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20CloudOps%20Engineer%20%E2%80%93%20Associate%20full%20course%20SOA-C03",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "DEA-C01",
@@ -182,19 +801,108 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html",
       "tagline": "Implement data pipelines, then monitor, troubleshoot and optimise their cost and performance.",
       "targetCandidate": "2–3 years of data engineering experience plus 1–2 years hands-on with AWS services.",
-      "exam": { "minutes": 130, "questions": 65, "scoredQuestions": 50, "passingScore": 720, "scoreRange": [100, 1000], "priceUsd": 150 },
-      "recommendedBefore": ["CLF-C02"],
-      "unlocks": ["MLA-C01"],
+      "exam": {
+        "minutes": 130,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 720,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 150
+      },
+      "recommendedBefore": [
+        "CLF-C02"
+      ],
+      "unlocks": [
+        "MLA-C01"
+      ],
       "whyNext": {
         "MLA-C01": "ML Engineer – Associate starts where Data Engineer stops: the same pipelines, now feeding model training and inference."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Data Ingestion and Transformation", "weight": 34, "tags": ["analytics", "integration"] },
-        { "id": "d2", "number": 2, "name": "Data Store Management", "weight": 26, "tags": ["storage", "database", "analytics"] },
-        { "id": "d3", "number": 3, "name": "Data Operations and Support", "weight": 22, "tags": ["management", "analytics", "performance"] },
-        { "id": "d4", "number": 4, "name": "Data Security and Governance", "weight": 18, "tags": ["security", "identity", "encryption", "compliance"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Data Ingestion and Transformation",
+          "weight": 34,
+          "tags": [
+            "analytics",
+            "integration"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Data Store Management",
+          "weight": 26,
+          "tags": [
+            "storage",
+            "database",
+            "analytics"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Data Operations and Support",
+          "weight": 22,
+          "tags": [
+            "management",
+            "analytics",
+            "performance"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Data Security and Governance",
+          "weight": 18,
+          "tags": [
+            "security",
+            "identity",
+            "encryption",
+            "compliance"
+          ]
+        }
       ],
-      "scope": ["s3", "s3-glacier", "glue", "athena", "emr", "redshift", "kinesis-data-streams", "firehose", "msk", "lake-formation", "opensearch", "quicksight", "dynamodb", "rds", "aurora", "dms", "datasync", "step-functions", "eventbridge", "lambda", "iam", "kms", "macie", "cloudwatch", "cloudtrail", "sqs", "sns"]
+      "scope": [
+        "s3",
+        "s3-glacier",
+        "glue",
+        "athena",
+        "emr",
+        "redshift",
+        "kinesis-data-streams",
+        "firehose",
+        "msk",
+        "lake-formation",
+        "opensearch",
+        "quicksight",
+        "dynamodb",
+        "rds",
+        "aurora",
+        "dms",
+        "datasync",
+        "step-functions",
+        "eventbridge",
+        "lambda",
+        "iam",
+        "kms",
+        "macie",
+        "cloudwatch",
+        "cloudtrail",
+        "sqs",
+        "sns"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Data%20Engineer%20%E2%80%93%20Associate%20full%20course%20DEA-C01",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "MLA-C01",
@@ -206,20 +914,105 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-01/machine-learning-engineer-associate-01.html",
       "tagline": "Build, operationalise, deploy and maintain ML solutions and pipelines on AWS.",
       "targetCandidate": "At least 1 year with Amazon SageMaker and other ML engineering AWS services.",
-      "exam": { "minutes": 130, "questions": 65, "scoredQuestions": 50, "passingScore": 720, "scoreRange": [100, 1000], "priceUsd": 150 },
+      "exam": {
+        "minutes": 130,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 720,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 150
+      },
       "note": "AWS has announced MLA-C02; registration opens 2026-09-01 and the MLA-C01 English exam is available through 2026-09-28. Re-check the exam guide before booking.",
-      "recommendedBefore": ["AIF-C01", "DEA-C01"],
-      "unlocks": ["AIP-C01"],
+      "recommendedBefore": [
+        "AIF-C01",
+        "DEA-C01"
+      ],
+      "unlocks": [
+        "AIP-C01"
+      ],
       "whyNext": {
         "AIP-C01": "Generative AI Developer – Professional is the professional-tier continuation of the AI/ML path, focused on foundation models rather than training your own."
       },
       "domains": [
-        { "id": "d1", "number": 1, "name": "Data Preparation for Machine Learning (ML)", "weight": 28, "tags": ["ml", "analytics", "storage"] },
-        { "id": "d2", "number": 2, "name": "ML Model Development", "weight": 26, "tags": ["ml"] },
-        { "id": "d3", "number": 3, "name": "Deployment and Orchestration of ML Workflows", "weight": 22, "tags": ["ml", "compute", "developer-tools"] },
-        { "id": "d4", "number": 4, "name": "ML Solution Monitoring, Maintenance, and Security", "weight": 24, "tags": ["management", "security", "identity", "encryption"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Data Preparation for Machine Learning (ML)",
+          "weight": 28,
+          "tags": [
+            "ml",
+            "analytics",
+            "storage"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "ML Model Development",
+          "weight": 26,
+          "tags": [
+            "ml"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Deployment and Orchestration of ML Workflows",
+          "weight": 22,
+          "tags": [
+            "ml",
+            "compute",
+            "developer-tools"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "ML Solution Monitoring, Maintenance, and Security",
+          "weight": 24,
+          "tags": [
+            "management",
+            "security",
+            "identity",
+            "encryption"
+          ]
+        }
       ],
-      "scope": ["sagemaker", "bedrock", "s3", "glue", "athena", "emr", "kinesis-data-streams", "firehose", "lambda", "step-functions", "eventbridge", "ecs", "fargate", "eks", "cloudwatch", "cloudtrail", "iam", "kms", "codepipeline", "codebuild", "cloudformation", "opensearch", "dynamodb"]
+      "scope": [
+        "sagemaker",
+        "bedrock",
+        "s3",
+        "glue",
+        "athena",
+        "emr",
+        "kinesis-data-streams",
+        "firehose",
+        "lambda",
+        "step-functions",
+        "eventbridge",
+        "ecs",
+        "fargate",
+        "eks",
+        "cloudwatch",
+        "cloudtrail",
+        "iam",
+        "kms",
+        "codepipeline",
+        "codebuild",
+        "cloudformation",
+        "opensearch",
+        "dynamodb"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Machine%20Learning%20Engineer%20%E2%80%93%20Associate%20full%20course%20MLA-C01",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "SAP-C02",
@@ -231,17 +1024,136 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html",
       "tagline": "Design optimised AWS solutions across organisational complexity, migration and modernisation.",
       "targetCandidate": "2 or more years of experience using AWS services to design and implement cloud solutions.",
-      "exam": { "minutes": 180, "questions": 75, "scoredQuestions": 65, "passingScore": 750, "scoreRange": [100, 1000], "priceUsd": 300 },
-      "recommendedBefore": ["SAA-C03"],
+      "exam": {
+        "minutes": 180,
+        "questions": 75,
+        "scoredQuestions": 65,
+        "passingScore": 750,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 300
+      },
+      "recommendedBefore": [
+        "SAA-C03"
+      ],
       "unlocks": [],
       "whyNext": {},
       "domains": [
-        { "id": "d1", "number": 1, "name": "Design Solutions for Organizational Complexity", "weight": 26, "tags": ["management", "identity", "networking", "compliance"] },
-        { "id": "d2", "number": 2, "name": "Design for New Solutions", "weight": 29, "tags": ["resilience", "performance", "security", "compute", "database", "integration"] },
-        { "id": "d3", "number": 3, "name": "Continuous Improvement for Existing Solutions", "weight": 25, "tags": ["performance", "cost", "management", "resilience"] },
-        { "id": "d4", "number": 4, "name": "Accelerate Workload Migration and Modernization", "weight": 20, "tags": ["migration", "decoupling", "compute", "storage"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Design Solutions for Organizational Complexity",
+          "weight": 26,
+          "tags": [
+            "management",
+            "identity",
+            "networking",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Design for New Solutions",
+          "weight": 29,
+          "tags": [
+            "resilience",
+            "performance",
+            "security",
+            "compute",
+            "database",
+            "integration"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Continuous Improvement for Existing Solutions",
+          "weight": 25,
+          "tags": [
+            "performance",
+            "cost",
+            "management",
+            "resilience"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Accelerate Workload Migration and Modernization",
+          "weight": 20,
+          "tags": [
+            "migration",
+            "decoupling",
+            "compute",
+            "storage"
+          ]
+        }
       ],
-      "scope": ["organizations", "control-tower", "iam-identity-center", "resource-access-manager", "transit-gateway", "direct-connect", "privatelink", "route53", "cloudfront", "global-accelerator", "vpc", "ec2", "auto-scaling", "lambda", "ecs", "eks", "fargate", "outposts", "s3", "efs", "fsx", "storage-gateway", "aws-backup", "datasync", "snow-family", "rds", "aurora", "dynamodb", "elasticache", "redshift", "dms", "migration-hub", "application-migration-service", "cloudformation", "service-catalog", "systems-manager", "config", "cloudtrail", "cloudwatch", "kms", "cloudhsm", "waf", "shield", "guardduty", "security-hub", "cost-explorer", "budgets", "compute-optimizer", "sqs", "sns", "eventbridge", "step-functions", "amazon-mq"]
+      "scope": [
+        "organizations",
+        "control-tower",
+        "iam-identity-center",
+        "resource-access-manager",
+        "transit-gateway",
+        "direct-connect",
+        "privatelink",
+        "route53",
+        "cloudfront",
+        "global-accelerator",
+        "vpc",
+        "ec2",
+        "auto-scaling",
+        "lambda",
+        "ecs",
+        "eks",
+        "fargate",
+        "outposts",
+        "s3",
+        "efs",
+        "fsx",
+        "storage-gateway",
+        "aws-backup",
+        "datasync",
+        "snow-family",
+        "rds",
+        "aurora",
+        "dynamodb",
+        "elasticache",
+        "redshift",
+        "dms",
+        "migration-hub",
+        "application-migration-service",
+        "cloudformation",
+        "service-catalog",
+        "systems-manager",
+        "config",
+        "cloudtrail",
+        "cloudwatch",
+        "kms",
+        "cloudhsm",
+        "waf",
+        "shield",
+        "guardduty",
+        "security-hub",
+        "cost-explorer",
+        "budgets",
+        "compute-optimizer",
+        "sqs",
+        "sns",
+        "eventbridge",
+        "step-functions",
+        "amazon-mq"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Solutions%20Architect%20%E2%80%93%20Professional%20full%20course%20SAP-C02",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "DOP-C02",
@@ -253,19 +1165,132 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/devops-engineer-professional-02/devops-engineer-professional-02.html",
       "tagline": "Provision, operate and manage distributed systems on AWS with automated delivery and recovery.",
       "targetCandidate": "2 or more years provisioning, operating and managing AWS environments, plus SDLC and scripting experience.",
-      "exam": { "minutes": 180, "questions": 75, "scoredQuestions": 65, "passingScore": 750, "scoreRange": [100, 1000], "priceUsd": 300 },
-      "recommendedBefore": ["DVA-C02", "SOA-C03"],
+      "exam": {
+        "minutes": 180,
+        "questions": 75,
+        "scoredQuestions": 65,
+        "passingScore": 750,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 300
+      },
+      "recommendedBefore": [
+        "DVA-C02",
+        "SOA-C03"
+      ],
       "unlocks": [],
       "whyNext": {},
       "domains": [
-        { "id": "d1", "number": 1, "name": "SDLC Automation", "weight": 22, "tags": ["developer-tools", "compute"] },
-        { "id": "d2", "number": 2, "name": "Configuration Management and IaC", "weight": 17, "tags": ["management", "developer-tools"] },
-        { "id": "d3", "number": 3, "name": "Resilient Cloud Solutions", "weight": 15, "tags": ["resilience", "decoupling", "networking"] },
-        { "id": "d4", "number": 4, "name": "Monitoring and Logging", "weight": 15, "tags": ["management", "performance"] },
-        { "id": "d5", "number": 5, "name": "Incident and Event Response", "weight": 14, "tags": ["management", "integration", "resilience"] },
-        { "id": "d6", "number": 6, "name": "Security and Compliance", "weight": 17, "tags": ["security", "identity", "encryption", "compliance"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "SDLC Automation",
+          "weight": 22,
+          "tags": [
+            "developer-tools",
+            "compute"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Configuration Management and IaC",
+          "weight": 17,
+          "tags": [
+            "management",
+            "developer-tools"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Resilient Cloud Solutions",
+          "weight": 15,
+          "tags": [
+            "resilience",
+            "decoupling",
+            "networking"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Monitoring and Logging",
+          "weight": 15,
+          "tags": [
+            "management",
+            "performance"
+          ]
+        },
+        {
+          "id": "d5",
+          "number": 5,
+          "name": "Incident and Event Response",
+          "weight": 14,
+          "tags": [
+            "management",
+            "integration",
+            "resilience"
+          ]
+        },
+        {
+          "id": "d6",
+          "number": 6,
+          "name": "Security and Compliance",
+          "weight": 17,
+          "tags": [
+            "security",
+            "identity",
+            "encryption",
+            "compliance"
+          ]
+        }
       ],
-      "scope": ["codepipeline", "codebuild", "codedeploy", "cloudformation", "cdk", "systems-manager", "elastic-beanstalk", "ecs", "eks", "fargate", "lambda", "ec2", "auto-scaling", "elb", "cloudwatch", "cloudtrail", "config", "x-ray", "eventbridge", "sqs", "sns", "step-functions", "organizations", "iam", "kms", "secrets-manager", "guardduty", "security-hub", "inspector", "route53", "s3", "dynamodb", "rds", "service-catalog"]
+      "scope": [
+        "codepipeline",
+        "codebuild",
+        "codedeploy",
+        "cloudformation",
+        "cdk",
+        "systems-manager",
+        "elastic-beanstalk",
+        "ecs",
+        "eks",
+        "fargate",
+        "lambda",
+        "ec2",
+        "auto-scaling",
+        "elb",
+        "cloudwatch",
+        "cloudtrail",
+        "config",
+        "x-ray",
+        "eventbridge",
+        "sqs",
+        "sns",
+        "step-functions",
+        "organizations",
+        "iam",
+        "kms",
+        "secrets-manager",
+        "guardduty",
+        "security-hub",
+        "inspector",
+        "route53",
+        "s3",
+        "dynamodb",
+        "rds",
+        "service-catalog"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20DevOps%20Engineer%20%E2%80%93%20Professional%20full%20course%20DOP-C02",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "AIP-C01",
@@ -277,19 +1302,113 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html",
       "tagline": "Integrate foundation models into production applications, agents and business workflows.",
       "targetCandidate": "2+ years building production applications, plus 1 year hands-on implementing GenAI solutions.",
-      "exam": { "minutes": null, "questions": 75, "scoredQuestions": 65, "passingScore": 750, "scoreRange": [100, 1000], "priceUsd": null },
+      "exam": {
+        "minutes": null,
+        "questions": 75,
+        "scoredQuestions": 65,
+        "passingScore": 750,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": null
+      },
       "note": "Duration and price were not published on the pages read on 2026-08-18 — check the official exam page before booking.",
-      "recommendedBefore": ["AIF-C01", "MLA-C01"],
+      "recommendedBefore": [
+        "AIF-C01",
+        "MLA-C01"
+      ],
       "unlocks": [],
       "whyNext": {},
       "domains": [
-        { "id": "d1", "number": 1, "name": "Foundation Model Integration, Data Management, and Compliance", "weight": 31, "tags": ["genai", "ml", "storage", "compliance"] },
-        { "id": "d2", "number": 2, "name": "Implementation and Integration", "weight": 26, "tags": ["genai", "integration", "compute"] },
-        { "id": "d3", "number": 3, "name": "AI Safety, Security, and Governance", "weight": 20, "tags": ["genai", "security", "identity", "compliance"] },
-        { "id": "d4", "number": 4, "name": "Operational Efficiency and Optimization for GenAI Applications", "weight": 12, "tags": ["performance", "cost", "management"] },
-        { "id": "d5", "number": 5, "name": "Testing, Validation, and Troubleshooting", "weight": 11, "tags": ["management", "genai"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Foundation Model Integration, Data Management, and Compliance",
+          "weight": 31,
+          "tags": [
+            "genai",
+            "ml",
+            "storage",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Implementation and Integration",
+          "weight": 26,
+          "tags": [
+            "genai",
+            "integration",
+            "compute"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "AI Safety, Security, and Governance",
+          "weight": 20,
+          "tags": [
+            "genai",
+            "security",
+            "identity",
+            "compliance"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Operational Efficiency and Optimization for GenAI Applications",
+          "weight": 12,
+          "tags": [
+            "performance",
+            "cost",
+            "management"
+          ]
+        },
+        {
+          "id": "d5",
+          "number": 5,
+          "name": "Testing, Validation, and Troubleshooting",
+          "weight": 11,
+          "tags": [
+            "management",
+            "genai"
+          ]
+        }
       ],
-      "scope": ["bedrock", "sagemaker", "opensearch", "aurora", "s3", "lambda", "step-functions", "api-gateway", "ecs", "fargate", "dynamodb", "kendra", "amazon-q", "iam", "kms", "secrets-manager", "cloudwatch", "cloudtrail", "guardduty", "macie", "cost-explorer", "glue"]
+      "scope": [
+        "bedrock",
+        "sagemaker",
+        "opensearch",
+        "aurora",
+        "s3",
+        "lambda",
+        "step-functions",
+        "api-gateway",
+        "ecs",
+        "fargate",
+        "dynamodb",
+        "kendra",
+        "amazon-q",
+        "iam",
+        "kms",
+        "secrets-manager",
+        "cloudwatch",
+        "cloudtrail",
+        "guardduty",
+        "macie",
+        "cost-explorer",
+        "glue"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Generative%20AI%20Developer%20%E2%80%93%20Professional%20full%20course%20AIP-C01",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     },
     {
       "code": "SCS-C03",
@@ -301,26 +1420,160 @@
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/security-specialty-03/security-specialty-03.html",
       "tagline": "Detect, respond to and prevent security issues across AWS accounts, data and infrastructure.",
       "targetCandidate": "The equivalent of 3–5 years of experience securing cloud solutions.",
-      "exam": { "minutes": 170, "questions": 65, "scoredQuestions": 50, "passingScore": 750, "scoreRange": [100, 1000], "priceUsd": 300 },
+      "exam": {
+        "minutes": 170,
+        "questions": 65,
+        "scoredQuestions": 50,
+        "passingScore": 750,
+        "scoreRange": [
+          100,
+          1000
+        ],
+        "priceUsd": 300
+      },
       "note": "SCS-C03 replaced SCS-C02 in December 2025. Domain 6 is now 'Security Foundations and Governance'.",
-      "recommendedBefore": ["SAA-C03", "SOA-C03"],
+      "recommendedBefore": [
+        "SAA-C03",
+        "SOA-C03"
+      ],
       "unlocks": [],
       "whyNext": {},
       "domains": [
-        { "id": "d1", "number": 1, "name": "Detection", "weight": 16, "tags": ["security", "management"] },
-        { "id": "d2", "number": 2, "name": "Incident Response", "weight": 14, "tags": ["security", "resilience", "management"] },
-        { "id": "d3", "number": 3, "name": "Infrastructure Security", "weight": 18, "tags": ["security", "networking", "edge"] },
-        { "id": "d4", "number": 4, "name": "Identity and Access Management", "weight": 20, "tags": ["identity", "security"] },
-        { "id": "d5", "number": 5, "name": "Data Protection", "weight": 18, "tags": ["encryption", "storage", "security"] },
-        { "id": "d6", "number": 6, "name": "Security Foundations and Governance", "weight": 14, "tags": ["compliance", "management", "security"] }
+        {
+          "id": "d1",
+          "number": 1,
+          "name": "Detection",
+          "weight": 16,
+          "tags": [
+            "security",
+            "management"
+          ]
+        },
+        {
+          "id": "d2",
+          "number": 2,
+          "name": "Incident Response",
+          "weight": 14,
+          "tags": [
+            "security",
+            "resilience",
+            "management"
+          ]
+        },
+        {
+          "id": "d3",
+          "number": 3,
+          "name": "Infrastructure Security",
+          "weight": 18,
+          "tags": [
+            "security",
+            "networking",
+            "edge"
+          ]
+        },
+        {
+          "id": "d4",
+          "number": 4,
+          "name": "Identity and Access Management",
+          "weight": 20,
+          "tags": [
+            "identity",
+            "security"
+          ]
+        },
+        {
+          "id": "d5",
+          "number": 5,
+          "name": "Data Protection",
+          "weight": 18,
+          "tags": [
+            "encryption",
+            "storage",
+            "security"
+          ]
+        },
+        {
+          "id": "d6",
+          "number": 6,
+          "name": "Security Foundations and Governance",
+          "weight": 14,
+          "tags": [
+            "compliance",
+            "management",
+            "security"
+          ]
+        }
       ],
-      "scope": ["iam", "iam-identity-center", "organizations", "control-tower", "cognito", "kms", "cloudhsm", "secrets-manager", "acm", "waf", "shield", "network-firewall", "guardduty", "inspector", "macie", "security-hub", "detective", "artifact", "config", "cloudtrail", "cloudwatch", "systems-manager", "vpc", "vpc-endpoints", "privatelink", "route53", "cloudfront", "s3", "ebs", "rds", "aws-backup", "resource-access-manager", "lambda", "eventbridge", "step-functions"]
+      "scope": [
+        "iam",
+        "iam-identity-center",
+        "organizations",
+        "control-tower",
+        "cognito",
+        "kms",
+        "cloudhsm",
+        "secrets-manager",
+        "acm",
+        "waf",
+        "shield",
+        "network-firewall",
+        "guardduty",
+        "inspector",
+        "macie",
+        "security-hub",
+        "detective",
+        "artifact",
+        "config",
+        "cloudtrail",
+        "cloudwatch",
+        "systems-manager",
+        "vpc",
+        "vpc-endpoints",
+        "privatelink",
+        "route53",
+        "cloudfront",
+        "s3",
+        "ebs",
+        "rds",
+        "aws-backup",
+        "resource-access-manager",
+        "lambda",
+        "eventbridge",
+        "step-functions"
+      ],
+      "startHereVideo": {
+        "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Security%20%E2%80%93%20Specialty%20full%20course%20SCS-C03",
+        "videoTitle": null,
+        "videoChannel": null,
+        "videoIsSearchFallback": true
+      },
+      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
     }
   ],
   "retired": [
-    { "code": "ANS-C01", "name": "AWS Certified Advanced Networking – Specialty", "status": "Final exam date 2026-08-25. Omitted from this roadmap by choice — existing credentials stay valid for three years." },
-    { "code": "MLS-C01", "name": "AWS Certified Machine Learning – Specialty", "status": "Retired 2026-03-31. Replaced in the AI path by MLA-C01 and AIP-C01." },
-    { "code": "SOA-C02", "name": "AWS Certified SysOps Administrator – Associate", "status": "Renamed and replaced by AWS Certified CloudOps Engineer – Associate (SOA-C03)." },
-    { "code": "SCS-C02", "name": "AWS Certified Security – Specialty (C02)", "status": "Retired 2025-12-01. Replaced by SCS-C03." }
-  ]
+    {
+      "code": "ANS-C01",
+      "name": "AWS Certified Advanced Networking – Specialty",
+      "status": "Final exam date 2026-08-25. Omitted from this roadmap by choice — existing credentials stay valid for three years."
+    },
+    {
+      "code": "MLS-C01",
+      "name": "AWS Certified Machine Learning – Specialty",
+      "status": "Retired 2026-03-31. Replaced in the AI path by MLA-C01 and AIP-C01."
+    },
+    {
+      "code": "SOA-C02",
+      "name": "AWS Certified SysOps Administrator – Associate",
+      "status": "Renamed and replaced by AWS Certified CloudOps Engineer – Associate (SOA-C03)."
+    },
+    {
+      "code": "SCS-C02",
+      "name": "AWS Certified Security – Specialty (C02)",
+      "status": "Retired 2025-12-01. Replaced by SCS-C03."
+    }
+  ],
+  "beginnerLayer": {
+    "note": "Per-certification 'start here' videos. Entries with videoIsSearchFallback:false had their channel and title confirmed via YouTube's oEmbed endpoint before being written. Never add an unverified videoUrl — use a search link instead.",
+    "verifiedOn": "2026-08-18"
+  }
 }

@@ -1,6 +1,7 @@
 import { icon } from '../icons.js';
 import { buildHash } from '../router.js';
 import { recordAnswer } from '../store.js';
+import { beginnerBlock, gotchaBlock } from '../learn.js';
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -89,19 +90,13 @@ export function mount(ctx, root) {
             <p class="flash-hint">Tap or press Space to reveal</p>
           </div>
           <div class="flash-face back">
+            ${beginnerBlock(e)}
+            <hr class="flash-divider">
             <p class="flash-purpose">${esc(cap(e.name + ' ' + e.purpose))}.</p>
             ${e.useCases?.length
               ? `<div class="flash-block"><h4>Typical use</h4><ul>${e.useCases.map((u) => `<li>${esc(cap(u))}</li>`).join('')}</ul></div>`
               : ''}
-            ${e.facts?.length
-              ? `<div class="flash-block"><h4>Gotchas worth remembering</h4><ul>${e.facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul></div>`
-              : ''}
-            ${e.myths?.length
-              ? `<div class="flash-block myths"><h4>Commonly confused</h4><ul>${e.myths.map((m) => `<li>${esc(m)}</li>`).join('')}</ul></div>`
-              : ''}
-            ${e.pricing?.length
-              ? `<div class="flash-block"><h4>Billed on</h4><p>${esc(e.pricing.join(' · '))}</p></div>`
-              : ''}
+            ${gotchaBlock(e)}
           </div>
         </div>
       </div>

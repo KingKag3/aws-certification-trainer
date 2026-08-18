@@ -10,6 +10,7 @@ import * as quizView from './views/quiz.js';
 import * as flashcardsView from './views/flashcards.js';
 import * as profileView from './views/profile.js';
 import * as membersView from './views/members.js';
+import * as conceptsView from './views/concepts.js';
 import { avatar } from './views/members.js';
 
 const DATA_FILES = ['services.json', 'certifications.json', 'templates.json'];
@@ -79,6 +80,7 @@ function routeToView(route) {
   if (first === 'cert' && code) {
     if (sub === 'quiz') return { view: quizView, params: { code, sub } };
     if (sub === 'flashcards') return { view: flashcardsView, params: { code, sub } };
+    if (sub === 'concepts') return { view: conceptsView, params: { code, sub } };
     return { view: certView, params: { code } };
   }
   return { view: roadmapView, params: {} };

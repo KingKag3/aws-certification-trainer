@@ -8,6 +8,63 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.3.0] — 2026-08-18
+
+A teaching layer. The app previously only tested knowledge; it now explains each topic the first
+time someone meets it, assuming no cloud background at all.
+
+### Added — content
+
+- **`beginner` field on all 138 entries** (115 services, 23 concepts) in `services.json`: a two-to-four
+  sentence plain-English explanation built around an everyday analogy, with no jargon. Deliberately
+  separate from `facts`, which remain the deeper follow-up layer.
+- **Video fields on every entry**: `videoUrl`, `videoTitle`, `videoChannel`, `videoIsSearchFallback`.
+- **Per-certification `startHereVideo`** for a full free course.
+- `beginnerLayer` metadata block in both data files recording the verification rule and date.
+- `beginnerLayerTodo` on all nine stub certifications, noting that they currently share the CLF/SAA
+  explanations and still need their own pass.
+
+### Added — UI
+
+- **Concepts page** (`views/concepts.js`, `#/cert/<code>/concepts`): a glossary readable start to
+  finish, grouped by the exam's real domains and then by service category, with a sticky domain
+  contents bar and a "drill this domain" link per section. Linked as the first study mode from each
+  certification dashboard.
+- **Flashcards**: the beginner explanation and video link now sit at the top of the card back, above
+  a divider, with the technical gotchas below.
+- **Quiz answer screens**: a collapsed-by-default "Explain this like I'm new" section.
+- `learn.js` — shared rendering so all three surfaces present the layer identically.
+
+### Video verification — and why it was not skipped
+
+Videos come only from four channels: Amazon Web Services, freeCodeCamp.org, Stephane Maarek and
+ExamPro. **Every specific video URL had its channel and title confirmed via YouTube's oEmbed endpoint
+before being written to the data.** 27 entries carry a verified video; the remaining 111 carry a
+labelled YouTube search link and are styled differently.
+
+This was not ceremony. The first candidate a web search returned for "Stephane Maarek S3" was
+`Ns3KyQnSeVQ`, which on verification proved to be published by "Learn With Udemy Course" — a
+re-upload on an untrusted channel — and covered **CLF-C01**, the retired exam version. Two further
+candidates were rejected the same way. Note also that `WebFetch` cannot verify YouTube at all (the
+page is JS-rendered and returns only the footer), so verification has to happen in a real browser.
+
+One video was rejected for accuracy rather than provenance: AWS's own "The Five Pillars of the AWS
+Well-Architected Framework" contradicts the app's own content, which correctly says six — Sustainability
+was added in 2021. That entry uses a search link instead.
+
+The seeded course video for Cloud Practitioner was also changed. The originally supplied
+`3hLmDS179YE` verified as genuine freeCodeCamp, but is the **2020** course, i.e. CLF-C01 era. It was
+replaced with `NhDYbskXRgc`, freeCodeCamp's CLF-C02 course, verified the same way. The SAA-C03 seed
+`c3Cn4xYfxJY` verified correctly and was kept.
+
+### Fixed
+
+- Concepts page overflowed horizontally at 375 px: the non-wrapping video title forced the grid track
+  wider than the viewport. Fixed with `minmax(0, 1fr)` tracks, `min-width: 0` on the entry, and
+  ellipsis on the video subtitle.
+
+---
+
 ## [0.2.0] — 2026-08-18
 
 Members and a leaderboard. Several people can now share one browser, each keeping their own
@@ -163,5 +220,6 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.3.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.3.0
 [0.2.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.2.0
 [0.1.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.1.0

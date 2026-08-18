@@ -68,6 +68,10 @@ export function render(ctx) {
     <section class="modes">
       <h3>Study modes</h3>
       <div class="mode-grid">
+        <a class="mode-card learn-first" href="${buildHash(['cert', cert.code, 'concepts'])}">
+          ${icon('book', { size: 22 })}<strong>Concepts</strong>
+          <span>New to all this? Every topic in plain English, grouped by exam domain. Read before you quiz.</span>
+        </a>
         <a class="mode-card" href="${buildHash(['cert', cert.code, 'quiz'], { n: 10 })}">
           ${icon('target', { size: 22 })}<strong>Quiz</strong>
           <span>10 fresh questions, weighted to match the real domain split.</span>

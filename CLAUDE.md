@@ -54,6 +54,22 @@ price are `null` for exactly this reason.
 - `myths` entries must be `false claim` + ` — ` (space em-dash space) + `correction`. The generator
   splits on that em dash to build both the question and its explanation. A malformed entry produces
   a broken question.
+- `beginner` is the zero-knowledge explanation: 2–4 sentences, everyday analogy, no jargon. It is a
+  separate layer from `facts` — do not merge them.
+
+**Never write a `videoUrl` you have not verified.** A fabricated or mis-attributed YouTube link is
+worse than no link. Videos come only from Amazon Web Services, freeCodeCamp.org, Stephane Maarek and
+ExamPro, and both the channel and title must be confirmed first:
+
+```js
+// on a youtube.com tab — returns real title + author_name, 400s on a bad id
+fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=ID&format=json').then(r => r.json())
+```
+
+`WebFetch` cannot verify YouTube — the page is JS-rendered and returns only the footer, so use a real
+browser. Search results are not proof of attribution: a candidate presented as a Stephane Maarek
+video turned out to be a re-upload on an unrelated channel covering a retired exam version. With no
+confirmed match, set `videoIsSearchFallback: true` and use a YouTube search link.
 
 **`generator.js` and `progression.js` stay pure.** No DOM, no `fetch`, no storage access. The Node
 test depends on this.

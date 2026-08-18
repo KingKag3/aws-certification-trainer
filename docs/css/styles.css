@@ -545,7 +545,7 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .flashcard { perspective: 1400px; cursor: pointer; }
 .flash-inner {
   position: relative; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.2, .8, .2, 1);
-  min-height: 300px;
+  min-height: 400px;
 }
 .flashcard.flipped .flash-inner { transform: rotateY(180deg); }
 .flash-face {
@@ -613,6 +613,110 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .ring-cell .ring-center { height: 96px; }
 .ring-cell .ring-center strong { font-size: 1.25rem; }
 .ring-cell .ring-caption { font-size: .58rem; }
+
+/* ---- Beginner ("explain like I'm new") layer -------------------------- */
+.beginner-block {
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: .8rem .9rem;
+  margin-bottom: .9rem;
+}
+.beginner-block h4 {
+  display: flex; align-items: center; gap: .35rem; margin-bottom: .35rem;
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-ink);
+}
+.beginner-block p { margin: 0 0 .55rem; font-size: .93rem; line-height: 1.6; }
+.beginner-block p:last-child { margin-bottom: 0; }
+
+.beginner-details {
+  margin-top: .8rem; border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+.beginner-details summary {
+  cursor: pointer; padding: .55rem .75rem; font-size: .86rem; font-weight: 600;
+  display: flex; align-items: center; gap: .4rem; color: var(--accent-ink); list-style: none;
+}
+.beginner-details summary::-webkit-details-marker { display: none; }
+.beginner-details summary::after { content: "▾"; margin-left: auto; transition: transform .2s ease; }
+.beginner-details[open] summary::after { transform: rotate(180deg); }
+.beginner-details-body { padding: 0 .75rem .75rem; }
+.beginner-details-body p { margin: 0 0 .55rem; font-size: .9rem; line-height: 1.6; }
+
+.video-link {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .5rem .65rem; border-radius: var(--radius-sm);
+  background: var(--surface); border: 1px solid var(--border-strong);
+  color: var(--text); font-size: .85rem; text-decoration: none;
+  transition: border-color .15s ease, background .15s ease;
+}
+.video-link:hover { text-decoration: none; border-color: var(--accent); background: var(--surface-2); }
+.video-link > .icon:first-child { color: var(--bad); flex: none; }
+.video-link.fallback > .icon:first-child { color: var(--text-faint); }
+.video-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.video-text strong { font-weight: 600; font-size: .86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.video-sub { font-size: .72rem; color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.video-ext { color: var(--text-faint); flex: none; }
+.video-link.fallback { border-style: dashed; }
+
+.gotcha-layer.collapsed { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
+.gotcha-layer.collapsed > summary {
+  cursor: pointer; padding: .5rem .7rem; font-size: .82rem; font-weight: 600; color: var(--text-muted);
+}
+.gotcha-layer.collapsed > .flash-block { padding: 0 .7rem; }
+.gotcha-layer.collapsed > .flash-block:last-child { padding-bottom: .7rem; }
+
+.flash-divider { border: 0; border-top: 1px dashed var(--border); margin: 0 0 .9rem; }
+.mode-card.learn-first { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+
+/* ---- Concepts page ---------------------------------------------------- */
+.start-here .video-link { max-width: 520px; }
+.concept-toc {
+  display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.5rem;
+  position: sticky; top: 52px; z-index: 5;
+  background: var(--bg); padding: .5rem 0;
+}
+.concept-toc a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .35rem .65rem; border-radius: 999px; font-size: .82rem;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+}
+.concept-toc a:hover { text-decoration: none; border-color: var(--accent); }
+.toc-num { font-family: var(--mono); font-size: .72rem; color: var(--text-faint); }
+.toc-count { font-size: .7rem; color: var(--text-faint); background: var(--surface-2); border-radius: 999px; padding: 0 .35rem; }
+
+.concept-domain { margin-bottom: 2.25rem; scroll-margin-top: 110px; }
+.concept-domain-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
+  padding-bottom: .5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--accent);
+}
+.concept-domain-head h3 { margin: 0; flex: 1; min-width: 200px; }
+.concept-section { margin-bottom: 1.5rem; }
+.concept-section-head {
+  display: flex; align-items: center; gap: .45rem; margin-bottom: .7rem;
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted);
+}
+.concept-section-head .icon { color: var(--accent); }
+.concept-section-head span {
+  font-size: .7rem; background: var(--surface-2); border-radius: 999px;
+  padding: 0 .4rem; letter-spacing: 0; color: var(--text-faint);
+}
+/* minmax(0,…) and min-width:0 stop the nowrap video title forcing the grid
+   track wider than the viewport. */
+.concept-list { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+.concept-entry {
+  min-width: 0;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); scroll-margin-top: 110px;
+}
+.concept-entry > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem; margin-bottom: .7rem; }
+.concept-entry h4 { margin: 0; font-size: 1.05rem; }
+.concept-cat {
+  display: inline-flex; align-items: center; gap: .3rem; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint);
+}
 
 /* ---- Members and leaderboard ----------------------------------------- */
 .avatar {
@@ -738,6 +842,8 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
     gap: .1rem .8rem;
   }
   .lb-bar { margin-top: 0; }
+  .concept-list { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+  .concept-toc { top: 56px; }
 }
 
 @media (min-width: 900px) {

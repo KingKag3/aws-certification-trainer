@@ -39,6 +39,7 @@ const paths = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   edit: '<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="M14.5 6.5 17.5 9.5"/>',
   swap: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
 };
 
 export function icon(name, { size = 20, className = '', strokeWidth = 1.7 } = {}) {

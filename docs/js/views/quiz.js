@@ -3,6 +3,7 @@ import { buildHash } from '../router.js';
 import { recordAnswer, recordProfileAnswer } from '../store.js';
 import { weakEntities } from '../progression.js';
 import { domainBars } from '../charts.js';
+import { beginnerDetails } from '../learn.js';
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -92,6 +93,7 @@ export function mount(ctx, root) {
           ? `<div class="feedback ${answer.correct ? 'good' : 'bad'}">
               <strong>${answer.correct ? 'Correct' : 'Not quite'}</strong>
               <p>${esc(q.explanation)}</p>
+              ${beginnerDetails(ctx.engine.entityById.get(q.entityId))}
             </div>
             <div class="quiz-actions">
               <button class="btn primary" data-action="next">
