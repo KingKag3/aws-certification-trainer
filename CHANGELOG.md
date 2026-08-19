@@ -8,6 +8,38 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.6.0] — 2026-08-19
+
+Video coverage sweep: **27 verified videos to 109**, out of 138 topics.
+
+### Changed
+
+- Ran the trusted-channel search across all 111 entries that were on a search-link fallback.
+  98 candidates came back; **19 were rejected by hand** before anything was written:
+  - *Wrong topic:* AWS Artifact matched a CodePipeline **artifacts** video — a different thing entirely.
+  - *Narrow sub-feature rather than an intro:* SQS matched FIFO-queues-only, Athena matched
+    "Athena for Apache Spark", MSK matched "MSK Connect", MemoryDB matched Multi-Region, X-Ray
+    matched "X-Ray Insights", CDK matched a .NET-specific walkthrough, FSx matched only the NetApp
+    ONTAP variant of what is a family of file systems.
+  - *Too long or too dated for a first-contact link:* API Gateway (43 min), Encryption
+    (re:Invent 2017, 58 min), Infrastructure as code (re:Invent **2014**, 39 min).
+  - *Contradicts our own content:* the Well-Architected video says **five** pillars; there are six.
+- The surviving 79 all had channel and title confirmed through YouTube's oEmbed endpoint. Zero
+  failed verification. A second targeted pass added Polly, X-Ray and MSK, for 82 new in total.
+- **Fallbacks now search AWS's own channel** (`youtube.com/@amazonwebservices/search?query=…`)
+  rather than all of YouTube, so even an unverified link stays inside the trusted-source rule.
+  Label changed from "Search YouTube / No verified video yet" to "Browse AWS's channel for this /
+  No single verified video covers it yet".
+
+### Still on a fallback (29)
+
+Mostly cross-cutting concepts that no single video covers — loose coupling, caching strategy,
+tagging, service quotas, capex vs opex, the 7 Rs — plus the services listed above where the only
+trusted matches were sub-features. A search link is the honest answer for these; a
+plausible-but-wrong video would be worse.
+
+---
+
 ## [0.5.1] — 2026-08-19
 
 Discoverability and layout fixes for the exam log, from direct feedback: "if I
@@ -345,6 +377,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.6.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.0
 [0.5.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.4.0

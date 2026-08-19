@@ -125,8 +125,14 @@ but wrong link, so nothing is written from memory. The rule enforced in the data
   presented as a Stephane Maarek video turned out to be a re-upload on an unrelated channel covering
   the *retired* CLF-C01 exam. Verification caught it; a guess would not have.
 - Anything without a confirmed match gets `videoIsSearchFallback: true` and a YouTube **search link**,
-  rendered with a dashed border and "Search YouTube" rather than a title. 27 entries are verified;
-  the rest are honest search links.
+  rendered with a dashed border. **109 of 138 entries carry a verified video**; the remaining 29 are
+  cross-cutting concepts, or services where the only trusted match was a narrow sub-feature.
+- Fallback links search **AWS's own channel** rather than all of YouTube, so even an unverified link
+  stays within the trusted-source rule.
+- Candidates are also reviewed by hand, not just verified. Rejected in the last sweep: a
+  CodePipeline *artifacts* video matched against AWS Artifact, several sub-feature videos offered as
+  service intros, a 2014 conference talk, and AWS's own "Five Pillars" Well-Architected video —
+  there are six pillars since Sustainability was added.
 
 If you add a video, verify it the same way — the current state is recorded in
 `services.json → beginnerLayer`.

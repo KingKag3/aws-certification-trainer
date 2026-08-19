@@ -22,7 +22,7 @@ export function videoLink(entry, { compact = false } = {}) {
     ${icon(fallback ? 'search' : 'play', { size: 15 })}
     <span class="video-text">
       ${fallback
-        ? `<strong>Search YouTube</strong><span class="video-sub">No verified video yet for this topic</span>`
+        ? `<strong>Browse AWS's channel for this</strong><span class="video-sub">No single verified video covers it yet</span>`
         : `<strong>Watch: ${esc(entry.videoTitle)}</strong><span class="video-sub">${esc(entry.videoChannel)}</span>`}
     </span>
     ${icon('external', { size: 13, className: 'video-ext' })}
