@@ -12,6 +12,7 @@ import * as flashcardsView from './views/flashcards.js';
 import * as profileView from './views/profile.js';
 import * as membersView from './views/members.js';
 import * as conceptsView from './views/concepts.js';
+import * as attemptsView from './views/attempts.js';
 import { avatar } from './views/members.js';
 
 const DATA_FILES = ['services.json', 'certifications.json', 'templates.json'];
@@ -93,13 +94,16 @@ async function publishSummary(force = false) {
     const member = await progressStore.getActiveMember();
     const progressByCert = await progressStore.allCerts(codes);
     const profile = await progressStore.getProfile();
-    const s = memberSummary(member, certData, progressByCert, profile);
+    const attempts = await progressStore.getAttempts();
+    const s = memberSummary(member, certData, progressByCert, profile, new Date(), attempts);
     const payload = {
       color: member.color,
       answered: s.answered,
       correct: s.correct,
       accuracy: s.accuracy,
       mastered: s.mastered,
+      // Passes only. Failed attempts and scores never leave the owner's account.
+      certified: s.certified,
       avgReadiness: s.avgReadiness,
       streak: s.streak,
       longestStreak: s.longestStreak,
@@ -137,6 +141,7 @@ function routeToView(route) {
     if (sub === 'quiz') return { view: quizView, params: { code, sub } };
     if (sub === 'flashcards') return { view: flashcardsView, params: { code, sub } };
     if (sub === 'concepts') return { view: conceptsView, params: { code, sub } };
+    if (sub === 'attempts') return { view: attemptsView, params: { code, sub } };
     return { view: certView, params: { code } };
   }
   return { view: roadmapView, params: {} };
@@ -149,7 +154,8 @@ async function renderRoute(route) {
   const activeMember = await progressStore.getActiveMember();
   const progressByCert = await progressStore.allCerts(codes);
   const profile = await progressStore.getProfile();
-  const state = buildProgressionState(certData, progressByCert);
+  const attempts = await progressStore.getAttempts();
+  const state = buildProgressionState(certData, progressByCert, attempts);
 
   renderMemberChip(activeMember);
 
@@ -162,6 +168,7 @@ async function renderRoute(route) {
     store: progressStore,
     progressByCert,
     profile,
+    attempts,
     activeMember,
     params,
     query: route.query,

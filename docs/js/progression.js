@@ -57,11 +57,76 @@ export function isMastered(cert, progress, readiness, config) {
   return readiness.overall >= (config.masteryThreshold ?? 85);
 }
 
+/* ------------------------------------------------------------------ */
+/* Real exam attempts                                                  */
+/* ------------------------------------------------------------------ */
+
+/** AWS certifications are valid for three years from the date you pass. */
+export const CERT_VALID_YEARS = 3;
+
+export function attemptsFor(attempts, certCode) {
+  return (attempts || [])
+    .filter((a) => a.certCode === certCode)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
+/**
+ * A real pass is ground truth, unlike the app's own readiness estimate.
+ * Returns the most recent passing attempt plus its expiry, or null.
+ */
+export function certificationOf(attempts, certCode, now = new Date()) {
+  const passed = attemptsFor(attempts, certCode).filter((a) => a.result === 'pass');
+  if (!passed.length) return null;
+  const latest = passed[0];
+  if (!latest.date) return { attempt: latest, expiresOn: null, expired: false, daysLeft: null };
+  const [y, m, d] = latest.date.split('-').map(Number);
+  const expires = new Date(y + CERT_VALID_YEARS, m - 1, d);
+  const daysLeft = Math.round((expires - now) / 86400000);
+  return {
+    attempt: latest,
+    expiresOn: `${expires.getFullYear()}-${String(expires.getMonth() + 1).padStart(2, '0')}-${String(expires.getDate()).padStart(2, '0')}`,
+    expired: daysLeft < 0,
+    daysLeft,
+    expiringSoon: daysLeft >= 0 && daysLeft <= 90,
+  };
+}
+
+/** Every topic flagged as a pitfall on a real attempt for this certification. */
+export function pitfallIds(attempts, certCode) {
+  const out = new Set();
+  for (const a of attemptsFor(attempts, certCode)) {
+    for (const id of a.pitfalls || []) out.add(id);
+  }
+  return [...out];
+}
+
+/**
+ * Folds real-exam pitfalls into the spaced-repetition stats the generator uses,
+ * so a topic that caught you out in the actual exam comes back in practice —
+ * even if you have never missed it in a quiz here.
+ */
+export function statsWithPitfalls(entityStats, ids, at = Date.now()) {
+  if (!ids?.length) return entityStats || {};
+  const out = { ...(entityStats || {}) };
+  for (const id of ids) {
+    const s = out[id] || { seen: 0, missed: 0, lastSeenAt: 0, lastMissedAt: 0 };
+    out[id] = {
+      ...s,
+      seen: s.seen + 2,
+      missed: s.missed + 2,
+      lastMissedAt: Math.max(s.lastMissedAt || 0, at),
+    };
+  }
+  return out;
+}
+
 /**
  * Unlocking is a recommendation, never a hard gate — AWS enforces no
  * prerequisites, so every certification stays startable via `manuallyStarted`.
  */
-export function certStatus(cert, progress, masteredCodes, config) {
+export function certStatus(cert, progress, masteredCodes, config, certifiedCodes = new Set()) {
+  // A real pass outranks any estimate this app could make.
+  if (certifiedCodes.has(cert.code)) return 'certified';
   if (masteredCodes.has(cert.code)) return 'mastered';
   if (progress.answered > 0) return 'in-progress';
   // Foundational exams are the entry point — they never sit behind anything.
@@ -74,13 +139,24 @@ export function certStatus(cert, progress, masteredCodes, config) {
 }
 
 /** One pass over every certification, producing everything the views need. */
-export function buildProgressionState(certData, progressByCert) {
+export function buildProgressionState(certData, progressByCert, attempts = []) {
   const config = certData.readiness;
   const certs = certData.certifications;
 
   const readiness = {};
   for (const cert of certs) {
     readiness[cert.code] = certReadiness(cert, progressByCert[cert.code] || { domains: {} }, config);
+  }
+
+  // Real passes first: they are evidence, not estimate, and they unlock successors.
+  const certifications = {};
+  const certifiedCodes = new Set();
+  for (const cert of certs) {
+    const c = certificationOf(attempts, cert.code);
+    if (c) {
+      certifications[cert.code] = c;
+      if (!c.expired) certifiedCodes.add(cert.code);
+    }
   }
 
   // Mastery has to settle before status, because mastery unlocks successors.
@@ -90,12 +166,15 @@ export function buildProgressionState(certData, progressByCert) {
     if (isMastered(cert, p, readiness[cert.code], config)) masteredCodes.add(cert.code);
   }
 
+  // A real pass counts as mastery for unlocking purposes.
+  const unlockCodes = new Set([...masteredCodes, ...certifiedCodes]);
+
   const status = {};
   for (const cert of certs) {
-    status[cert.code] = certStatus(cert, progressByCert[cert.code] || {}, masteredCodes, config);
+    status[cert.code] = certStatus(cert, progressByCert[cert.code] || {}, unlockCodes, config, certifiedCodes);
   }
 
-  return { config, certs, readiness, status, masteredCodes };
+  return { config, certs, readiness, status, masteredCodes, certifiedCodes, certifications, unlockCodes, attempts };
 }
 
 /* ------------------------------------------------------------------ */
@@ -107,8 +186,8 @@ export function buildProgressionState(certData, progressByCert) {
  * figures the members page ranks on. Pure, so the same function serves the
  * local roster today and a cloud roster later.
  */
-export function memberSummary(member, certData, progressByCert, profile, now = new Date()) {
-  const state = buildProgressionState(certData, progressByCert);
+export function memberSummary(member, certData, progressByCert, profile, now = new Date(), attempts = []) {
+  const state = buildProgressionState(certData, progressByCert, attempts);
   const certs = certData.certifications;
 
   let answered = 0;
@@ -140,6 +219,8 @@ export function memberSummary(member, certData, progressByCert, profile, now = n
     accuracy: answered ? Math.round((correct / answered) * 100) : 0,
     started,
     mastered,
+    // Real certifications earned — passes only. Failed attempts stay private.
+    certified: state.certifiedCodes.size,
     inProgress: certs.filter((c) => state.status[c.code] === 'in-progress').length,
     // Averaged across every certification, so breadth counts as well as depth.
     avgReadiness: Math.round(readinessValues.reduce((a, b) => a + b, 0) / (certs.length || 1)),
@@ -165,6 +246,13 @@ function currentStreakFrom(profile, now) {
 }
 
 export const LEADERBOARD_SORTS = {
+  certified: {
+    label: 'Certifications earned',
+    compare: (a, b) =>
+      (b.certified || 0) - (a.certified || 0) || b.mastered - a.mastered || b.answered - a.answered,
+    format: (s) =>
+      `${s.certified || 0} certified${s.certified ? '' : ' — no exams passed yet'}`,
+  },
   mastered: {
     label: 'Certs mastered',
     compare: (a, b) => b.mastered - a.mastered || b.avgReadiness - a.avgReadiness || b.answered - a.answered,
@@ -207,13 +295,14 @@ export const LEADERBOARD_SORTS = {
  *   3. the foundational starting point when nothing has begun
  */
 export function suggestNext(state, certData) {
-  const { certs, status, readiness, masteredCodes, config } = state;
+  const { certs, status, readiness, config } = state;
+  const unlockCodes = state.unlockCodes || state.masteredCodes;
   const byCode = new Map(certs.map((c) => [c.code, c]));
   const out = [];
   const seen = new Set();
 
   const add = (code, reason, kind) => {
-    if (!code || seen.has(code) || masteredCodes.has(code)) return;
+    if (!code || seen.has(code) || unlockCodes.has(code)) return;
     const cert = byCode.get(code);
     if (!cert) return;
     seen.add(code);
@@ -221,7 +310,7 @@ export function suggestNext(state, certData) {
   };
 
   for (const cert of certs) {
-    if (!masteredCodes.has(cert.code)) continue;
+    if (!unlockCodes.has(cert.code)) continue;
     for (const nextCode of cert.unlocks || []) {
       const why = cert.whyNext?.[nextCode] || `${byCode.get(nextCode)?.name} builds on ${cert.shortName}.`;
       add(nextCode, why, 'unlocked');
@@ -253,17 +342,31 @@ export function suggestNext(state, certData) {
 /* Weak spots                                                          */
 /* ------------------------------------------------------------------ */
 
-/** Entities you have got wrong, worst first. Drives the weak-spots quiz. */
-export function weakEntities(progress, engine, limit = 40) {
-  const entries = Object.entries(progress.entities || {})
-    .map(([id, s]) => ({
-      id,
-      name: engine.entityById.get(id)?.name || id,
-      ...s,
-      missRate: s.seen ? s.missed / s.seen : 0,
-    }))
-    .filter((e) => e.missed > 0)
-    .sort((a, b) => b.missRate - a.missRate || b.missed - a.missed);
+/**
+ * Entities you have got wrong, worst first. Drives the weak-spots quiz.
+ * Topics flagged as pitfalls on a real exam attempt are included and pinned to
+ * the top, even if you have never missed them in practice here.
+ */
+export function weakEntities(progress, engine, limit = 40, pitfalls = []) {
+  const pitfallSet = new Set(pitfalls);
+  const stats = progress.entities || {};
+  const ids = new Set([...Object.keys(stats).filter((id) => stats[id].missed > 0), ...pitfallSet]);
+
+  const entries = [...ids]
+    .map((id) => {
+      const s = stats[id] || { seen: 0, missed: 0, lastSeenAt: 0, lastMissedAt: 0 };
+      return {
+        id,
+        name: engine.entityById.get(id)?.name || id,
+        ...s,
+        missRate: s.seen ? s.missed / s.seen : 1,
+        fromExam: pitfallSet.has(id),
+      };
+    })
+    .sort(
+      (a, b) =>
+        Number(b.fromExam) - Number(a.fromExam) || b.missRate - a.missRate || b.missed - a.missed
+    );
   return entries.slice(0, limit);
 }
 

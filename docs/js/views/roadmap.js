@@ -11,9 +11,16 @@ const STATUS_LABEL = {
   available: 'Ready to start',
   'in-progress': 'In progress',
   mastered: 'Mastered',
+  certified: 'Certified',
 };
 
-const STATUS_ICON = { locked: 'lock', available: 'play', 'in-progress': 'target', mastered: 'check' };
+const STATUS_ICON = {
+  locked: 'lock',
+  available: 'play',
+  'in-progress': 'target',
+  mastered: 'check',
+  certified: 'trophy',
+};
 
 function nodeCard(node, { compact = false } = {}) {
   const { cert, status, readiness } = node;
@@ -119,7 +126,7 @@ function stackedView(certData, state) {
 export function render(ctx) {
   const { certData, state } = ctx;
   const suggestions = suggestNext(state, certData);
-  const counts = { mastered: 0, 'in-progress': 0, available: 0, locked: 0 };
+  const counts = { certified: 0, mastered: 0, 'in-progress': 0, available: 0, locked: 0 };
   for (const c of certData.certifications) counts[state.status[c.code]]++;
 
   const wide = window.matchMedia('(min-width: 900px)').matches;
@@ -132,12 +139,14 @@ export function render(ctx) {
       </div>
       <div class="roadmap-summary">
         ${stackBar([
+          { value: counts.certified, tone: 'certified', label: 'Certified' },
           { value: counts.mastered, tone: 'mastered', label: 'Mastered' },
           { value: counts['in-progress'], tone: 'progress', label: 'In progress' },
           { value: counts.available, tone: 'available', label: 'Ready to start' },
           { value: counts.locked, tone: 'locked', label: 'Locked' },
         ])}
         <ul class="legend">
+          ${counts.certified ? `<li><i class="dot certified"></i>${counts.certified} certified</li>` : ''}
           <li><i class="dot mastered"></i>${counts.mastered} mastered</li>
           <li><i class="dot progress"></i>${counts['in-progress']} in progress</li>
           <li><i class="dot available"></i>${counts.available} ready</li>

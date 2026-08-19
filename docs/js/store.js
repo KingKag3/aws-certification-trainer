@@ -116,6 +116,11 @@ function makeId() {
   return 'm_' + Math.random().toString(36).slice(2, 10);
 }
 
+function makeAttemptId() {
+  if (globalThis.crypto?.randomUUID) return 'a_' + globalThis.crypto.randomUUID().slice(0, 8);
+  return 'a_' + Math.random().toString(36).slice(2, 10);
+}
+
 /** Stable colour choice from a uid, so an account looks the same on every device. */
 function hashCode(s) {
   let h = 0;
@@ -373,6 +378,43 @@ export function createProgressStore(initialAdapter) {
       const out = {};
       for (const code of codes) out[code] = await store.getCertFor(memberId, code);
       return out;
+    },
+
+    /* real exam attempts (active member) --------------------------- */
+    async getAttempts() {
+      const m = await store.getActiveMember();
+      return store.getAttemptsFor(m.id);
+    },
+    async getAttemptsFor(memberId) {
+      const list = await adapter.get(memberKey(memberId, 'attempts'), []);
+      return Array.isArray(list) ? list : [];
+    },
+    async saveAttempts(list) {
+      const m = await store.getActiveMember();
+      const sorted = list.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      await adapter.set(memberKey(m.id, 'attempts'), sorted);
+      notify({ type: 'attempts', memberId: m.id, value: sorted });
+      return sorted;
+    },
+    async addAttempt(attempt) {
+      const list = await store.getAttempts();
+      const record = {
+        id: makeAttemptId(),
+        createdAt: Date.now(),
+        pitfalls: [],
+        notes: '',
+        score: null,
+        ...attempt,
+      };
+      return store.saveAttempts([...list, record]);
+    },
+    async updateAttempt(id, patch) {
+      const list = await store.getAttempts();
+      return store.saveAttempts(list.map((a) => (a.id === id ? { ...a, ...patch } : a)));
+    },
+    async removeAttempt(id) {
+      const list = await store.getAttempts();
+      return store.saveAttempts(list.filter((a) => a.id !== id));
     },
 
     /* profile ------------------------------------------------------ */

@@ -47,6 +47,34 @@ export function render(ctx) {
       <ul class="heat-legend"><li>Less</li><li><i class="heat-key l0"></i></li><li><i class="heat-key l1"></i></li><li><i class="heat-key l2"></i></li><li><i class="heat-key l3"></i></li><li><i class="heat-key l4"></i></li><li>More</li></ul>
     </section>
 
+    ${(ctx.attempts || []).length
+      ? `<section class="panel">
+          <h3>${icon('trophy', { size: 18 })} Real exam attempts</h3>
+          <p class="muted small">${state.certifiedCodes.size} current certification${state.certifiedCodes.size === 1 ? '' : 's'} from ${ctx.attempts.length} logged attempt${ctx.attempts.length === 1 ? '' : 's'}. Only passes are shared on the leaderboard — scores and failed attempts stay private to you.</p>
+          <ul class="attempt-list">${ctx.attempts
+            .map((a) => {
+              const cert = certData.certifications.find((c) => c.code === a.certCode);
+              const passed = a.result === 'pass';
+              return `<li class="attempt-card ${passed ? 'pass' : 'fail'}">
+                <header>
+                  <span class="attempt-verdict ${passed ? 'pass' : 'fail'}">
+                    ${icon(passed ? 'check' : 'warning', { size: 15 })} ${passed ? 'Passed' : 'Did not pass'}
+                  </span>
+                  <a href="${buildHash(['cert', a.certCode, 'attempts'])}">${esc(cert?.shortName || a.certCode)}</a>
+                  <span class="attempt-date">${esc(a.date || '')}</span>
+                  ${a.score != null && a.score !== '' ? `<span class="attempt-score${cert && a.score >= cert.exam.passingScore ? ' good' : ' bad'}">${a.score}</span>` : ''}
+                </header>
+                ${(a.pitfalls || []).length
+                  ? `<div class="attempt-pitfalls"><ul>${a.pitfalls
+                      .map((id) => `<li>${esc(ctx.engine.entityById.get(id)?.name || id)}</li>`)
+                      .join('')}</ul></div>`
+                  : ''}
+              </li>`;
+            })
+            .join('')}</ul>
+        </section>`
+      : ''}
+
     <section class="panel">
       <h3>Certifications</h3>
       ${active.length

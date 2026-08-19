@@ -33,7 +33,7 @@ docs/            everything GitHub Pages serves
     store.js       progressStore + member roster — the ONLY module that touches storage
     charts.js      hand-rolled SVG radar / bars / ring / heatmap
     cloud.js       Firebase auth + Firestore adapter (lazy-loaded on sign-in)
-    views/         roadmap, cert, concepts, quiz, flashcards, members, profile
+    views/         roadmap, cert, concepts, quiz, flashcards, attempts, members, profile
 tools/test-generator.mjs
 ```
 
@@ -96,6 +96,16 @@ so every member-aware code path works unchanged.
   protects data. A service-account key would be a secret — never commit one of those.
 - Never sign up for a provider or enter credentials on the user's behalf; account creation and
   console steps are theirs.
+
+**Real exam attempts are ground truth.** A logged pass gives a certification `certified` status,
+which outranks the app's own `mastered` estimate and unlocks successors. Pitfalls flagged on an
+attempt are fed into the generator via `statsWithPitfalls()` (~2x weighting) and pinned in Weak
+spots. Only passes are published to the leaderboard — failed attempts, scores and notes stay
+private, so never add them to the summary written by `cloud.publishSummary`.
+
+**Adding a field to the leaderboard summary means editing `firestore.rules` too.** The rule uses
+`hasOnly()`, so an unlisted field makes every leaderboard write fail — and the user must re-publish
+the rules in the Firebase console for it to take effect.
 
 **Charts stay hand-rolled SVG.** No Chart.js, no CDN — the app is intended to work offline and with
 a strict CSP.

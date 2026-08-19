@@ -20,6 +20,7 @@ Everything runs in the browser — no server, no build step, no dependencies.
 - [Adding or editing a certification](#adding-or-editing-a-certification)
 - [Adding a service, concept or question template](#adding-a-service-concept-or-question-template)
 - [Cloud accounts and the shared leaderboard](#cloud-accounts-and-the-shared-leaderboard)
+- [How certifications unlock](#how-certifications-unlock)
 - [Storage and the optional sync layer](#storage-and-the-optional-sync-layer)
 - [Deploying to GitHub Pages](#deploying-to-github-pages)
 - [Certification data as of 18 August 2026](#certification-data-as-of-18-august-2026)
@@ -47,6 +48,7 @@ official exam facts, and links to the official exam page and exam guide.
 | Flashcards | Every in-scope service and concept: plain-English explanation first, then purpose, use cases, gotchas, commonly-confused points, billing basis |
 | Weak spots | A quiz built only from topics you have previously missed |
 | Domain drill | Pick one exam domain and quiz only that |
+| Exam log | Record real exam attempts: pass/fail, scaled score, and the topics that caught you out |
 
 **Explain it like I'm new** — every service and concept carries a plain-English explanation written for
 someone who has never used a cloud platform, using an everyday analogy rather than jargon. It appears
@@ -67,6 +69,17 @@ Either way the board ranks by certifications mastered, average readiness, questi
 accuracy or current streak, with a podium for the top three.
 
 Accuracy ranking ignores anyone with fewer than 20 answers — a 3-for-3 start is not a 100% record.
+
+**Real exam attempts** — log each time you sit the actual exam: date, pass or fail, scaled score,
+free-text notes, and **pitfalls** picked from the app's own list of services and concepts. Those
+pitfalls are weighted roughly 2× in your generated quizzes and pinned to the top of Weak spots, so
+logging a failure directly changes what you get drilled on.
+
+A pass marks the certification **Certified** on the roadmap — ground truth, ranked above the app's
+own "mastered" estimate — and unlocks the exams that follow it. AWS certifications last three years,
+so the dashboard shows the expiry date and warns at 90 days out.
+
+Only passes reach the shared leaderboard. Failed attempts, scores and notes stay private to you.
 
 **Profile** — study streak, activity heatmap, per-certification table, and JSON export/import so you
 can move progress between browsers. Export covers every member on the device.
@@ -359,6 +372,35 @@ After any data edit, run `node tools/test-generator.mjs` — it will catch dupli
 stems and domains that can no longer produce questions.
 
 ---
+
+## How certifications unlock
+
+Locked is a **suggestion, never a barrier**. AWS enforces no prerequisites between its exams, so
+neither does this app — a locked node's dashboard opens normally and every study mode works. The
+lock only shades the roadmap to suggest an order.
+
+A certification shows as `available` when any of these is true:
+
+- it is Foundational (those are always open);
+- one of its `recommendedBefore` entries is **mastered**;
+- one of its `recommendedBefore` entries is **certified** — a real exam pass you logged;
+- you have already answered a question for it (`in-progress`).
+
+**Mastered** is the app's own estimate, and there are no mock exams to pass — it is computed
+continuously from your practice answers. All three conditions must hold:
+
+| Condition | Default |
+| --- | --- |
+| Weighted readiness | ≥ 85% |
+| Questions answered for that certification | ≥ 40 |
+| Answers in **every** domain | ≥ 5 |
+
+Readiness is `Σ (domainWeight / 100) × accuracy_d × coverage_d`, where
+`coverage = min(1, answered / 12)`. In practice that means roughly **12+ questions in each domain at
+85%+ accuracy** — about 48 questions for a four-domain exam, 72 for a six-domain one. Answering only
+your strong domains will not do it, because a domain with no answers contributes zero.
+
+All four numbers live in `certifications.json → readiness` if you want a different bar.
 
 ## Cloud accounts and the shared leaderboard
 

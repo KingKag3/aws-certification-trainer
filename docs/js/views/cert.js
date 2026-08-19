@@ -1,7 +1,7 @@
 import { icon } from '../icons.js';
 import { radarChart, domainBars, ring } from '../charts.js';
 import { buildHash } from '../router.js';
-import { weakEntities } from '../progression.js';
+import { weakEntities, pitfallIds, attemptsFor } from '../progression.js';
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -18,7 +18,11 @@ export function render(ctx) {
   const status = state.status[cert.code];
   const config = state.config;
   const scope = engine.scopeFor(cert.code);
-  const weak = weakEntities(progress, engine, 12);
+  const attempts = ctx.attempts || [];
+  const myAttempts = attemptsFor(attempts, cert.code);
+  const pitfalls = pitfallIds(attempts, cert.code);
+  const certification = state.certifications?.[cert.code] || null;
+  const weak = weakEntities(progress, engine, 12, pitfalls);
   const prereqs = (cert.recommendedBefore || []).map((c) => engine.certByCode.get(c)).filter(Boolean);
   const unlocks = (cert.unlocks || []).map((c) => engine.certByCode.get(c)).filter(Boolean);
 
@@ -35,6 +39,21 @@ export function render(ctx) {
 
   return `
     <nav class="crumbs"><a href="${buildHash([])}">${icon('arrowLeft', { size: 14 })} Roadmap</a></nav>
+
+    ${certification
+      ? `<section class="cert-banner ${certification.expired ? 'expired' : certification.expiringSoon ? 'soon' : 'valid'}">
+          ${icon(certification.expired ? 'warning' : 'trophy', { size: 22 })}
+          <div>
+            <strong>${certification.expired ? 'Certification expired' : 'You are certified'}</strong>
+            <p>Passed ${esc(new Date(certification.attempt.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}${
+              certification.expiresOn
+                ? ` · ${certification.expired ? 'expired' : 'valid until'} ${esc(new Date(certification.expiresOn).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }))}`
+                : ''
+            }${certification.expiringSoon && !certification.expired ? ` · <strong>${certification.daysLeft} days left</strong>` : ''}</p>
+          </div>
+          <a class="btn small" href="${buildHash(['cert', cert.code, 'attempts'])}">Exam log</a>
+        </section>`
+      : ''}
 
     <section class="cert-head ${status}">
       <div class="cert-head-main">
@@ -89,6 +108,12 @@ export function render(ctx) {
           ${icon('play', { size: 22 })}<strong>Long set</strong>
           <span>20 questions in one run, for a fuller readiness signal.</span>
         </a>
+        <a class="mode-card" href="${buildHash(['cert', cert.code, 'attempts'])}">
+          ${icon('trophy', { size: 22 })}<strong>Exam log</strong>
+          <span>${myAttempts.length
+            ? `${myAttempts.length} real attempt${myAttempts.length === 1 ? '' : 's'} logged${pitfalls.length ? ` · ${pitfalls.length} pitfall topic${pitfalls.length === 1 ? '' : 's'}` : ''}.`
+            : 'Sat the real exam? Record pass, fail and the topics that caught you out.'}</span>
+        </a>
       </div>
     </section>
 
@@ -119,7 +144,8 @@ export function render(ctx) {
           <ul class="weak-list">${weak
             .map(
               (w) =>
-                `<li><span>${esc(w.name)}</span><span class="weak-stat">${w.missed}/${w.seen} missed</span>
+                `<li><span>${esc(w.name)}${w.fromExam ? ` <span class="exam-tag" title="Flagged as a pitfall on a real exam attempt">${icon('trophy', { size: 11 })} real exam</span>` : ''}</span>
+                 <span class="weak-stat">${w.seen ? `${w.missed}/${w.seen} missed` : 'from exam log'}</span>
                  <span class="weak-bar"><i style="width:${Math.round(w.missRate * 100)}%"></i></span></li>`
             )
             .join('')}</ul>

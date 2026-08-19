@@ -1,7 +1,7 @@
 import { icon } from '../icons.js';
 import { buildHash } from '../router.js';
 import { recordAnswer, recordProfileAnswer } from '../store.js';
-import { weakEntities } from '../progression.js';
+import { weakEntities, pitfallIds, statsWithPitfalls } from '../progression.js';
 import { domainBars } from '../charts.js';
 import { beginnerDetails } from '../learn.js';
 
@@ -27,14 +27,17 @@ export function mount(ctx, root) {
   const mode = query.mode || (domainId ? 'domain' : 'full');
 
   const progress = ctx.progressByCert[cert.code];
-  const entityIds = mode === 'weak' ? weakEntities(progress, ctx.engine, 60).map((w) => w.id) : null;
+  const pitfalls = pitfallIds(ctx.attempts || [], cert.code);
+  const entityIds =
+    mode === 'weak' ? weakEntities(progress, ctx.engine, 60, pitfalls).map((w) => w.id) : null;
 
   const quiz = ctx.engine.generateQuiz({
     certCode: cert.code,
     count,
     domainId,
     entityIds,
-    stats: progress.entities || {},
+    // Topics that caught you out in the real exam come back more often here.
+    stats: statsWithPitfalls(progress.entities, pitfalls),
   });
 
   if (!quiz.questions.length) {

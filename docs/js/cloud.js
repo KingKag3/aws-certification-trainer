@@ -214,6 +214,7 @@ export const cloud = {
       correct: summary.correct || 0,
       accuracy: summary.accuracy || 0,
       mastered: summary.mastered || 0,
+      certified: summary.certified || 0,
       avgReadiness: summary.avgReadiness || 0,
       streak: summary.streak || 0,
       longestStreak: summary.longestStreak || 0,

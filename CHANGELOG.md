@@ -8,6 +8,48 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.5.0] — 2026-08-19
+
+Real exam attempts. Until now everything the app knew was its own estimate; a logged pass or fail is
+ground truth, and a fail now changes what you get drilled on.
+
+### Added
+
+- **Exam log** per certification (`views/attempts.js`, `#/cert/<code>/attempts`): date, pass/fail,
+  scaled score, free-text notes, and **pitfalls** chosen from that exam's own in-scope services and
+  concepts. Attempts are editable and deletable, and sync to the cloud like everything else because
+  they go through `store.js`.
+- **Pitfalls feed practice.** `statsWithPitfalls()` folds flagged topics into the spaced-repetition
+  weighting the generator already used. Measured over 40 quizzes of 30 questions: pitfall topics
+  appeared 62 times with the boost against 28 without — **2.2× more likely to be drilled**. They are
+  also pinned to the top of Weak spots with a "real exam" tag, even if never missed in practice here.
+- **`certified` status**, ranked above the app's own `mastered`. A pass shows a green Certified node
+  on the roadmap, a banner on the dashboard, and unlocks the exams that follow — a real pass is
+  better evidence than any estimate this app can compute.
+- **Three-year expiry tracking.** AWS certifications lapse after three years, so the banner shows the
+  expiry date, warns at 90 days out, and marks an expired certification as no longer current (it
+  stops counting toward unlocks and the leaderboard).
+- **Leaderboard: passes only.** A `certified` count is published and a "Certifications earned" sort
+  added. Failed attempts, scores and notes never leave the owner's account.
+- Attempt history summary on the Profile page, across all certifications.
+
+### Changed
+
+- `firestore.rules` — `certified` added to the leaderboard's allowed-field list and range-checked.
+  **The rules must be re-published in the Firebase console**, otherwise `hasOnly()` rejects the new
+  field and leaderboard writes fail silently.
+- `buildProgressionState()` now takes attempts and exposes `certifiedCodes`, `certifications` and
+  `unlockCodes`. Unlocking uses mastered ∪ certified.
+
+### Fixed
+
+- Typing in the pitfall search box re-rendered the entire attempt form, wiping the date, result and
+  score already entered, and stealing focus mid-keystroke. The search input is now rendered once and
+  only the results and chips below it redraw. Caught by filling the form before searching, which is
+  the natural order and the one that lost data.
+
+---
+
 ## [0.4.0] — 2026-08-19
 
 Cloud accounts. People on their own devices can now sign up and appear on a shared leaderboard,
@@ -274,6 +316,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.5.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.4.0
 [0.3.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.3.0
 [0.2.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.2.0

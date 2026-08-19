@@ -818,6 +818,88 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .swatch input:focus-visible + span { outline: 2px solid var(--link); outline-offset: 2px; }
 .member-edit-actions { display: flex; gap: .4rem; }
 
+/* ---- Real exam attempts ----------------------------------------------- */
+.cert-banner {
+  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
+  background: var(--good-bg); border: 1px solid transparent; border-left: 4px solid var(--good);
+  border-radius: var(--radius); padding: .9rem 1.1rem; margin-bottom: 1.25rem;
+}
+.cert-banner > .icon { color: var(--good); flex: none; }
+.cert-banner > div { flex: 1; min-width: 190px; }
+.cert-banner strong { display: block; font-size: 1.05rem; }
+.cert-banner p { margin: 0; font-size: .87rem; }
+.cert-banner.soon { background: var(--ok-bg); border-left-color: var(--ok); }
+.cert-banner.soon > .icon { color: var(--ok); }
+.cert-banner.expired { background: var(--bad-bg); border-left-color: var(--bad); }
+.cert-banner.expired > .icon { color: var(--bad); }
+
+.attempt-summary { display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); margin-bottom: 1.25rem; }
+.attempt-summary .stat { align-items: flex-start; }
+
+.attempt-form .attempt-row { display: grid; gap: .8rem; grid-template-columns: 1fr; margin-bottom: .9rem; }
+.attempt-form textarea {
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+  padding: .55rem .7rem; font-size: .93rem; width: 100%; resize: vertical; font-family: inherit;
+}
+.result-field { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .4rem .65rem; margin: 0; }
+.result-field legend { font-size: .78rem; font-weight: 600; color: var(--text-muted); padding: 0 .3rem; }
+.radio { display: inline-flex; align-items: center; gap: .35rem; margin-right: .8rem; font-size: .9rem; }
+
+.pitfall-picker { margin-bottom: .9rem; }
+.pitfall-results { display: flex; flex-wrap: wrap; gap: .35rem; margin: .4rem 0; }
+.pitfall-add {
+  display: inline-flex; align-items: center; gap: .3rem; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px;
+  padding: .3rem .6rem; font-size: .83rem; color: var(--text);
+}
+.pitfall-add:hover { border-color: var(--accent); }
+.pitfall-add.chosen { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.pitfall-chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+.pitfall-chip {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: var(--bad-bg); color: var(--bad); border-radius: 999px;
+  padding: .25rem .3rem .25rem .6rem; font-size: .82rem; font-weight: 550;
+}
+.chip-x { background: none; border: 0; cursor: pointer; color: inherit; font-size: 1rem; line-height: 1; padding: 0 .25rem; }
+
+.attempt-list { display: flex; flex-direction: column; gap: .8rem; margin-top: 1.25rem; }
+.attempt-card {
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--good);
+  border-radius: var(--radius); padding: .9rem 1rem; box-shadow: var(--shadow-sm);
+}
+.attempt-card.fail { border-left-color: var(--bad); }
+.attempt-card > header { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.attempt-verdict { display: inline-flex; align-items: center; gap: .3rem; font-weight: 650; font-size: .95rem; }
+.attempt-verdict.pass { color: var(--good); }
+.attempt-verdict.fail { color: var(--bad); }
+.attempt-date { color: var(--text-muted); font-size: .86rem; }
+.attempt-score { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+.attempt-score span { font-weight: 400; font-size: .78rem; color: var(--text-faint); }
+.attempt-score.good { color: var(--good); }
+.attempt-score.bad { color: var(--bad); }
+.attempt-pitfalls h4 { font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); margin-bottom: .3rem; }
+.attempt-pitfalls ul { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .5rem; }
+.attempt-pitfalls li {
+  background: var(--bad-bg); color: var(--bad); border-radius: 999px;
+  padding: .15rem .55rem; font-size: .78rem;
+}
+.attempt-notes { font-size: .88rem; color: var(--text-muted); white-space: pre-wrap; margin: .3rem 0 .5rem; }
+.attempt-actions { display: flex; gap: .4rem; }
+
+.exam-tag {
+  display: inline-flex; align-items: center; gap: .2rem; vertical-align: .05em;
+  font-size: .62rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700;
+  background: var(--bad-bg); color: var(--bad); border-radius: 999px; padding: .05rem .35rem;
+}
+
+.cert-node.certified::before { background: var(--good); }
+.cert-node.certified .node-status { color: var(--good); }
+.cert-node.certified { box-shadow: var(--shadow-sm), 0 0 0 2px color-mix(in srgb, var(--good) 40%, transparent); }
+.cert-head.certified { border-top-color: var(--good); }
+.pill.status.certified { background: var(--good-bg); color: var(--good); border-color: transparent; }
+.stack-bar .seg.certified { background: var(--good); }
+.dot.certified { background: var(--good); }
+
 /* ---- Cloud accounts --------------------------------------------------- */
 .auth-panel { border-left: 3px solid var(--available); }
 .auth-tabs { display: flex; gap: .25rem; margin: .9rem 0 1rem; border-bottom: 1px solid var(--border); }
@@ -895,6 +977,7 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
   }
   .lb-bar { margin-top: 0; }
   .concept-list { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+  .attempt-form .attempt-row { grid-template-columns: repeat(3, 1fr); align-items: end; }
   .concept-toc { top: 56px; }
 }
 
