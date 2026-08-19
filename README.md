@@ -19,6 +19,7 @@ Everything runs in the browser — no server, no build step, no dependencies.
 - [How the progression engine works](#how-the-progression-engine-works)
 - [Adding or editing a certification](#adding-or-editing-a-certification)
 - [Adding a service, concept or question template](#adding-a-service-concept-or-question-template)
+- [Cloud accounts and the shared leaderboard](#cloud-accounts-and-the-shared-leaderboard)
 - [Storage and the optional sync layer](#storage-and-the-optional-sync-layer)
 - [Deploying to GitHub Pages](#deploying-to-github-pages)
 - [Certification data as of 18 August 2026](#certification-data-as-of-18-august-2026)
@@ -53,11 +54,17 @@ on the back of every flashcard (above the technical detail), behind a collapsed 
 screens, and throughout the Concepts page. The existing "gotcha" facts stay as the deeper follow-up
 layer rather than being replaced.
 
-**Members** — several people can share one browser. Each member keeps their own progress, weak
-spots, streak and roadmap state; switching member switches the whole app. A leaderboard ranks
-everyone by certifications mastered, average readiness, questions answered, accuracy or current
-streak, with a podium for the top three. Members are created, renamed, recoloured and removed from
-the Members page, and the header chip shows who the app is currently recording for.
+**Members** — two ways to have more than one person study.
+
+*Signed in:* create an account and your progress follows you to every device, with a leaderboard
+shared across everyone who signs in. This is how people on their own phones and laptops join.
+
+*Signed out:* several people can still share one browser as local profiles, created and renamed on
+the Members page. Each keeps their own progress, weak spots, streak and roadmap state; switching
+member switches the whole app, and the header chip shows who is being recorded.
+
+Either way the board ranks by certifications mastered, average readiness, questions answered,
+accuracy or current streak, with a podium for the top three.
 
 Accuracy ranking ignores anyone with fewer than 20 answers — a 3-for-3 start is not a 100% record.
 
@@ -165,8 +172,11 @@ node tools/test-generator.mjs SAA-C03 25
 │       ├── progression.js    readiness, unlock state, roadmap graph layout (pure)
 │       ├── charts.js         hand-rolled SVG radar / bars / ring / heatmap
 │       ├── learn.js          shared rendering for the beginner layer + video links
+│       ├── cloud.js          Firebase auth + Firestore adapter (lazy-loaded)
+│       ├── firebase-config.js  project config (public by design)
 │       ├── icons.js          inline SVG icon set
 │       └── views/            roadmap, cert, concepts, quiz, flashcards, members, profile
+├── firestore.rules           security rules — paste into the Firebase console
 ├── tools/test-generator.mjs  standalone engine smoke test
 └── README.md
 ```
@@ -350,6 +360,53 @@ stems and domains that can no longer produce questions.
 
 ---
 
+## Cloud accounts and the shared leaderboard
+
+Signing in makes progress follow you to any device and puts you on a leaderboard shared with
+everyone else who signs in. Signed out, the app behaves exactly as it always did — local member
+profiles, nothing leaves the browser.
+
+**The Firebase SDK is loaded only when someone signs in.** A visitor who never does makes zero
+external network requests, so the offline and strict-CSP behaviour of the local path is unchanged.
+
+### Firestore layout
+
+```
+users/{uid}/data/{key}    one document per storage key — private to that user
+leaderboard/{uid}         one small summary doc — readable by any signed-in user
+```
+
+Signing in reads the user's whole `data` collection **once** and serves every later read from
+memory, because Firestore's free tier bills per document read and per-key round trips would burn
+quota for nothing. Writes are write-through.
+
+Progress documents are never readable by anyone else. Only the summary — display name, colour,
+questions answered, accuracy, certifications mastered, streak — is shared.
+
+### Setting it up on a fresh Firebase project
+
+1. Create a project at <https://console.firebase.google.com>, on the free **Spark** plan.
+2. **Build → Authentication → Get started →** enable **Email/Password**.
+3. **Build → Firestore Database → Create database →** Standard edition, **Production mode**, pick a
+   region (permanent).
+4. **Firestore → Rules →** paste [`firestore.rules`](firestore.rules) from this repository and
+   **Publish**. Until you do, production mode denies everything and the app will report that it
+   cannot read the leaderboard.
+5. **Authentication → Settings → Authorised domains →** add the domain you deploy to, e.g.
+   `kingkag3.github.io`. Firebase seeds this list with `localhost` and the two `*.firebaseapp.com` /
+   `*.web.app` domains only, so **sign-in fails on GitHub Pages until this is added**.
+6. **Project settings → Your apps → web `</>`** → copy the config into
+   [`docs/js/firebase-config.js`](docs/js/firebase-config.js).
+
+To run without cloud accounts at all, set `FIREBASE_ENABLED = false` in that file.
+
+### Is the config a secret?
+
+No. A Firebase web config identifies the project; it does not grant access. It is designed to ship
+in client code, and committing it is the intended usage. What protects the data is
+`firestore.rules` plus the authorised-domain list. Do not confuse it with a service-account key,
+which *is* a secret and must never be committed.
+
 ## Storage and the optional sync layer
 
 All state — per-certification progress, weak spots, streaks, theme — is in `localStorage` under the
@@ -374,18 +431,17 @@ file is a single line:
 export const progressStore = createProgressStore(new LocalStorageAdapter());
 ```
 
-To add cross-device sync later, write an adapter exposing `get`, `set`, `remove` and `keys`, and
-change that one line. Nothing else in the app touches storage. The members layer is deliberately
-shaped like an account system — a roster of identities, progress keyed by identity id, and a
-`memberSummary()` that is a pure function — so cloud accounts replace the roster rather than
-requiring the rest of the app to change. Reasonable free-tier options:
+That seam is what cloud accounts actually use: `progressStore.setAdapter(cloudAdapter, 'cloud')` on
+sign-in, `setAdapter(null)` on sign-out. Signing in swaps the backend and **nothing else in the app
+changes** — the members layer was deliberately shaped like an account system (a roster of
+identities, progress keyed by identity id, and a pure `memberSummary()`), so an account simply
+becomes the member.
 
-- **Firebase (Firestore + Auth)** — easiest bolt-on to a static site; client SDK via a script tag, no server.
-- **Supabase** — Postgres-backed with a client SDK; more setup, nicer if you later want relational data.
-- **Cloudflare Workers + KV or D1** — best if you want a little server-side logic, such as a leaderboard.
+Device-level preferences (theme) always stay in localStorage, even while signed in.
 
-None of these are implemented; the architecture just does not preclude them. Until then, Profile →
-Export/Import moves progress between browsers as a JSON file.
+Supabase and Cloudflare Workers would slot in the same way if you ever wanted to move. Firebase was
+chosen because Supabase's free tier pauses a project after 7 days of database inactivity, which
+suits a burst-used study app poorly. Profile → Export/Import still works as a manual alternative.
 
 ---
 

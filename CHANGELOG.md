@@ -8,6 +8,60 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.4.0] — 2026-08-19
+
+Cloud accounts. People on their own devices can now sign up and appear on a shared leaderboard,
+which local profiles could never do.
+
+### Added
+
+- **`cloud.js`** — Firebase Authentication (email/password) plus a Firestore-backed storage adapter
+  implementing the same `get/set/remove/keys` contract as the localStorage adapter.
+- **`firebase-config.js`** — project config for `aws-cert-trainer-202be`, with an `FIREBASE_ENABLED`
+  switch that disables cloud entirely and falls back to local profiles.
+- **`firestore.rules`** — the file that actually protects the data. Progress documents are private to
+  their owner; the leaderboard is a separate summary document readable by any signed-in user and
+  writable only by its subject, with field and range validation so nobody can post a large or
+  malformed blob into a shared collection. Anonymous access is denied everywhere.
+- **Sign in / create account / password reset / sign out** on the Members page, with Firebase error
+  codes translated into readable sentences.
+- **Shared leaderboard** across every signed-in user, using the same sort options as the local board.
+- **"Bring local progress with you"** — after signing in, any local profile with study history can be
+  copied into the account. Cloud progress that is already further along is never overwritten.
+- `store.setAdapter()` — the runtime seam the architecture was built around. Signing in swaps the
+  backend and nothing else in the app changes; an account simply becomes the member.
+
+### Design decisions
+
+- **The SDK is lazy-loaded.** `firebase-app`, `firebase-auth` and `firebase-firestore` are imported
+  from Google's CDN only when someone signs in or a previous session is restored. Verified: a visitor
+  on the Members page who does not sign in triggers **zero** external requests, so the offline and
+  strict-CSP behaviour of the local path is unchanged. This preserves the project's no-dependencies
+  invariant for everyone not using cloud.
+- **One read per session, not one per key.** Signing in fetches the user's entire `users/{uid}/data`
+  collection once and serves all later reads from memory. Firestore's free tier bills per document
+  read, and the app reads all 11 certification records on every route render — per-key round trips
+  would have burned quota for nothing.
+- **Only a summary is shared.** What you answered, got wrong and how ready you are stays private;
+  the leaderboard document carries display name, colour, totals, accuracy, mastered count and streak.
+- **Device preferences stay local.** Theme is per-device even when signed in.
+- Leaderboard writes are fingerprinted and skipped when unchanged, rather than written per answer.
+
+### Notes
+
+- The Firebase web config is committed deliberately. It identifies the project; it does not grant
+  access, and it is designed to ship in client code. `firestore.rules` and the authorised-domain list
+  are what enforce access. This is not the same thing as a service-account key, which is a secret.
+- Two console steps are required before cloud sign-in works on the deployed site: publishing
+  `firestore.rules`, and adding the deployment domain under Authentication → Settings → Authorised
+  domains. Firebase seeds that list with `localhost` and the `*.firebaseapp.com` / `*.web.app`
+  domains only.
+- Connectivity was verified without creating an account, by confirming that a deliberately incorrect
+  sign-in returns `auth/invalid-credential` — which proves the config resolves and the
+  Email/Password provider is enabled, since a disabled provider returns `auth/operation-not-allowed`.
+
+---
+
 ## [0.3.0] — 2026-08-18
 
 A teaching layer. The app previously only tested knowledge; it now explains each topic the first
@@ -220,6 +274,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.4.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.4.0
 [0.3.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.3.0
 [0.2.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.2.0
 [0.1.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.1.0

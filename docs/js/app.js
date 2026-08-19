@@ -1,6 +1,7 @@
 import { buildEngine } from './generator.js';
-import { buildProgressionState } from './progression.js';
+import { buildProgressionState, memberSummary } from './progression.js';
 import { progressStore } from './store.js';
+import { cloud, markCloudSeen } from './cloud.js';
 import { createRouter, parseHash, buildHash } from './router.js';
 import { icon } from './icons.js';
 
@@ -68,8 +69,63 @@ function runCleanups() {
 function renderMemberChip(member) {
   const el = document.getElementById('member-chip');
   if (!el || !member) return;
-  el.innerHTML = `${avatar(member, 24)}<span class="chip-name">${member.name.replace(/[<>&]/g, '')}</span>`;
-  el.title = `Studying as ${member.name} — switch member`;
+  const synced = progressStore.mode === 'cloud';
+  el.classList.toggle('synced', synced);
+  el.innerHTML =
+    `${avatar(member, 24)}<span class="chip-name">${member.name.replace(/[<>&]/g, '')}</span>` +
+    (synced ? `<span class="chip-sync" title="Synced to your account">${icon('globe', { size: 12 })}</span>` : '');
+  el.title = synced
+    ? `Signed in as ${member.name} — progress syncs across devices`
+    : `Studying as ${member.name} (this browser only) — switch member`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cloud session                                                       */
+/* ------------------------------------------------------------------ */
+
+let lastPublished = '';
+
+/** Pushes the signed-in user's summary to the shared leaderboard when it changes. */
+async function publishSummary(force = false) {
+  if (progressStore.mode !== 'cloud' || !cloud.user) return;
+  try {
+    const codes = certData.certifications.map((c) => c.code);
+    const member = await progressStore.getActiveMember();
+    const progressByCert = await progressStore.allCerts(codes);
+    const profile = await progressStore.getProfile();
+    const s = memberSummary(member, certData, progressByCert, profile);
+    const payload = {
+      color: member.color,
+      answered: s.answered,
+      correct: s.correct,
+      accuracy: s.accuracy,
+      mastered: s.mastered,
+      avgReadiness: s.avgReadiness,
+      streak: s.streak,
+      longestStreak: s.longestStreak,
+    };
+    const fingerprint = JSON.stringify(payload);
+    if (!force && fingerprint === lastPublished) return;
+    lastPublished = fingerprint;
+    await cloud.publishSummary(payload);
+  } catch (err) {
+    console.error('Could not publish leaderboard summary:', err);
+  }
+}
+
+async function enterCloudMode() {
+  if (!cloud.user || !cloud.adapter) return;
+  progressStore.setAdapter(cloud.adapter, 'cloud');
+  await progressStore.adoptCloudUser(cloud.user);
+  markCloudSeen();
+  await publishSummary(true);
+  await renderRoute(parseHash());
+}
+
+async function exitCloudMode() {
+  progressStore.setAdapter(null);
+  lastPublished = '';
+  await renderRoute(parseHash());
 }
 
 function routeToView(route) {
@@ -111,6 +167,10 @@ async function renderRoute(route) {
     query: route.query,
     refresh: () => renderRoute(parseHash()),
     onCleanup: (fn) => cleanups.push(fn),
+    cloud,
+    publishSummary,
+    onCloudSignIn: enterCloudMode,
+    onCloudSignOut: exitCloudMode,
   };
 
   app.innerHTML = view.render(ctx);
@@ -131,6 +191,9 @@ async function renderRoute(route) {
         : 'AWS Certification Trainer';
 
   if (!route.query.keepScroll) window.scrollTo({ top: 0 });
+
+  // Keep the shared board current without a write per answered question.
+  publishSummary();
 }
 
 async function main() {
@@ -150,6 +213,19 @@ async function main() {
 
   const prefs = await progressStore.getPrefs();
   applyTheme(prefs.theme);
+
+  // Restore a previous cloud session before the first render, so a signed-in
+  // user never sees their local profiles flash up first. Visitors who have
+  // never signed in skip this entirely and download no SDK.
+  try {
+    const restored = await cloud.tryRestore();
+    if (restored && cloud.adapter) {
+      progressStore.setAdapter(cloud.adapter, 'cloud');
+      await progressStore.adoptCloudUser(restored);
+    }
+  } catch (err) {
+    console.error('Could not restore cloud session:', err);
+  }
 
   document.getElementById('theme-toggle')?.addEventListener('click', async () => {
     const current = (await progressStore.getPrefs()).theme;

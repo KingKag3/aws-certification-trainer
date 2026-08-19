@@ -116,27 +116,53 @@ function makeId() {
   return 'm_' + Math.random().toString(36).slice(2, 10);
 }
 
+/** Stable colour choice from a uid, so an account looks the same on every device. */
+function hashCode(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h;
+}
+
 /* ------------------------------------------------------------------ */
 /* Store                                                               */
 /* ------------------------------------------------------------------ */
 
-export function createProgressStore(adapter) {
+export function createProgressStore(initialAdapter) {
   const listeners = new Set();
   const notify = (event) => listeners.forEach((fn) => fn(event));
 
+  let adapter = initialAdapter;
+  const localAdapter = initialAdapter;
+
   const store = {
+    /** 'local' = this browser only; 'cloud' = signed in, synced across devices. */
+    mode: 'local',
+
     subscribe(fn) {
       listeners.add(fn);
       return () => listeners.delete(fn);
     },
 
-    /* prefs (device level, shared by all members) ------------------- */
+    /**
+     * Swaps the storage backend at runtime. This is the seam the whole app was
+     * built around: signing in replaces the adapter and nothing else changes.
+     */
+    setAdapter(next, mode = 'cloud') {
+      adapter = next || localAdapter;
+      store.mode = next ? mode : 'local';
+      notify({ type: 'adapter', mode: store.mode });
+    },
+
+    /** The always-available local backend, for reading local data while signed in. */
+    localAdapter,
+
+    /* prefs (device level — always local, even when signed in) ------- */
     async getPrefs() {
-      return { ...defaultPrefs(), ...(await adapter.get(key('prefs'), {})) };
+      return { ...defaultPrefs(), ...(await localAdapter.get(key('prefs'), {})) };
     },
     async setPrefs(patch) {
       const next = { ...(await store.getPrefs()), ...patch };
-      await adapter.set(key('prefs'), next);
+      await localAdapter.set(key('prefs'), next);
       notify({ type: 'prefs', value: next });
       return next;
     },
@@ -193,6 +219,73 @@ export function createProgressStore(adapter) {
     async getActiveMember() {
       const roster = await store.ensureRoster();
       return roster.members.find((m) => m.id === roster.activeId) || roster.members[0];
+    },
+
+    /**
+     * In cloud mode the account IS the member — one identity, synced. Creates or
+     * refreshes that member so every existing member-aware code path keeps
+     * working without knowing whether it is talking to localStorage or Firestore.
+     */
+    async adoptCloudUser(user) {
+      const roster = await store.getRoster();
+      const existing = roster.members.find((m) => m.id === user.uid);
+      const name = user.displayName || user.email?.split('@')[0] || 'Member';
+      const member = existing
+        ? { ...existing, name, lastActiveAt: Date.now() }
+        : {
+            id: user.uid,
+            name,
+            color: MEMBER_COLORS[Math.abs(hashCode(user.uid)) % MEMBER_COLORS.length],
+            createdAt: Date.now(),
+            lastActiveAt: Date.now(),
+          };
+      const members = existing
+        ? roster.members.map((m) => (m.id === user.uid ? member : m))
+        : [...roster.members, member];
+      await store.saveRoster({ members, activeId: user.uid });
+      return member;
+    },
+
+    /**
+     * Copies one local member's progress into the active (cloud) backend.
+     * Used when someone signs up on a browser that already has local study
+     * history and chooses to bring it with them.
+     */
+    async copyLocalMemberToActive(localMemberId, targetMemberId, codes) {
+      let copied = 0;
+      for (const code of codes) {
+        const raw = await localAdapter.get(memberKey(localMemberId, 'cert', code), null);
+        if (!raw || !raw.answered) continue;
+        const existing = await adapter.get(memberKey(targetMemberId, 'cert', code), null);
+        // Never overwrite cloud progress that is already further along.
+        if (existing && existing.answered >= raw.answered) continue;
+        await adapter.set(memberKey(targetMemberId, 'cert', code), raw);
+        copied++;
+      }
+      const localProfile = await localAdapter.get(memberKey(localMemberId, 'profile'), null);
+      if (localProfile) {
+        const cloudProfile = await adapter.get(memberKey(targetMemberId, 'profile'), null);
+        if (!cloudProfile || (cloudProfile.totalAnswered || 0) < (localProfile.totalAnswered || 0)) {
+          await adapter.set(memberKey(targetMemberId, 'profile'), localProfile);
+        }
+      }
+      notify({ type: 'import' });
+      return copied;
+    },
+
+    /** Local members that actually have progress worth offering to upload. */
+    async localMembersWithProgress(codes) {
+      const roster = { ...emptyRoster(), ...(await localAdapter.get(key('members'), {})) };
+      const out = [];
+      for (const m of roster.members) {
+        let answered = 0;
+        for (const code of codes) {
+          const rec = await localAdapter.get(memberKey(m.id, 'cert', code), null);
+          answered += rec?.answered || 0;
+        }
+        if (answered) out.push({ ...m, answered });
+      }
+      return out;
     },
 
     async addMember(name) {

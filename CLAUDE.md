@@ -32,7 +32,8 @@ docs/            everything GitHub Pages serves
     progression.js readiness, unlock state, roadmap graph (pure)
     store.js       progressStore + member roster — the ONLY module that touches storage
     charts.js      hand-rolled SVG radar / bars / ring / heatmap
-    views/         roadmap, cert, quiz, flashcards, members, profile
+    cloud.js       Firebase auth + Firestore adapter (lazy-loaded on sign-in)
+    views/         roadmap, cert, concepts, quiz, flashcards, members, profile
 tools/test-generator.mjs
 ```
 
@@ -83,10 +84,18 @@ act on the active member, and `getCertFor`/`getProfileFor` take an explicit memb
 leaderboard. `ensureRoster()` migrates pre-members keys into a first member — do not remove that
 migration, older installs depend on it.
 
-**The next planned step is cloud accounts** (Firebase, chosen over Supabase because Supabase's free
-tier pauses a project after 7 days of database inactivity). The member roster is deliberately shaped
-like an account system so cloud identities replace it without changes elsewhere. Note that account
-creation is the user's job — never attempt to sign up for a provider or enter credentials.
+**Cloud accounts are live** (Firebase project `aws-cert-trainer-202be`). Signing in calls
+`store.setAdapter(cloudAdapter, 'cloud')`; signing out passes `null`. An account becomes the member,
+so every member-aware code path works unchanged.
+
+- **Keep the Firebase SDK lazy-loaded** in `cloud.js`. A signed-out visitor must make zero external
+  requests — that is what preserves the offline/no-CDN invariant for the local path.
+- **Read the user's whole `data` collection once on sign-in**, then serve from cache. Firestore bills
+  per document read and the app reads 11 certification records per route render.
+- `firebase-config.js` is public by design and committed deliberately. `firestore.rules` is what
+  protects data. A service-account key would be a secret — never commit one of those.
+- Never sign up for a provider or enter credentials on the user's behalf; account creation and
+  console steps are theirs.
 
 **Charts stay hand-rolled SVG.** No Chart.js, no CDN — the app is intended to work offline and with
 a strict CSP.

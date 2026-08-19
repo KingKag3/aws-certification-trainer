@@ -1,0 +1,74 @@
+rules_version = '2';
+
+// Firestore security rules for the AWS Certification Trainer.
+//
+// Paste these into the Firebase console:
+//   Firestore Database -> Rules -> replace everything -> Publish
+//
+// The Firebase web config in docs/js/firebase-config.js is public by design.
+// THIS FILE is what actually protects the data. Two principles:
+//
+//   1. A user's study progress is private to that user. Nobody else can read
+//      what they answered, got wrong, or how ready they are.
+//   2. The leaderboard is a separate, deliberately small summary document that
+//      any signed-in user may read, but only its owner may write.
+//
+// Nothing is readable by an anonymous visitor.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Private per-user data -------------------------------------
+    // users/{uid}/data/{key} — one document per storage key.
+    match /users/{uid}/data/{key} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // Defensive: no other path under a user document is usable.
+    match /users/{uid}/{document=**} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ---- Shared leaderboard ----------------------------------------
+    // One summary document per user. Readable by any signed-in member so the
+    // board can be rendered; writable only by the person it describes.
+    match /leaderboard/{uid} {
+      allow read: if isSignedIn();
+      allow create, update: if isOwner(uid) && isValidSummary();
+      allow delete: if isOwner(uid);
+    }
+
+    // ---- Everything else is denied ---------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function isOwner(uid) {
+  return request.auth != null && request.auth.uid == uid;
+}
+
+// Keeps the shared document to the fields the board actually renders, and stops
+// anyone posting an arbitrarily large blob into a world-readable collection.
+function isValidSummary() {
+  let d = request.resource.data;
+  return d.uid == request.auth.uid
+    && d.keys().hasOnly([
+         'uid', 'displayName', 'color', 'answered', 'correct', 'accuracy',
+         'mastered', 'avgReadiness', 'streak', 'longestStreak', 'updatedAt'
+       ])
+    && d.displayName is string
+    && d.displayName.size() <= 24
+    && d.answered is int && d.answered >= 0
+    && d.correct is int && d.correct >= 0
+    && d.accuracy is int && d.accuracy >= 0 && d.accuracy <= 100
+    && d.mastered is int && d.mastered >= 0 && d.mastered <= 50
+    && d.avgReadiness is int && d.avgReadiness >= 0 && d.avgReadiness <= 100
+    && d.streak is int && d.streak >= 0
+    && d.longestStreak is int && d.longestStreak >= 0;
+}
