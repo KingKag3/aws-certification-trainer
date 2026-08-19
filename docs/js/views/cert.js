@@ -81,6 +81,9 @@ export function render(ctx) {
       </div>
       <div class="cert-head-side">
         ${ring(readiness.overall, { caption: 'readiness', sub: verdict })}
+        <a class="btn small exam-log-btn" href="${buildHash(['cert', cert.code, 'attempts'])}">
+          ${icon('trophy', { size: 14 })} ${myAttempts.length ? `Exam log (${myAttempts.length})` : 'Sat the real exam?'}
+        </a>
       </div>
     </section>
 

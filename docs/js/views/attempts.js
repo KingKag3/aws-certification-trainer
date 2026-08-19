@@ -37,7 +37,8 @@ export function mount(ctx, root) {
   const host = root.querySelector('#attempts-root');
   const scope = ctx.engine.scopeFor(cert.code);
 
-  let editing = null; // attempt id being edited, or 'new'
+  // ?new=1 opens the form straight away, so the Exams page can deep-link into it.
+  let editing = ctx.query.new ? 'new' : null;
   let draftPitfalls = new Set();
   let pitfallFilter = '';
 
@@ -129,10 +130,18 @@ export function mount(ctx, root) {
           <span>Date sat</span>
           <input name="date" type="date" value="${esc(a.date || todayStr())}" max="${todayStr()}" required>
         </label>
-        <fieldset class="field result-field">
+        <fieldset class="result-field">
           <legend>Result</legend>
-          <label class="radio"><input type="radio" name="result" value="pass"${a.result !== 'fail' ? ' checked' : ''}> Passed</label>
-          <label class="radio"><input type="radio" name="result" value="fail"${a.result === 'fail' ? ' checked' : ''}> Failed</label>
+          <div class="result-toggle">
+            <label class="radio pass">
+              <input type="radio" name="result" value="pass"${a.result !== 'fail' ? ' checked' : ''}>
+              <span class="radio-face">${icon('check', { size: 15 })} Passed</span>
+            </label>
+            <label class="radio fail">
+              <input type="radio" name="result" value="fail"${a.result === 'fail' ? ' checked' : ''}>
+              <span class="radio-face">${icon('warning', { size: 15 })} Failed</span>
+            </label>
+          </div>
         </fieldset>
         <label class="field">
           <span>Scaled score <span class="muted">(optional)</span></span>

@@ -13,6 +13,7 @@ import * as profileView from './views/profile.js';
 import * as membersView from './views/members.js';
 import * as conceptsView from './views/concepts.js';
 import * as attemptsView from './views/attempts.js';
+import * as examsView from './views/exams.js';
 import { avatar } from './views/members.js';
 
 const DATA_FILES = ['services.json', 'certifications.json', 'templates.json'];
@@ -137,6 +138,7 @@ function routeToView(route) {
   if (!first) return { view: roadmapView, params: {} };
   if (first === 'profile') return { view: profileView, params: {} };
   if (first === 'members') return { view: membersView, params: {} };
+  if (first === 'exams') return { view: examsView, params: {} };
   if (first === 'cert' && code) {
     if (sub === 'quiz') return { view: quizView, params: { code, sub } };
     if (sub === 'flashcards') return { view: flashcardsView, params: { code, sub } };
@@ -185,7 +187,8 @@ async function renderRoute(route) {
 
   // Header nav highlighting.
   const first = route.segments[0];
-  document.getElementById('nav-roadmap')?.classList.toggle('current', first !== 'profile' && first !== 'members');
+  document.getElementById('nav-roadmap')?.classList.toggle('current', !['profile', 'members', 'exams'].includes(first));
+  document.getElementById('nav-exams')?.classList.toggle('current', first === 'exams');
   document.getElementById('nav-members')?.classList.toggle('current', first === 'members');
   document.getElementById('nav-profile')?.classList.toggle('current', first === 'profile');
 
@@ -195,7 +198,9 @@ async function renderRoute(route) {
       ? 'Profile · AWS Certification Trainer'
       : first === 'members'
         ? 'Members · AWS Certification Trainer'
-        : 'AWS Certification Trainer';
+        : first === 'exams'
+          ? 'Exams · AWS Certification Trainer'
+          : 'AWS Certification Trainer';
 
   if (!route.query.keepScroll) window.scrollTo({ top: 0 });
 

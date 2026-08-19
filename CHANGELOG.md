@@ -8,6 +8,35 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.5.1] — 2026-08-19
+
+Discoverability and layout fixes for the exam log, from direct feedback: "if I
+can't find it, I can't imagine a user being able to find it."
+
+### Added
+
+- **Exams page** (`views/exams.js`, `#/exams`) and a top-level **Exams** nav entry. The exam log was
+  previously reachable only by picking a certification first and then finding the sixth card in the
+  study-modes row — effectively hidden. The new page shows current certifications, attempts across
+  every exam, expiry warnings, and a one-click picker that deep-links into any exam's log with the
+  form already open (`?new=1`).
+- A prominent **"Sat the real exam?"** button under the readiness ring on each certification
+  dashboard, so the entry point exists where someone would look for it.
+
+### Fixed
+
+- **Pass/fail radios rendered broken.** `.field input { width: 100% }` also matched the radio
+  buttons, stretching each to the full width of the fieldset and pushing its label to the far right.
+  Text inputs are now selected with `:not([type='radio']):not([type='checkbox'])`, and the control
+  was rebuilt as a proper two-button segmented toggle.
+- **`:has(input:checked)` did not re-invalidate.** The first styling attempt used
+  `.radio:has(input:checked)`; changing the selection updated `color` and `font-weight` but left
+  `background` and `border-color` frozen on whichever option painted first, so both buttons could
+  look selected at once. Rewritten as `input:checked + .radio-face`, a plain adjacent-sibling
+  selector. Verified by toggling in both directions and reading computed styles.
+
+---
+
 ## [0.5.0] — 2026-08-19
 
 Real exam attempts. Until now everything the app knew was its own estimate; a logged pass or fail is
@@ -316,6 +345,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.5.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.4.0
 [0.3.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.3.0

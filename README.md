@@ -70,7 +70,8 @@ accuracy or current streak, with a podium for the top three.
 
 Accuracy ranking ignores anyone with fewer than 20 answers — a 3-for-3 start is not a 100% record.
 
-**Real exam attempts** — log each time you sit the actual exam: date, pass or fail, scaled score,
+**Real exam attempts** — reachable from **Exams** in the top nav, or from any certification's
+dashboard. Log each time you sit the actual exam: date, pass or fail, scaled score,
 free-text notes, and **pitfalls** picked from the app's own list of services and concepts. Those
 pitfalls are weighted roughly 2× in your generated quizzes and pinned to the top of Weak spots, so
 logging a failure directly changes what you get drilled on.
@@ -188,7 +189,7 @@ node tools/test-generator.mjs SAA-C03 25
 │       ├── cloud.js          Firebase auth + Firestore adapter (lazy-loaded)
 │       ├── firebase-config.js  project config (public by design)
 │       ├── icons.js          inline SVG icon set
-│       └── views/            roadmap, cert, concepts, quiz, flashcards, members, profile
+│       └── views/            roadmap, cert, concepts, quiz, flashcards, attempts, exams, members, profile
 ├── firestore.rules           security rules — paste into the Firebase console
 ├── tools/test-generator.mjs  standalone engine smoke test
 └── README.md
