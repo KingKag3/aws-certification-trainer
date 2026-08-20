@@ -463,6 +463,34 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .q-kind { color: var(--accent-ink); }
 .q-stem { font-size: 1.16rem; line-height: 1.45; margin: .3rem 0 1.1rem; font-weight: 600; }
 
+/* Exam-style scenario questions carry a situation paragraph above the ask,
+   and per-option rationale revealed after answering. */
+.question-card.scenario { border-left: 3px solid var(--accent); }
+.q-situation {
+  background: var(--surface-2); border-radius: var(--radius-sm);
+  padding: .8rem .9rem; margin: .4rem 0 .9rem;
+  font-size: .95rem; line-height: 1.6;
+}
+.q-diff {
+  font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
+  padding: .08rem .35rem; border-radius: 999px; background: var(--surface-3); color: var(--text-muted);
+}
+.q-diff.medium { background: var(--ok-bg); color: var(--ok); }
+.q-diff.hard { background: var(--bad-bg); color: var(--bad); }
+
+.opt-why {
+  margin: .3rem 0 .2rem 2.2rem; font-size: .85rem; line-height: 1.55;
+  color: var(--text-muted); padding-left: .7rem; border-left: 2px solid var(--border);
+}
+.opt-why.good { border-left-color: var(--good); color: var(--text); }
+.opt-why.bad { border-left-color: var(--bad); }
+.opt-why-tag {
+  display: block; font-size: .64rem; text-transform: uppercase; letter-spacing: .06em;
+  font-weight: 700; margin-bottom: .15rem;
+}
+.opt-why.good .opt-why-tag { color: var(--good); }
+.opt-why.bad .opt-why-tag { color: var(--bad); }
+
 .options { display: flex; flex-direction: column; gap: .55rem; }
 .option {
   width: 100%; display: flex; align-items: center; gap: .7rem; text-align: left;

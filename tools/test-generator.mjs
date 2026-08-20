@@ -21,6 +21,7 @@ const engine = buildEngine({
   services: read('services.json'),
   certifications: read('certifications.json'),
   templates: read('templates.json'),
+  scenarios: read('scenarios.json'),
 });
 
 const only = process.argv[2];

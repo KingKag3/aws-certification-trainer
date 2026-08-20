@@ -70,9 +70,14 @@ export function mount(ctx, root) {
       </header>
       <div class="quiz-progress"><i style="width:${(session.index / quiz.questions.length) * 100}%"></i></div>
 
-      <article class="question-card" data-state="${answer ? 'answered' : 'open'}">
-        <p class="q-domain">D${q.domainNumber} · ${esc(q.domainName)} <span class="q-kind">${esc(q.kindLabel)}</span></p>
-        <h2 class="q-stem">${esc(q.stem)}</h2>
+      <article class="question-card ${q.kind === 'scenario-bank' ? 'scenario' : ''}" data-state="${answer ? 'answered' : 'open'}">
+        <p class="q-domain">D${q.domainNumber} · ${esc(q.domainName)}
+          <span class="q-kind">${esc(q.kindLabel)}</span>
+          ${q.difficulty ? `<span class="q-diff ${esc(q.difficulty)}">${esc(q.difficulty)}</span>` : ''}
+        </p>
+        ${q.situation
+          ? `<p class="q-situation">${esc(q.situation)}</p><h2 class="q-stem">${esc(q.question)}</h2>`
+          : `<h2 class="q-stem">${esc(q.stem)}</h2>`}
         <ul class="options" role="listbox">
           ${q.options
             .map((o, i) => {
@@ -88,6 +93,12 @@ export function mount(ctx, root) {
                   <span class="opt-text">${esc(o.text)}</span>
                   <span class="opt-mark">${answer && i === q.correctIndex ? icon('check', { size: 16 }) : ''}</span>
                 </button>
+                ${answer && o.why
+                  ? `<p class="opt-why ${i === q.correctIndex ? 'good' : 'bad'}">
+                       <span class="opt-why-tag">${i === q.correctIndex ? 'Why this is right' : 'Why not'}</span>
+                       ${esc(o.why)}
+                     </p>`
+                  : ''}
               </li>`;
             })
             .join('')}
@@ -95,8 +106,10 @@ export function mount(ctx, root) {
         ${answer
           ? `<div class="feedback ${answer.correct ? 'good' : 'bad'}">
               <strong>${answer.correct ? 'Correct' : 'Not quite'}</strong>
-              <p>${esc(q.explanation)}</p>
-              ${beginnerDetails(ctx.engine.entityById.get(q.entityId))}
+              ${q.kind === 'scenario-bank' ? '' : `<p>${esc(q.explanation)}</p>`}
+              ${(q.teaches?.length ? q.teaches : [q.entityId])
+                .map((id) => beginnerDetails(ctx.engine.entityById.get(id)))
+                .join('')}
             </div>
             <div class="quiz-actions">
               <button class="btn primary" data-action="next">
@@ -123,12 +136,23 @@ export function mount(ctx, root) {
     const correct = i === q.correctIndex;
     session.answered[session.index] = { chosen: i, correct };
 
-    // Persist immediately so a half-finished session still counts.
-    const current = await ctx.store.getCert(cert.code);
-    await ctx.store.setCert(
-      cert.code,
-      recordAnswer(current, { entityId: q.entityId, domainId: q.domainId, correct })
-    );
+    // Persist immediately so a half-finished session still counts. A scenario
+    // teaches several topics at once, so credit or blame all of them —
+    // otherwise missing a storage-vs-cost trade-off would only ever mark one
+    // of the two services involved.
+    let current = await ctx.store.getCert(cert.code);
+    const touched = q.teaches?.length ? q.teaches : [q.entityId];
+    touched.forEach((entityId, idx) => {
+      current = recordAnswer(current, {
+        entityId,
+        // Only the first call counts as the question itself; the rest just
+        // credit their entity, so one scenario stays one answer.
+        domainId: idx === 0 ? q.domainId : null,
+        countAsAnswered: idx === 0,
+        correct,
+      });
+    });
+    await ctx.store.setCert(cert.code, current);
     const profile = await ctx.store.getProfile();
     await ctx.store.setProfile(recordProfileAnswer(profile, { correct }));
 

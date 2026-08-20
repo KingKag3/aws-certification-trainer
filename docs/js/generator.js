@@ -69,7 +69,8 @@ function sentence(s) {
  * @param {object} data { services, certifications, templates } — the three parsed JSON files.
  */
 export function buildEngine(data) {
-  const { services: svcFile, certifications: certFile, templates: tplFile } = data;
+  const { services: svcFile, certifications: certFile, templates: tplFile, scenarios: scnFile } = data;
+  const scenarioBank = scnFile?.scenarios || [];
 
   const categories = svcFile.categories;
   const services = svcFile.services.map((s) => ({ ...s, kind: 'service' }));
@@ -153,6 +154,53 @@ export function buildEngine(data) {
       explanation,
       ...extra,
     };
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Hand-authored exam-style scenarios                                */
+  /*                                                                   */
+  /* The procedural builders above are good at recall. They cannot     */
+  /* produce a question where two of four answers are nearly right and */
+  /* one constraint separates them — that needs authored judgement, so */
+  /* those live in scenarios.json and are served from here.            */
+  /* ---------------------------------------------------------------- */
+
+  function scenariosFor(certCode) {
+    return scenarioBank.filter((s) => (s.certs || []).includes(certCode));
+  }
+
+  function buildScenario(rng, scenario, cert, domainId) {
+    const options = shuffle(rng, scenario.options.map((o) => ({ ...o }))).map((o, i) => ({
+      ...o,
+      id: `o${i}`,
+    }));
+    const correctIndex = options.findIndex((o) => o.correct);
+    if (correctIndex < 0) return null;
+
+    const domain = domainId
+      ? cert.domains.find((d) => d.id === domainId)
+      : domainForTags(cert, scenario.domainTags, rng);
+
+    return {
+      stem: `${scenario.situation}\n\n${scenario.question}`,
+      situation: scenario.situation,
+      question: scenario.question,
+      options: options.map((o) => ({ id: o.id, text: o.text, why: o.why })),
+      correctIndex,
+      explanation: options[correctIndex].why,
+      domain,
+      teaches: scenario.teaches || [],
+      difficulty: scenario.difficulty || 'medium',
+      scenarioId: scenario.id,
+    };
+  }
+
+  /** Picks the cert domain that best matches a scenario's tags. */
+  function domainForTags(cert, tags, rng) {
+    const want = new Set(tags || []);
+    const matches = cert.domains.filter((d) => d.tags.some((t) => want.has(t)));
+    const pool = matches.length ? matches : cert.domains;
+    return pickWeighted(rng, pool, (d) => d.weight);
   }
 
   const builders = {
@@ -359,6 +407,49 @@ export function buildEngine(data) {
     let attempts = 0;
     const maxAttempts = count * 80;
 
+    /* Authored scenarios first. They are the closest thing here to a real exam
+       question, so they lead the set rather than being sprinkled in — but the
+       bank is finite, so the generator fills whatever is left. */
+    const wantScenarios = opts.scenarioShare ?? 0.5;
+    let scenarioPool = shuffle(
+      rng,
+      scenariosFor(certCode).filter((s) => {
+        if (restrictTo && !(s.teaches || []).some((t) => restrictTo.has(t))) return false;
+        if (!domainId) return true;
+        const d = cert.domains.find((x) => x.id === domainId);
+        return (s.domainTags || []).some((t) => d.tags.includes(t));
+      })
+    );
+    const scenarioTarget = Math.min(scenarioPool.length, Math.round(count * wantScenarios));
+
+    for (const scenario of scenarioPool.slice(0, scenarioTarget)) {
+      const built = buildScenario(rng, scenario, cert, domainId);
+      if (!built) continue;
+      usedKeys.add(`scenario:${scenario.id}`);
+      questions.push({
+        id: `q${questions.length + 1}-${seed}-s`,
+        certCode,
+        templateId: 'scenario-bank',
+        kind: 'scenario-bank',
+        kindLabel: 'Exam-style scenario',
+        entityId: built.teaches[0] || 'scenario',
+        entityName: entityById.get(built.teaches[0])?.name || 'Scenario',
+        teaches: built.teaches,
+        domainId: built.domain.id,
+        domainName: built.domain.name,
+        domainNumber: built.domain.number,
+        stem: built.stem,
+        situation: built.situation,
+        question: built.question,
+        options: built.options,
+        correctIndex: built.correctIndex,
+        explanation: built.explanation,
+        difficulty: built.difficulty,
+        scenarioId: built.scenarioId,
+        tags: scenario.domainTags || [],
+      });
+    }
+
     while (questions.length < count && attempts < maxAttempts) {
       attempts++;
 
@@ -431,12 +522,17 @@ export function buildEngine(data) {
       });
     }
 
+    // Scenarios lead, but a set that was all scenarios then all recall would
+    // feel like two quizzes stapled together, so interleave.
+    const mixed = shuffle(rng, questions).map((q, i) => ({ ...q, id: `q${i + 1}-${seed}` }));
+
     return {
       certCode,
       domainId,
       seed,
-      questions,
-      exhausted: questions.length < count,
+      questions: mixed,
+      scenarioCount: mixed.filter((q) => q.kind === 'scenario-bank').length,
+      exhausted: mixed.length < count,
     };
   }
 

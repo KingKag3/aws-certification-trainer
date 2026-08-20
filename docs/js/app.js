@@ -16,17 +16,17 @@ import * as attemptsView from './views/attempts.js';
 import * as examsView from './views/exams.js';
 import { avatar } from './views/members.js';
 
-const DATA_FILES = ['services.json', 'certifications.json', 'templates.json'];
+const DATA_FILES = ['services.json', 'certifications.json', 'templates.json', 'scenarios.json'];
 
 async function loadData() {
-  const [services, certifications, templates] = await Promise.all(
+  const [services, certifications, templates, scenarios] = await Promise.all(
     DATA_FILES.map(async (f) => {
       const res = await fetch(new URL(`../data/${f}`, import.meta.url));
       if (!res.ok) throw new Error(`Could not load data/${f} (${res.status})`);
       return res.json();
     })
   );
-  return { services, certifications, templates };
+  return { services, certifications, templates, scenarios };
 }
 
 /* ------------------------------------------------------------------ */

@@ -477,20 +477,34 @@ function dayDiff(a, b) {
   return Math.round((toUtc(a) - toUtc(b)) / 86400000);
 }
 
-/** Fold one answered question into a certification's progress record. */
-export function recordAnswer(progress, { entityId, domainId, correct, at = Date.now() }) {
+/**
+ * Fold one answered question into a certification's progress record.
+ *
+ * `countAsAnswered: false` records the entity's hit or miss without touching
+ * the question tallies. A scenario question teaches several topics at once, so
+ * it calls this repeatedly — one call counts as the question, the rest only
+ * credit their entity. Without that, one scenario would read as three answers.
+ */
+export function recordAnswer(
+  progress,
+  { entityId, domainId, correct, at = Date.now(), countAsAnswered = true }
+) {
   const next = {
     ...progress,
-    answered: progress.answered + 1,
-    correct: progress.correct + (correct ? 1 : 0),
+    answered: progress.answered + (countAsAnswered ? 1 : 0),
+    correct: progress.correct + (countAsAnswered && correct ? 1 : 0),
     domains: { ...progress.domains },
     entities: { ...progress.entities },
     startedAt: progress.startedAt || at,
     lastStudiedAt: at,
   };
 
-  const d = next.domains[domainId] || { answered: 0, correct: 0 };
-  next.domains[domainId] = { answered: d.answered + 1, correct: d.correct + (correct ? 1 : 0) };
+  // domainId may be null when one question credits several entities — see the
+  // scenario handling in views/quiz.js — so the domain tally is not inflated.
+  if (domainId) {
+    const d = next.domains[domainId] || { answered: 0, correct: 0 };
+    next.domains[domainId] = { answered: d.answered + 1, correct: d.correct + (correct ? 1 : 0) };
+  }
 
   const e = next.entities[entityId] || { seen: 0, missed: 0, lastSeenAt: 0, lastMissedAt: 0 };
   next.entities[entityId] = {

@@ -4,8 +4,8 @@
     {
       "name": "aws-study-guide",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8772", "--directory", "docs"],
-      "port": 8772
+      "runtimeArgs": ["-m", "http.server", "8773", "--directory", "docs"],
+      "port": 8773
     }
   ]
 }
