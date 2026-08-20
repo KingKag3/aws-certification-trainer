@@ -2,6 +2,7 @@ import { icon } from '../icons.js';
 import { heatmap, ring } from '../charts.js';
 import { buildHash } from '../router.js';
 import { currentStreak } from '../store.js';
+import { support, supportUrl } from '../support-config.js';
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -107,6 +108,17 @@ export function render(ctx) {
               </a>`
             )
             .join('')}</div>
+        </section>`
+      : ''}
+
+    ${supportUrl()
+      ? `<section class="panel support-panel">
+          <h3>${icon('flame', { size: 18 })} Support this project</h3>
+          <p class="muted small">${esc(support.blurb)}</p>
+          <p class="muted small">There is no paid tier and nothing is locked. Every certification, every mock and every scenario is free, and stays that way.</p>
+          <a class="btn primary" href="${esc(supportUrl())}" target="_blank" rel="noopener">
+            ${icon('flame', { size: 15 })} Buy me a coffee ${icon('external', { size: 13 })}
+          </a>
         </section>`
       : ''}
 

@@ -4,6 +4,7 @@ import { progressStore } from './store.js';
 import { cloud, markCloudSeen } from './cloud.js';
 import { createRouter, parseHash, buildHash } from './router.js';
 import { icon } from './icons.js';
+import { support, supportUrl } from './support-config.js';
 
 import * as roadmapView from './views/roadmap.js';
 import * as certView from './views/cert.js';
@@ -29,6 +30,17 @@ async function loadData() {
     })
   );
   return { services, certifications, templates, scenarios };
+}
+
+/** Footer support link. Renders nothing at all when no handle is configured. */
+function renderSupportFooter() {
+  const el = document.getElementById('support-footer');
+  const url = supportUrl();
+  if (!el || !url) return;
+  el.hidden = false;
+  el.innerHTML =
+    `${icon('flame', { size: 15 })} <span>${support.blurb.replace(/[<>&]/g, '')}</span> ` +
+    `<a href="${url}" target="_blank" rel="noopener">Buy me a coffee ${icon('external', { size: 12 })}</a>`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -230,6 +242,8 @@ async function main() {
     </div>`;
     return;
   }
+
+  renderSupportFooter();
 
   const prefs = await progressStore.getPrefs();
   applyTheme(prefs.theme);

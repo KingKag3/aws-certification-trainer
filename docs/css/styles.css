@@ -1245,3 +1245,14 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .ms-label { flex: 1; }
 .ms-by { font-size: .78rem; color: var(--text-faint); white-space: nowrap; }
 .milestones li.done .ms-by { color: var(--good); }
+
+/* ---- Support link ------------------------------------------------------- */
+.support-footer {
+  display: flex; align-items: center; gap: .45rem; flex-wrap: wrap;
+  font-size: .88rem; color: var(--text-muted); margin: .8rem 0;
+  padding-top: .8rem; border-top: 1px solid var(--border);
+}
+.support-footer .icon { color: var(--accent); flex: none; }
+.support-footer a { display: inline-flex; align-items: center; gap: .25rem; font-weight: 600; }
+.support-panel { border-left: 3px solid var(--accent); }
+.support-panel .btn { margin-top: .4rem; }

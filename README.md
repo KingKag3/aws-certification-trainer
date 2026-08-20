@@ -197,6 +197,7 @@ node tools/test-generator.mjs SAA-C03 25
 │       ├── cloud.js          Firebase auth + Firestore adapter (lazy-loaded)
 │       ├── firebase-config.js  project config (public by design)
 │       ├── icons.js          inline SVG icon set
+│       ├── support-config.js optional Ko-fi link — empty handle hides it
 │       └── views/            roadmap, cert, concepts, quiz, mock, plan, flashcards, attempts, exams, members, profile
 ├── firestore.rules           security rules — paste into the Firebase console
 ├── tools/test-generator.mjs  standalone engine smoke test
@@ -619,6 +620,27 @@ Recent changes reflected in the data:
   through 28 September 2026). The app still carries MLA-C01.
 
 ---
+
+## Supporting the project
+
+There is no paid tier. Every certification, mock exam and scenario is free and stays that way.
+
+An optional Ko-fi link can be shown in the footer and on the Profile page. Set your handle in
+[`docs/js/support-config.js`](docs/js/support-config.js):
+
+```js
+export const support = {
+  handle: 'yourkofiname',   // the part after ko-fi.com/ — leave empty to hide it entirely
+  blurb: 'This is free and always will be. If it helped you pass, a coffee is appreciated.',
+};
+```
+
+Leave `handle` empty and nothing renders anywhere — no link, no panel, no markup.
+
+It is a plain anchor rather than Ko-fi's embed widget on purpose. The widget loads a third-party
+script on every page view, which would break the promise that a signed-out visitor makes zero
+external requests. Verified: with the link enabled, the page still pulls nothing from outside the
+origin.
 
 ## Licence and disclaimer
 

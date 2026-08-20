@@ -8,6 +8,25 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [1.1.0] — 2026-08-19
+
+### Added
+
+- **Optional Ko-fi support link**, configured in `docs/js/support-config.js`. Appears in the footer
+  and as a panel on the Profile page. An empty `handle` renders nothing anywhere — no link, no
+  panel, no markup — so the feature is genuinely off rather than merely hidden.
+- Wording is deliberately unpushy: no modal, no interstitial, no prompt after passing a mock. Two
+  quiet places, and a line stating plainly that nothing is paywalled.
+
+### Design note
+
+It is a plain anchor, not Ko-fi's embed widget. The widget loads a third-party script on every page
+view, which would break the promise that a signed-out visitor makes zero external requests — the
+same reason charts are hand-rolled SVG and the Firebase SDK is lazy-loaded. Verified with the link
+enabled: the page still requests nothing from outside its own origin.
+
+---
+
 ## [1.0.0] — 2026-08-19
 
 Study plans. Enter the date you sit the exam and the app works backwards to what to do today.
@@ -569,6 +588,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[1.1.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v1.1.0
 [1.0.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v1.0.0
 [0.9.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.9.0
 [0.8.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.8.0
