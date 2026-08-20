@@ -71,7 +71,9 @@ export function mount(ctx, root) {
           <div><dt>Time limit</dt><dd>${minutes} min</dd></div>
           <div><dt>Pass mark</dt><dd>${cert.exam.passingScore}<span> of ${cert.exam.scoreRange[1]}</span></dd></div>
           <div><dt>Per question</dt><dd>${(minutes * 60 / total).toFixed(0)}s<span> average</span></dd></div>
+          <div><dt>Scenario bank</dt><dd>${cert.scenarioCount ?? 0}<span> authored</span></dd></div>
         </dl>
+        <p class="muted small">A sitting uses every authored scenario available for this exam and fills the rest with generated questions, so the more of the bank there is, the closer a mock sits to the real thing.</p>
 
         <h3>How this differs from a quiz</h3>
         <ul class="mock-rules">

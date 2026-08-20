@@ -8,6 +8,42 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.9.0] — 2026-08-19
+
+Scenario bank more than doubled: **47 → 113**. Every certification now has at least 15.
+
+### Added
+
+- **66 new exam-style scenarios**, written to the same standard as the rest: one hard constraint
+  the wrong answers break, distractors that are genuinely tempting, and a rationale on every option
+  explaining which constraint it violates.
+- Coverage is now even rather than concentrated on Solutions Architect:
+
+  | | before | after |
+  | --- | --- | --- |
+  | SAA-C03 | 26 | 38 |
+  | CLF-C02 / SCS-C03 | 9 | 20 |
+  | MLA-C01 / SAP-C02 / DOP-C02 | 4–6 | 16 |
+  | AIF-C01 / DVA-C02 / SOA-C03 / DEA-C01 / AIP-C01 | 4–8 | 15 |
+
+- The mock exam brief now shows the size of that exam's scenario bank, because it determines how
+  close a sitting gets to the real thing.
+
+### Changed
+
+- All eleven certifications reach the `full` data bar (15+ authored scenarios), so the "growing
+  pool" badge no longer appears on any roadmap node.
+- A full mock is now 20–58% authored exam-style questions depending on the exam, against 3–32%
+  before. SAA-C03 leads at 38 of 65.
+
+### Note
+
+The generator still supplies the remainder of a 65-question mock, and those are recall questions
+rather than exam-grade judgement. Bank growth is what closes that gap, and it is a content task
+rather than an engineering one.
+
+---
+
 ## [0.8.0] — 2026-08-19
 
 Built out the nine stub certifications. Every exam now has real exam-specific
@@ -495,6 +531,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.9.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.9.0
 [0.8.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.8.0
 [0.7.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.7.0
 [0.6.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.1

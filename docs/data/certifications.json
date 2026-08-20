@@ -234,14 +234,14 @@
         "videoChannel": "freeCodeCamp.org",
         "videoIsSearchFallback": false
       },
-      "scenarioCount": 9
+      "scenarioCount": 20
     },
     {
       "code": "AIF-C01",
       "name": "AWS Certified AI Practitioner",
       "shortName": "AI Practitioner",
       "tier": "foundational",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-ai-practitioner/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html",
       "tagline": "Foundational understanding of AI, ML and generative AI concepts and AWS AI tooling.",
@@ -352,8 +352,7 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 6,
-      "contentTodo": "Has 6 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 15
     },
     {
       "code": "SAA-C03",
@@ -550,14 +549,14 @@
         "videoChannel": "freeCodeCamp.org",
         "videoIsSearchFallback": false
       },
-      "scenarioCount": 26
+      "scenarioCount": 38
     },
     {
       "code": "DVA-C02",
       "name": "AWS Certified Developer – Associate",
       "shortName": "Developer",
       "tier": "associate",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-developer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html",
       "tagline": "Develop, package, deploy and debug AWS Cloud applications with CI/CD workflows.",
@@ -664,15 +663,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 8,
-      "contentTodo": "Has 8 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 15
     },
     {
       "code": "SOA-C03",
       "name": "AWS Certified CloudOps Engineer – Associate",
       "shortName": "CloudOps Engineer",
       "tier": "associate",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/sysops-administrator-associate-03/sysops-administrator-associate-03.html",
       "tagline": "Deploy, manage and operate workloads on AWS. Renamed from SysOps Administrator – Associate.",
@@ -797,15 +795,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 5,
-      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 15
     },
     {
       "code": "DEA-C01",
       "name": "AWS Certified Data Engineer – Associate",
       "shortName": "Data Engineer",
       "tier": "associate",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-data-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html",
       "tagline": "Implement data pipelines, then monitor, troubleshoot and optimise their cost and performance.",
@@ -912,15 +909,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 4,
-      "contentTodo": "Has 4 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 15
     },
     {
       "code": "MLA-C01",
       "name": "AWS Certified Machine Learning Engineer – Associate",
       "shortName": "ML Engineer",
       "tier": "associate",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-01/machine-learning-engineer-associate-01.html",
       "tagline": "Build, operationalise, deploy and maintain ML solutions and pipelines on AWS.",
@@ -1029,15 +1025,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 6,
-      "contentTodo": "Has 6 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 16
     },
     {
       "code": "SAP-C02",
       "name": "AWS Certified Solutions Architect – Professional",
       "shortName": "SA Professional",
       "tier": "professional",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html",
       "tagline": "Design optimised AWS solutions across organisational complexity, migration and modernisation.",
@@ -1171,15 +1166,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 5,
-      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 16
     },
     {
       "code": "DOP-C02",
       "name": "AWS Certified DevOps Engineer – Professional",
       "shortName": "DevOps Engineer",
       "tier": "professional",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/devops-engineer-professional-02/devops-engineer-professional-02.html",
       "tagline": "Provision, operate and manage distributed systems on AWS with automated delivery and recovery.",
@@ -1309,15 +1303,14 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 4,
-      "contentTodo": "Has 4 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 16
     },
     {
       "code": "AIP-C01",
       "name": "AWS Certified Generative AI Developer – Professional",
       "shortName": "GenAI Developer",
       "tier": "professional",
-      "dataStatus": "developing",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-generative-ai-developer-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html",
       "tagline": "Integrate foundation models into production applications, agents and business workflows.",
@@ -1432,8 +1425,7 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 5,
-      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
+      "scenarioCount": 15
     },
     {
       "code": "SCS-C03",
@@ -1572,7 +1564,7 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "scenarioCount": 9
+      "scenarioCount": 20
     }
   ],
   "retired": [
