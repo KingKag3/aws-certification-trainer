@@ -8,6 +8,53 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.7.0] — 2026-08-19
+
+Full-length timed mock exams, and flashcards that fit their content.
+
+### Added
+
+- **Mock exam** (`views/mock.js`, `#/cert/<code>/mock`) — a full sitting under exam conditions:
+  the certification's real question count and time limit, **no feedback until you submit**, a
+  countdown that turns amber at five minutes and red at one, and automatic submission when it hits
+  zero with unanswered questions marked incorrect exactly as they would be on the day.
+  - Free movement between questions, flag-for-review, and a navigator grid showing answered and
+    flagged state at a glance.
+  - Results give the **raw percentage first** and a scaled estimate second. AWS does not publish how
+    raw answers map onto its 100–1000 scale, so the estimate is labelled as one rather than dressed
+    up as a real score.
+  - Domain-by-domain breakdown, plus every incorrect answer reviewed with both why the right answer
+    is right and **why the one you picked was wrong**.
+  - Answers still count toward readiness and weak spots — it is practice, not a sandbox. Verified as
+    65 answered / 4 domains recorded after a sitting.
+  - Sittings are kept in history (last 50) and shown on the brief screen before the next attempt.
+- `store.getMocks()` / `addMock()`, synced through the same adapter as everything else.
+
+### Changed
+
+- Mock exams request `scenarioShare: 1`, so every authored scenario available for that exam is used
+  before the generator fills the rest. SAA-C03 currently seeds 21 of 65 from the scenario bank,
+  CLF-C02 8 of 65.
+
+### Fixed
+
+- **Flashcards were pinned to a fixed 400px** with absolutely positioned faces, so a long back —
+  EC2 runs to about 790px — scrolled inside a cramped box. Both faces now share one CSS grid cell,
+  which lets the card size itself to the taller face.
+- **Every verified video link on a card back was unclickable.** Hit-testing does not resolve through
+  a rotated `preserve-3d` subtree: `elementFromPoint` over the back face returned the container, not
+  the link. The 3D flip was replaced with a crossfade. `visibility` is deliberately excluded from
+  the transition so the hidden face is genuinely gone even where transitions do not run.
+
+### Note
+
+This environment does not composite frames, which is why screenshots are unavailable — and it also
+means CSS transitions never advance, so `getComputedStyle` reports transitioned properties frozen at
+their starting value. That produced two false alarms while debugging. Properties that must be
+correct rather than merely animated are now set outside any transition.
+
+---
+
 ## [0.6.1] — 2026-08-19
 
 ### Fixed
@@ -403,6 +450,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.7.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.7.0
 [0.6.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.1
 [0.6.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.0
 [0.5.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.1

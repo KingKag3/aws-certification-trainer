@@ -107,6 +107,10 @@ export function render(ctx) {
           ${icon('flame', { size: 22 })}<strong>Weak spots</strong>
           <span>${weak.length ? `${weak.length} topic${weak.length === 1 ? '' : 's'} you have missed.` : 'Nothing missed yet — answer some questions first.'}</span>
         </a>
+        <a class="mode-card mock" href="${buildHash(['cert', cert.code, 'mock'])}">
+          ${icon('target', { size: 22 })}<strong>Mock exam</strong>
+          <span>${cert.exam.questions} questions, ${cert.exam.minutes ?? '—'} minutes, no feedback until you submit. Exam conditions.</span>
+        </a>
         <a class="mode-card" href="${buildHash(['cert', cert.code, 'quiz'], { n: 20 })}">
           ${icon('play', { size: 22 })}<strong>Long set</strong>
           <span>20 questions in one run, for a fuller readiness signal.</span>

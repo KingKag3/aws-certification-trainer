@@ -14,6 +14,7 @@ import * as membersView from './views/members.js';
 import * as conceptsView from './views/concepts.js';
 import * as attemptsView from './views/attempts.js';
 import * as examsView from './views/exams.js';
+import * as mockView from './views/mock.js';
 import { avatar } from './views/members.js';
 
 const DATA_FILES = ['services.json', 'certifications.json', 'templates.json', 'scenarios.json'];
@@ -144,6 +145,7 @@ function routeToView(route) {
     if (sub === 'flashcards') return { view: flashcardsView, params: { code, sub } };
     if (sub === 'concepts') return { view: conceptsView, params: { code, sub } };
     if (sub === 'attempts') return { view: attemptsView, params: { code, sub } };
+    if (sub === 'mock') return { view: mockView, params: { code, sub } };
     return { view: certView, params: { code } };
   }
   return { view: roadmapView, params: {} };
@@ -157,6 +159,7 @@ async function renderRoute(route) {
   const progressByCert = await progressStore.allCerts(codes);
   const profile = await progressStore.getProfile();
   const attempts = await progressStore.getAttempts();
+  const mocks = await progressStore.getMocks();
   const state = buildProgressionState(certData, progressByCert, attempts);
 
   renderMemberChip(activeMember);
@@ -171,6 +174,7 @@ async function renderRoute(route) {
     progressByCert,
     profile,
     attempts,
+    mocks,
     activeMember,
     params,
     query: route.query,

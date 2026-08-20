@@ -48,6 +48,7 @@ official exam facts, and links to the official exam page and exam guide.
 | Flashcards | Every in-scope service and concept: plain-English explanation first, then purpose, use cases, gotchas, commonly-confused points, billing basis |
 | Weak spots | A quiz built only from topics you have previously missed |
 | Domain drill | Pick one exam domain and quiz only that |
+| Mock exam | A full-length timed sitting under exam conditions — no feedback until you submit |
 | Exam log | Record real exam attempts: pass/fail, scaled score, and the topics that caught you out |
 
 **Explain it like I'm new** — every service and concept carries a plain-English explanation written for
@@ -195,7 +196,7 @@ node tools/test-generator.mjs SAA-C03 25
 │       ├── cloud.js          Firebase auth + Firestore adapter (lazy-loaded)
 │       ├── firebase-config.js  project config (public by design)
 │       ├── icons.js          inline SVG icon set
-│       └── views/            roadmap, cert, concepts, quiz, flashcards, attempts, exams, members, profile
+│       └── views/            roadmap, cert, concepts, quiz, mock, flashcards, attempts, exams, members, profile
 ├── firestore.rules           security rules — paste into the Firebase console
 ├── tools/test-generator.mjs  standalone engine smoke test
 └── README.md

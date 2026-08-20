@@ -417,6 +417,25 @@ export function createProgressStore(initialAdapter) {
       return store.saveAttempts(list.filter((a) => a.id !== id));
     },
 
+    /* mock exam results (active member) ---------------------------- */
+    async getMocks() {
+      const m = await store.getActiveMember();
+      return store.getMocksFor(m.id);
+    },
+    async getMocksFor(memberId) {
+      const list = await adapter.get(memberKey(memberId, 'mocks'), []);
+      return Array.isArray(list) ? list : [];
+    },
+    async addMock(result) {
+      const m = await store.getActiveMember();
+      const list = await store.getMocksFor(m.id);
+      const record = { id: makeAttemptId().replace('a_', 'm_'), takenAt: Date.now(), ...result };
+      const next = [record, ...list].slice(0, 50);
+      await adapter.set(memberKey(m.id, 'mocks'), next);
+      notify({ type: 'mocks', memberId: m.id, value: next });
+      return record;
+    },
+
     /* profile ------------------------------------------------------ */
     async getProfile() {
       const m = await store.getActiveMember();
