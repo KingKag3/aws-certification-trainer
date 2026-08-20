@@ -580,16 +580,27 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 }
 .card-counter { text-align: center; font-size: .8rem; color: var(--text-faint); margin-bottom: .5rem; }
 
-.flashcard { perspective: 1400px; cursor: pointer; }
-.flash-inner {
-  position: relative; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.2, .8, .2, 1);
-  min-height: 400px;
-}
-.flashcard.flipped .flash-inner { transform: rotateY(180deg); }
+.flashcard { cursor: pointer; }
+/* Both faces share one grid cell, so the card sizes itself to the taller of
+   the two rather than being pinned to a fixed height with the long side
+   scrolling inside it.
+
+   This was a 3D rotateY flip. It was dropped because hit-testing does not
+   resolve through a rotated preserve-3d subtree — elementFromPoint over the
+   back face returned the container, so every video link on a card back was
+   unclickable. A crossfade loses a little flourish and gains a working link. */
+.flash-inner { position: relative; display: grid; min-height: 280px; }
 .flash-face {
-  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  grid-area: 1 / 1;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 1.4rem; box-shadow: var(--shadow-md); overflow: auto;
+  padding: 1.4rem; box-shadow: var(--shadow-md); min-width: 0;
+  transition: opacity .28s ease;
+}
+/* visibility is deliberately not transitioned: it must take effect immediately
+   so the hidden face is genuinely gone even where transitions do not run. */
+.flashcard:not(.flipped) .flash-face.back,
+.flashcard.flipped .flash-face.front {
+  opacity: 0; visibility: hidden; pointer-events: none;
 }
 .flash-face.front {
   display: grid; place-content: center; text-align: center; gap: .6rem;
@@ -598,7 +609,6 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .flash-face.front h3 { font-size: 1.6rem; margin: 0; }
 .flash-cat { display: inline-flex; align-items: center; gap: .35rem; font-size: .76rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); justify-self: center; }
 .flash-hint { font-size: .78rem; color: var(--text-faint); margin: 0; }
-.flash-face.back { transform: rotateY(180deg); }
 .flash-purpose { font-size: 1rem; font-weight: 550; margin-bottom: .9rem; }
 .flash-block { margin-bottom: .85rem; }
 .flash-block h4 { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); margin-bottom: .3rem; }
@@ -1110,7 +1120,7 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
-  .flash-inner { transition: none; }
+  .flash-face { transition: none; }
 }
 
 @media print {
