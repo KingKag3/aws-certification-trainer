@@ -8,6 +8,32 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.6.1] — 2026-08-19
+
+### Fixed
+
+- **Collapsed sections painted their content on top of the next card.** Every one of the 124
+  "The technical detail" blocks on a Concepts page was leaking. A closed `<details>` reserves only
+  the height of its summary, but `.flash-block ul` sets `display: flex`, and an author `display` on
+  a descendant defeats the browser's hiding of closed-details content. The content therefore
+  rendered *outside* its own element's box and landed on whatever followed it. Fixed with an
+  explicit `details:not([open]) > *:not(summary) { display: none }` rather than trusting the UA
+  stylesheet — which also protects the "Explain like I'm new" and quiz-review sections from the
+  same failure.
+- **The "draft pool" badge overlapped the status text** on the nine stub certification nodes on the
+  roadmap. The badge is pinned to the corner, so the status row now reserves space for it.
+
+### Note on how this was missed
+
+Screenshots are unavailable in this environment, and every check up to this point had been
+computed styles, bounding boxes and horizontal-overflow measurement. None of those detect elements
+painting on top of one another. Verification now includes a hit-test pass — for each text block,
+ask the document which element is actually on top at that point — which is what found both bugs and
+also correctly cleared two false positives (the flip card's two faces, and card content clipped
+inside a scroll container, both of which a rectangle-intersection test wrongly flags).
+
+---
+
 ## [0.6.0] — 2026-08-19
 
 Video coverage sweep: **27 verified videos to 109**, out of 138 topics.
@@ -377,6 +403,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.6.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.1
 [0.6.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.0
 [0.5.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.5.0

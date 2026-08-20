@@ -141,6 +141,13 @@ img, svg { max-width: 100%; }
 button, select, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
+/* A closed <details> is meant to hide everything but its summary. That hiding
+   is defeated by an author `display` on a descendant — `.flash-block ul` is
+   `display: flex`, which made all 124 collapsed sections on the Concepts page
+   paint their content outside the element's own box and land on top of the
+   next card. Hide it explicitly rather than trusting the UA stylesheet. */
+details:not([open]) > *:not(summary) { display: none !important; }
+
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -321,7 +328,10 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 .cert-node.mastered { box-shadow: var(--shadow-sm), 0 0 0 1px color-mix(in srgb, var(--mastered) 45%, transparent); }
 .cert-node.locked { opacity: .68; }
 
+/* The draft badge is pinned to the top-right corner, so the status text needs
+   room to sit clear of it rather than running underneath. */
 .node-top { display: flex; justify-content: space-between; align-items: center; gap: .4rem; }
+.cert-node:has(.node-draft) .node-top { padding-right: 4.6rem; }
 .node-code { font-family: var(--mono); font-size: .7rem; color: var(--text-faint); letter-spacing: .01em; }
 .node-status { display: inline-flex; align-items: center; gap: .22rem; font-size: .66rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 650; color: var(--text-muted); }
 .cert-node.mastered .node-status { color: var(--mastered); }
