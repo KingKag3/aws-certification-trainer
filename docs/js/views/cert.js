@@ -1,7 +1,7 @@
 import { icon } from '../icons.js';
 import { radarChart, domainBars, ring } from '../charts.js';
 import { buildHash } from '../router.js';
-import { weakEntities, pitfallIds, attemptsFor } from '../progression.js';
+import { weakEntities, pitfallIds, attemptsFor, buildStudyPlan } from '../progression.js';
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -87,6 +87,29 @@ export function render(ctx) {
       </div>
     </section>
 
+    ${(() => {
+      const plan = ctx.plans?.[cert.code];
+      if (!plan) {
+        return `<a class="plan-strip empty" href="${buildHash(['cert', cert.code, 'plan'])}">
+          ${icon('map', { size: 20 })}
+          <div><strong>Got an exam date?</strong><p>Set it and this works out what to do today, and whether you are on track.</p></div>
+          ${icon('arrowRight', { size: 16 })}
+        </a>`;
+      }
+      const p = buildStudyPlan({
+        cert, readiness, progress, plan, mocks: ctx.mocks || [], config,
+      });
+      if (!p) return '';
+      return `<a class="plan-strip ${p.status}" href="${buildHash(['cert', cert.code, 'plan'])}">
+        <span class="plan-strip-days"><strong>${p.daysLeft < 0 ? '—' : p.daysLeft}</strong><span>${p.daysLeft < 0 ? 'passed' : 'days'}</span></span>
+        <div>
+          <strong>${esc(p.today.headline)}</strong>
+          <p>${esc(p.today.detail)}</p>
+        </div>
+        ${icon('arrowRight', { size: 16 })}
+      </a>`;
+    })()}
+
     <section class="modes">
       <h3>Study modes</h3>
       <div class="mode-grid">
@@ -110,6 +133,12 @@ export function render(ctx) {
         <a class="mode-card mock" href="${buildHash(['cert', cert.code, 'mock'])}">
           ${icon('target', { size: 22 })}<strong>Mock exam</strong>
           <span>${cert.exam.questions} questions, ${cert.exam.minutes ?? '—'} minutes, no feedback until you submit. Exam conditions.</span>
+        </a>
+        <a class="mode-card" href="${buildHash(['cert', cert.code, 'plan'])}">
+          ${icon('map', { size: 22 })}<strong>Study plan</strong>
+          <span>${ctx.plans?.[cert.code]
+            ? `Exam booked for ${esc(new Date(ctx.plans[cert.code].examDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }))}. Daily target and checkpoints.`
+            : 'Set your exam date and work backwards to a daily target.'}</span>
         </a>
         <a class="mode-card" href="${buildHash(['cert', cert.code, 'quiz'], { n: 20 })}">
           ${icon('play', { size: 22 })}<strong>Long set</strong>

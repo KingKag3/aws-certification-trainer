@@ -178,6 +178,124 @@ export function buildProgressionState(certData, progressByCert, attempts = []) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Study plan — working backwards from a booked exam date              */
+/* ------------------------------------------------------------------ */
+
+const DAY = 86400000;
+
+function toDate(iso) {
+  const [y, m, d] = String(iso).split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function isoOf(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/**
+ * Turns "my exam is on the 12th" into "here is what to do today".
+ *
+ * The work still outstanding is derived from the same readiness rules the rest
+ * of the app uses, so the plan cannot drift from what the dashboard says. Pure,
+ * like everything else here — the view supplies the data and renders the result.
+ */
+export function buildStudyPlan({ cert, readiness, progress, plan, mocks = [], config, now = new Date() }) {
+  if (!plan?.examDate) return null;
+
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const exam = toDate(plan.examDate);
+  const started = plan.createdAt ? new Date(plan.createdAt) : today;
+  const startDay = new Date(started.getFullYear(), started.getMonth(), started.getDate());
+
+  const daysLeft = Math.round((exam - today) / DAY);
+  const daysTotal = Math.max(1, Math.round((exam - startDay) / DAY));
+  const elapsed = Math.max(0, daysTotal - Math.max(0, daysLeft));
+
+  const sample = config.confidentSample ?? 12;
+  const minTotal = config.minQuestionsForMastery ?? 40;
+
+  // Outstanding work: every domain up to a confident sample, and enough
+  // questions overall for the readiness estimate to mean anything.
+  const perDomainGap = readiness.domains.map((d) => ({
+    ...d,
+    gap: Math.max(0, sample - d.answered),
+  }));
+  const domainWork = perDomainGap.reduce((s, d) => s + d.gap, 0);
+  const totalGap = Math.max(0, minTotal - (progress.answered || 0));
+  const questionsNeeded = Math.max(domainWork, totalGap);
+
+  const perDay = daysLeft > 0 ? Math.ceil(questionsNeeded / daysLeft) : questionsNeeded;
+
+  // Expected progress if the work had been spread evenly since the plan began.
+  const totalWorkAtStart = questionsNeeded + (progress.answered || 0);
+  const expectedByNow = daysTotal ? Math.round((elapsed / daysTotal) * totalWorkAtStart) : 0;
+  const done = progress.answered || 0;
+  const status = daysLeft < 0 ? 'past' : done >= expectedByNow ? 'on-track' : 'behind';
+
+  const certMocks = mocks.filter((m) => m.certCode === cert.code);
+  const lastMock = certMocks[0] || null;
+  const daysSinceMock = lastMock ? Math.round((today - new Date(lastMock.takenAt)) / DAY) : null;
+  const inFinalStretch = daysLeft >= 0 && daysLeft <= Math.max(3, Math.round(daysTotal * 0.25));
+
+  /* Today's session: the single most useful next thing, not a menu. */
+  const untouched = perDomainGap.filter((d) => d.answered === 0).sort((a, b) => b.weight - a.weight);
+  const weakest = readiness.domains
+    .filter((d) => d.answered > 0)
+    .sort((a, b) => a.accuracy - b.accuracy || b.weight - a.weight)[0];
+  // Rank by the marks actually at stake — how much evidence is missing times
+  // how much of the exam it is worth. Sorting on weight alone sends you to a
+  // heavy domain that is already nearly covered.
+  const thin = perDomainGap
+    .filter((d) => d.gap > 0 && d.answered > 0)
+    .sort((a, b) => b.gap * b.weight - a.gap * a.weight)[0];
+
+  let today_ = null;
+  if (daysLeft < 0) {
+    today_ = { kind: 'past', headline: 'Your exam date has passed', detail: 'Log the result in the exam log, or set a new date.' };
+  } else if (!done) {
+    today_ = { kind: 'concepts', headline: 'Start with the Concepts page', detail: `Read the plain-English explanations before answering anything. Then run a first quiz to get a baseline.`, target: perDay };
+  } else if (untouched.length) {
+    const d = untouched[0];
+    today_ = { kind: 'domain', domainId: d.id, headline: `Drill Domain ${d.number}: ${d.name}`, detail: `You have not answered anything here yet, and it is ${d.weight}% of the exam.`, target: Math.min(perDay, sample) };
+  } else if (inFinalStretch && (daysSinceMock === null || daysSinceMock >= 5)) {
+    today_ = { kind: 'mock', headline: 'Sit a full mock exam', detail: lastMock ? `Your last was ${daysSinceMock} days ago. Under ${daysLeft} days out, timed practice matters more than more drilling.` : 'You have not sat one yet, and the clock is the part people underestimate.' };
+  } else if (thin) {
+    today_ = { kind: 'domain', domainId: thin.id, headline: `Top up Domain ${thin.number}: ${thin.name}`, detail: `${thin.answered} answered — ${thin.gap} more gets it to a reliable estimate.`, target: Math.min(perDay, thin.gap) };
+  } else if (weakest && weakest.accuracy < (config.masteryThreshold ?? 85)) {
+    today_ = { kind: 'domain', domainId: weakest.id, headline: `Work on Domain ${weakest.number}: ${weakest.name}`, detail: `Your weakest at ${weakest.accuracy}%, and worth ${weakest.weight}% of the exam.`, target: perDay };
+  } else {
+    today_ = { kind: 'mock', headline: 'Sit a mock to confirm', detail: 'Every domain is covered and above the bar. A timed sitting is the remaining unknown.' };
+  }
+
+  /* A small set of dated checkpoints rather than a day-by-day timetable,
+     which nobody follows and which breaks the moment a day is missed. */
+  const at = (fraction) => isoOf(new Date(today.getTime() + Math.round(Math.max(0, daysLeft) * fraction) * DAY));
+  const milestones = [
+    { id: 'coverage', label: 'Every domain answered at least once', by: at(0.25), done: untouched.length === 0 },
+    { id: 'sample', label: `${sample}+ answers in every domain`, by: at(0.55), done: perDomainGap.every((d) => d.gap === 0) },
+    { id: 'mock1', label: 'First full mock sat', by: at(0.7), done: certMocks.length >= 1 },
+    { id: 'ready', label: `${config.masteryThreshold ?? 85}% readiness reached`, by: at(0.85), done: readiness.overall >= (config.masteryThreshold ?? 85) },
+    { id: 'mock2', label: 'A mock passed in the final week', by: isoOf(exam), done: certMocks.some((m) => m.passed && (exam - new Date(m.takenAt)) / DAY <= 7) },
+  ];
+
+  return {
+    examDate: plan.examDate,
+    daysLeft,
+    daysTotal,
+    questionsNeeded,
+    questionsDone: done,
+    perDay,
+    expectedByNow,
+    status,
+    today: today_,
+    milestones,
+    mocksTaken: certMocks.length,
+    lastMock,
+    daysSinceMock,
+    inFinalStretch,
+  };
+}
+
+/* ------------------------------------------------------------------ */
 /* Member summary — one row of the leaderboard                         */
 /* ------------------------------------------------------------------ */
 

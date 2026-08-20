@@ -8,6 +8,44 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [1.0.0] — 2026-08-19
+
+Study plans. Enter the date you sit the exam and the app works backwards to what to do today.
+
+### Added
+
+- **Study plan** per certification (`views/plan.js`, `#/cert/<code>/plan`). Set an exam date and it
+  derives everything else from the readiness rules the rest of the app already uses, so the plan can
+  never disagree with the dashboard.
+  - **A countdown and a pace check** — on track or behind, measured against an even spread of the
+    outstanding work rather than a vague feeling.
+  - **One thing to do today**, not a menu. It picks between reading Concepts, drilling a specific
+    domain, or sitting a mock, and links straight into it with the question count already set.
+  - **Five dated checkpoints** rather than a day-by-day timetable, which nobody follows and which
+    breaks the first day it is missed.
+- `buildStudyPlan()` in `progression.js` — pure, so it is unit-testable without a browser.
+- A plan strip on each certification dashboard showing days remaining and today's task, or a prompt
+  to set a date if there is none.
+- `store.getPlans()` / `setPlan()` / `removePlan()`, synced like everything else.
+
+### Design notes
+
+- **Outstanding work is derived, not asked for.** The plan counts what is missing to reach a
+  confident sample in every domain and the minimum total for a meaningful readiness estimate.
+- **Domains are prioritised by marks at stake** — evidence missing multiplied by exam weight. An
+  early version sorted by weight alone and sent you to a heavy domain that was already nearly
+  covered while a 20% domain sat on three answers.
+- **Mocks are scheduled, not just offered.** Inside the final quarter of the plan the app asks for a
+  timed sitting if the last one was five or more days ago, because timing is what people
+  underestimate and drilling does not rehearse it.
+
+### Fixed
+
+- The plan's action button read "Drill 2 questions" while linking to a five-question set, because
+  the label used the raw target and the link applied a sensible minimum. Both now use the same value.
+
+---
+
 ## [0.9.0] — 2026-08-19
 
 Scenario bank more than doubled: **47 → 113**. Every certification now has at least 15.
@@ -531,6 +569,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[1.0.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v1.0.0
 [0.9.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.9.0
 [0.8.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.8.0
 [0.7.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.7.0

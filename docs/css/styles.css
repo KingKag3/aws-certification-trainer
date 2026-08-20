@@ -1193,3 +1193,55 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
    real services, concepts and scenarios but a thinner scenario bank than the
    fully built-out exams. */
 .node-draft.developing { background: rgba(11, 98, 196, .14); color: var(--available); }
+
+/* ---- Study plan --------------------------------------------------------- */
+.plan-strip {
+  display: flex; align-items: center; gap: .9rem; margin-bottom: 1.25rem;
+  padding: .85rem 1rem; border-radius: var(--radius); color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease;
+}
+.plan-strip:hover { text-decoration: none; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.plan-strip > div { flex: 1; min-width: 0; }
+.plan-strip strong { display: block; font-size: .98rem; }
+.plan-strip p { margin: .1rem 0 0; font-size: .85rem; color: var(--text-muted); }
+.plan-strip > .icon { color: var(--text-faint); flex: none; }
+.plan-strip.empty { border-left-style: dashed; }
+.plan-strip.behind { border-left-color: var(--bad); }
+.plan-strip.past { border-left-color: var(--locked); }
+.plan-strip-days {
+  display: flex; flex-direction: column; align-items: center; flex: none;
+  min-width: 46px; padding: .2rem .4rem; border-radius: var(--radius-sm); background: var(--surface-2);
+}
+.plan-strip-days strong { font-size: 1.35rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.plan-strip-days span { font-size: .62rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); }
+
+.plan-hero {
+  display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.2rem; box-shadow: var(--shadow-sm); margin-bottom: 1.25rem;
+  border-top: 3px solid var(--accent);
+}
+.plan-hero.urgent { border-top-color: var(--ok); }
+.plan-hero.past { border-top-color: var(--locked); }
+.plan-countdown { text-align: center; flex: none; min-width: 110px; }
+.plan-countdown strong { display: block; font-size: 3.2rem; font-weight: 700; line-height: 1; letter-spacing: -.03em; }
+.plan-countdown span { font-size: .74rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); }
+.plan-pace { flex: 1; min-width: 220px; }
+.plan-pace p { margin: .4rem 0; font-size: .9rem; }
+.plan-pace .bar-track { margin-top: .5rem; }
+
+.plan-today .plan-headline { font-size: 1.15rem; font-weight: 650; margin: .3rem 0 .2rem; }
+.plan-form { display: flex; flex-direction: column; gap: .8rem; max-width: 340px; margin-top: .8rem; }
+.plan-form-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+.milestones { display: flex; flex-direction: column; gap: .45rem; margin-top: .7rem; }
+.milestones li {
+  display: flex; align-items: center; gap: .6rem; padding: .5rem .7rem;
+  background: var(--surface-2); border-radius: var(--radius-sm); font-size: .9rem;
+}
+.milestones li.done { background: var(--good-bg); color: var(--good); }
+.ms-mark { width: 18px; display: inline-flex; justify-content: center; flex: none; }
+.ms-label { flex: 1; }
+.ms-by { font-size: .78rem; color: var(--text-faint); white-space: nowrap; }
+.milestones li.done .ms-by { color: var(--good); }

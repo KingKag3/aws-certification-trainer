@@ -417,6 +417,32 @@ export function createProgressStore(initialAdapter) {
       return store.saveAttempts(list.filter((a) => a.id !== id));
     },
 
+    /* study plans, keyed by certification code (active member) ------ */
+    async getPlans() {
+      const m = await store.getActiveMember();
+      return store.getPlansFor(m.id);
+    },
+    async getPlansFor(memberId) {
+      const p = await adapter.get(memberKey(memberId, 'plans'), {});
+      return p && typeof p === 'object' ? p : {};
+    },
+    async setPlan(certCode, plan) {
+      const m = await store.getActiveMember();
+      const all = await store.getPlansFor(m.id);
+      const next = { ...all, [certCode]: { createdAt: Date.now(), ...all[certCode], ...plan } };
+      await adapter.set(memberKey(m.id, 'plans'), next);
+      notify({ type: 'plans', memberId: m.id, value: next });
+      return next;
+    },
+    async removePlan(certCode) {
+      const m = await store.getActiveMember();
+      const all = await store.getPlansFor(m.id);
+      delete all[certCode];
+      await adapter.set(memberKey(m.id, 'plans'), all);
+      notify({ type: 'plans', memberId: m.id, value: all });
+      return all;
+    },
+
     /* mock exam results (active member) ---------------------------- */
     async getMocks() {
       const m = await store.getActiveMember();
