@@ -28,8 +28,8 @@ export function render(ctx) {
       <h3>${icon('play', { size: 18 })} Start here</h3>
       <p class="muted small">A full free course covering this exam end to end${cert.startHereVideo.videoIsSearchFallback ? '. No verified course video is recorded for this exam yet, so this is a YouTube search.' : '.'}</p>
       ${videoLink(cert.startHereVideo)}
-      ${cert.dataStatus === 'stub'
-        ? `<p class="notice">${icon('warning', { size: 15 })} The plain-English explanations below were written for Cloud Practitioner and Solutions Architect. Services unique to ${esc(cert.code)} may still be missing theirs.</p>`
+      ${cert.dataStatus !== 'full'
+        ? `<p class="notice">${icon('warning', { size: 15 })} Every topic below has a plain-English explanation. This exam's bank of full exam-style scenarios is still growing — ${cert.scenarioCount} so far — so a mock draws more on generated recall questions than it does for Cloud Practitioner or Solutions Architect.</p>`
         : ''}
     </section>
 
@@ -48,6 +48,7 @@ export function render(ctx) {
           <header class="concept-domain-head">
             <h3>Domain ${g.domain.number} · ${esc(g.domain.name)}</h3>
             <span class="pill">${g.domain.weight}% of the exam</span>
+            ${g.shared ? '<span class="pill" title="These topics are also listed under another domain they overlap with">also covered elsewhere</span>' : ''}
             <a class="btn small" href="${buildHash(['cert', cert.code, 'quiz'], { domain: g.domain.id, n: 10 })}">
               ${icon('target', { size: 14 })} Drill this domain
             </a>

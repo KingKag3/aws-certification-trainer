@@ -25,7 +25,9 @@ const STATUS_ICON = {
 function nodeCard(node, { compact = false } = {}) {
   const { cert, status, readiness } = node;
   const href = buildHash(['cert', cert.code]);
-  const draft = cert.dataStatus === 'stub';
+  const pool = cert.dataStatus === 'full' ? null
+    : cert.dataStatus === 'developing' ? { cls: 'developing', label: 'growing pool' }
+    : { cls: 'stub', label: 'draft pool' };
   return `<a class="cert-node ${status}" href="${href}" data-code="${cert.code}"
       aria-label="${esc(cert.name)} — ${STATUS_LABEL[status]}, readiness ${readiness.overall} percent">
     <span class="node-top">
@@ -42,7 +44,7 @@ function nodeCard(node, { compact = false } = {}) {
       <span>${readiness.overall}% ready</span>
       <span>${readiness.answered ? `${readiness.accuracy}% acc · ${readiness.answered} q` : 'no attempts'}</span>
     </span>
-    ${draft ? '<span class="node-draft" title="Metadata and exam domains are real; the question pool for this exam is still thin">draft pool</span>' : ''}
+    ${pool ? `<span class="node-draft ${pool.cls}" title="Exam domains and weightings are real. The scenario bank for this exam is still growing, so a mock leans more on generated recall questions.">${pool.label}</span>` : ''}
   </a>`;
 }
 

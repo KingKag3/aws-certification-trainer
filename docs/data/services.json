@@ -3057,7 +3057,8 @@
       "tags": [
         "ml",
         "compute",
-        "management"
+        "management",
+        "ml-modeling"
       ],
       "purpose": "covers the full machine-learning lifecycle: prepare data, train, tune, deploy and monitor models",
       "beginner": "The full workshop for building your own machine-learning model: prepare the data, train the model, test it, and put it live. This is the build-it-yourself option, for when no off-the-shelf model does what you need. Watch the cost — a model left running costs money whether anyone uses it or not.",
@@ -3311,7 +3312,8 @@
       "tags": [
         "ml",
         "genai",
-        "analytics"
+        "analytics",
+        "genai-apps"
       ],
       "purpose": "provides intelligent enterprise search across your document repositories using natural language",
       "beginner": "Search across all your company's scattered documents using ordinary questions rather than keywords. Ask 'how much holiday do I get?' and it finds the passage that answers it, wherever that document lives. Often used to give an AI assistant accurate, company-specific information.",
@@ -3341,7 +3343,8 @@
       "tags": [
         "ml",
         "genai",
-        "developer-tools"
+        "developer-tools",
+        "genai-apps"
       ],
       "purpose": "is a generative-AI assistant that answers questions over your business data and helps developers write and update code",
       "beginner": "An AI assistant that answers questions using your own company's information, and helps developers understand and write code. Unlike a general chatbot it is connected to your systems, so its answers are about your business rather than the world at large.",
@@ -3586,6 +3589,280 @@
       "pricing": [
         "Per replicating source server per hour, with a free period"
       ]
+    },
+    {
+      "id": "sagemaker-jumpstart",
+      "name": "Amazon SageMaker JumpStart",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "genai",
+        "ml-modeling"
+      ],
+      "purpose": "provides pre-trained models and ready-made solution templates you can deploy or fine-tune in a few clicks",
+      "beginner": "A catalogue of models somebody else has already trained, ready to use. Instead of starting from nothing you pick one that nearly does what you want and adjust it. Like buying a suit off the peg and having it altered rather than weaving the cloth yourself.",
+      "useCases": [
+        "deploy a well-known open model without writing training code",
+        "fine-tune a published model on your own data"
+      ],
+      "facts": [
+        "JumpStart models can be deployed to a SageMaker endpoint or fine-tuned without leaving the console.",
+        "It is a starting point inside SageMaker, not a separate service with its own pricing model."
+      ],
+      "myths": [
+        "JumpStart models are free to run — you still pay for the endpoint or training instances they use."
+      ],
+      "pricing": [
+        "Underlying training and inference instances"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20JumpStart",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "sagemaker-feature-store",
+      "name": "Amazon SageMaker Feature Store",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "analytics"
+      ],
+      "purpose": "stores, shares and serves the prepared input features that models train on and predict with",
+      "beginner": "A shared pantry of prepared ingredients for machine learning. Teams spend enormous effort turning raw data into the specific numbers a model needs, and without somewhere shared to put them everyone redoes that work. It also makes sure the values used in training match the ones used live.",
+      "useCases": [
+        "reuse the same engineered features across several models",
+        "keep training and serving features consistent"
+      ],
+      "facts": [
+        "It has an online store for low-latency serving and an offline store for training, which is how training/serving skew is avoided.",
+        "Feature definitions are versioned, so you can reproduce what a model was trained on."
+      ],
+      "myths": [
+        "A feature store is just a database table — the point is the guarantee that training and inference see the same values."
+      ],
+      "pricing": [
+        "Online store reads and writes",
+        "Offline store storage"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20Feature%20Store",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "sagemaker-pipelines",
+      "name": "Amazon SageMaker Pipelines",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "developer-tools",
+        "management",
+        "ml-ops"
+      ],
+      "purpose": "defines and runs repeatable machine-learning workflows from data preparation through training to deployment",
+      "beginner": "A production line for building models. Rather than a person running each step by hand, the steps are written down once and run in order automatically. That makes a model reproducible — you can point at exactly which data and which settings produced it.",
+      "useCases": [
+        "retrain a model automatically when new data arrives",
+        "enforce an approval step before a model reaches production"
+      ],
+      "facts": [
+        "Pipelines integrate with the model registry, so a run can register a model version and require manual approval before deployment.",
+        "Each execution is tracked with its inputs, which is what makes a result reproducible."
+      ],
+      "myths": [
+        "SageMaker Pipelines and AWS Step Functions are interchangeable — Pipelines is ML-aware and understands training jobs and model versions natively."
+      ],
+      "pricing": [
+        "Underlying job instances only"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20Pipelines",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "sagemaker-model-monitor",
+      "name": "Amazon SageMaker Model Monitor",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "management",
+        "ml-ops"
+      ],
+      "purpose": "watches a deployed model for drift in data quality, prediction quality, bias and feature importance",
+      "beginner": "A model is trained on the past, and the world keeps moving. Model Monitor watches the live traffic and warns you when the incoming data no longer looks like the training data, or when predictions start drifting. Without it a model quietly gets worse and nobody notices.",
+      "useCases": [
+        "detect data drift after a seasonal change in customer behaviour",
+        "alert when prediction quality degrades against a baseline"
+      ],
+      "facts": [
+        "It compares live traffic against a baseline captured from the training data.",
+        "Monitoring runs on a schedule and emits CloudWatch metrics you can alarm on."
+      ],
+      "myths": [
+        "A deployed model keeps performing as it did on day one — accuracy decays as the underlying data shifts, which is exactly what this detects."
+      ],
+      "pricing": [
+        "Monitoring job instance hours"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20Model%20Monitor",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "sagemaker-clarify",
+      "name": "Amazon SageMaker Clarify",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "compliance",
+        "genai"
+      ],
+      "purpose": "detects bias in data and models and explains which features drove a prediction",
+      "beginner": "Two questions regulators and users both ask: is this model unfair to some group, and why did it decide that? Clarify measures bias in the training data and in the finished model, and reports which inputs pushed a given prediction one way or the other.",
+      "useCases": [
+        "check whether a lending model behaves differently across demographic groups",
+        "produce feature-importance explanations for an audit"
+      ],
+      "facts": [
+        "Clarify can measure bias before training on the raw data and after training on the model output.",
+        "Explanations use SHAP values to attribute a prediction to individual input features."
+      ],
+      "myths": [
+        "A model that never sees a protected attribute cannot be biased — correlated features routinely reintroduce it, which is why measurement matters."
+      ],
+      "pricing": [
+        "Processing job instance hours"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20Clarify",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "sagemaker-ground-truth",
+      "name": "Amazon SageMaker Ground Truth",
+      "category": "ml",
+      "tags": [
+        "ml",
+        "analytics"
+      ],
+      "purpose": "builds labelled training datasets using human annotators, your own workforce or automated labelling",
+      "beginner": "Supervised learning needs examples with the right answer attached, and someone has to attach them. Ground Truth manages that labelling work — your own staff, a vendor, or a crowd — and can use a model to pre-label the easy cases so humans only handle the hard ones.",
+      "useCases": [
+        "label thousands of images for a computer-vision model",
+        "reduce labelling cost with automated pre-labelling"
+      ],
+      "facts": [
+        "Automated data labelling trains a model as it goes and only routes uncertain items to humans, which cuts cost substantially.",
+        "You can use a private workforce so sensitive data never leaves your organisation."
+      ],
+      "myths": [
+        "Labelling is a trivial preliminary — it is frequently the most expensive and time-consuming part of a supervised ML project."
+      ],
+      "pricing": [
+        "Per object labelled",
+        "Human workforce charges"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=SageMaker%20Ground%20Truth",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "bedrock-knowledge-bases",
+      "name": "Amazon Bedrock Knowledge Bases",
+      "category": "ml",
+      "tags": [
+        "genai",
+        "ml",
+        "storage",
+        "genai-apps"
+      ],
+      "purpose": "connects a foundation model to your own documents so answers are grounded in your data",
+      "beginner": "A general model knows the world but not your company. A knowledge base takes your documents, breaks them into pieces, indexes them, and hands the relevant ones to the model with each question. The model then answers from your material rather than from memory — and can cite where it got it.",
+      "useCases": [
+        "answer staff questions from internal policy documents",
+        "build a support assistant grounded in product manuals"
+      ],
+      "facts": [
+        "It handles the chunking, embedding and retrieval steps of a retrieval-augmented generation pipeline for you.",
+        "Responses can include citations pointing back at the source passages."
+      ],
+      "myths": [
+        "A knowledge base retrains the model on your documents — it does not; it retrieves relevant text at question time and supplies it as context."
+      ],
+      "pricing": [
+        "Embedding and inference tokens",
+        "Underlying vector store"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Bedrock%20Knowledge%20Bases",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "bedrock-agents",
+      "name": "Amazon Bedrock Agents",
+      "category": "ml",
+      "tags": [
+        "genai",
+        "ml",
+        "integration",
+        "genai-apps"
+      ],
+      "purpose": "lets a foundation model plan multi-step tasks and call your APIs to actually carry them out",
+      "beginner": "A chatbot that can only talk is limited. An agent can decide it needs to look something up or take an action, call one of your systems to do it, read the result, and carry on. Think of the difference between someone who can answer questions about your order and someone who can actually cancel it.",
+      "useCases": [
+        "let an assistant check stock and place an order",
+        "break a vague request into steps and execute them"
+      ],
+      "facts": [
+        "You describe the available actions as an API schema and the agent decides when to call them.",
+        "Agents can combine action calling with a knowledge base for grounded answers."
+      ],
+      "myths": [
+        "An agent can be trusted to act unsupervised on anything — action groups should be scoped narrowly, because the model chooses when to invoke them."
+      ],
+      "pricing": [
+        "Inference tokens for planning and responses"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Bedrock%20Agents",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
+    },
+    {
+      "id": "bedrock-guardrails",
+      "name": "Amazon Bedrock Guardrails",
+      "category": "ml",
+      "tags": [
+        "genai",
+        "security",
+        "compliance"
+      ],
+      "purpose": "applies content filters, denied topics and sensitive-data redaction to what goes into and out of a model",
+      "beginner": "A safety layer that sits around the model. It can block abusive or unsafe content, refuse subjects you have ruled out, and strip personal data from prompts and answers. Because it works independently of the model, the same rules apply whichever model you swap in.",
+      "useCases": [
+        "stop a customer-facing assistant discussing competitors or giving medical advice",
+        "redact personal data before it reaches the model"
+      ],
+      "facts": [
+        "Guardrails are configured separately from the model, so switching models does not lose the protections.",
+        "They filter both the prompt going in and the completion coming out."
+      ],
+      "myths": [
+        "A well-written system prompt is enough to constrain a model — prompts can be talked around, which is why a separate enforcement layer exists."
+      ],
+      "pricing": [
+        "Per text unit evaluated"
+      ],
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Bedrock%20Guardrails",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true
     }
   ],
   "concepts": [
@@ -4115,6 +4392,447 @@
       "myths": [
         "Comparing an EC2 bill to a server's purchase price is a valid TCO comparison — it ignores the majority of on-premises costs."
       ]
+    },
+    {
+      "id": "supervised-unsupervised",
+      "name": "Supervised, unsupervised and reinforcement learning",
+      "tags": [
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "names the three broad ways a model can be taught",
+      "beginner": "Supervised learning studies worked examples with the answers attached. Unsupervised learning is handed a pile of data with no answers and asked to find the structure in it. Reinforcement learning learns by trying things and being rewarded or penalised, like training a dog with treats.",
+      "facts": [
+        "Classification and regression are supervised: they need labelled examples.",
+        "Clustering and anomaly detection are unsupervised: no labels required.",
+        "Reinforcement learning suits sequential decisions such as robotics or game playing."
+      ],
+      "myths": [
+        "More data always beats better labels — for supervised learning, mislabelled examples actively teach the model the wrong thing."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Supervised%2C%20unsupervised%20and%20reinforcement%20learning",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "overfitting",
+      "name": "Overfitting and underfitting",
+      "tags": [
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "describes a model that has memorised its training data, or one that has not learned enough from it",
+      "beginner": "An overfitted model has memorised the practice questions rather than learning the subject: superb on data it has seen, poor on anything new. An underfitted model has not learned enough to be useful on either. The goal sits between the two.",
+      "facts": [
+        "Overfitting shows as high training accuracy with much lower validation accuracy.",
+        "Common remedies are more training data, regularisation, simplifying the model, and early stopping.",
+        "Underfitting suggests a model too simple for the problem, or training stopped too soon."
+      ],
+      "myths": [
+        "A model with 100% training accuracy is an excellent model — that is the classic signature of overfitting."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Overfitting%20and%20underfitting",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "train-validate-test",
+      "name": "Training, validation and test splits",
+      "tags": [
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "explains why data is divided into separate portions before a model is built",
+      "beginner": "You split your data into three. Most of it teaches the model. A slice is held back to tune settings. A final slice is untouched until the very end, to give an honest measure of performance. Marking your own homework with the answers in front of you does not tell you what you know.",
+      "facts": [
+        "The test set must be used once, at the end. Tuning against it leaks its information into the model.",
+        "Cross-validation rotates which portion is held out, which helps when data is scarce."
+      ],
+      "myths": [
+        "Validation and test sets are the same thing — validation guides tuning, test gives the final unbiased estimate."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Training%2C%20validation%20and%20test%20splits",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "model-metrics",
+      "name": "Model evaluation metrics",
+      "tags": [
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "covers how a model’s quality is actually measured",
+      "beginner": "Accuracy alone lies. If one in a thousand transactions is fraud, a model that says 'never fraud' is 99.9% accurate and completely useless. Precision asks how many of the flagged ones were real; recall asks how many of the real ones were caught. Which matters depends on whether a miss or a false alarm costs you more.",
+      "facts": [
+        "Precision is correct positives over all predicted positives; recall is correct positives over all actual positives.",
+        "F1 is the harmonic mean of the two, used when you need one number.",
+        "For regression, RMSE and MAE measure error size rather than counts."
+      ],
+      "myths": [
+        "Accuracy is the right headline metric — on imbalanced data it is actively misleading."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Model%20evaluation%20metrics",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "hyperparameter-tuning",
+      "name": "Hyperparameter tuning",
+      "tags": [
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "is the search for the settings that control how a model learns",
+      "beginner": "Some values are learned by the model, and some you have to choose before training starts — how fast it learns, how complex it may become. Tuning is the search for a good combination, usually by training many times with different settings and keeping the best.",
+      "facts": [
+        "SageMaker automatic model tuning can run Bayesian search rather than trying every combination blindly.",
+        "Tuning multiplies training cost, since each trial is a full training run."
+      ],
+      "myths": [
+        "Hyperparameters are learned during training — they are set beforehand; that is what makes them hyper."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Hyperparameter%20tuning",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "feature-engineering",
+      "name": "Feature engineering",
+      "tags": [
+        "ml",
+        "analytics"
+      ],
+      "purpose": "is the work of turning raw data into the inputs a model can actually learn from",
+      "beginner": "Raw data rarely suits a model as it stands. A birth date is less useful than an age; a postcode may be more useful as a distance. Feature engineering is that reshaping, and it usually improves results more than swapping in a fancier algorithm.",
+      "facts": [
+        "Common steps include normalisation, one-hot encoding of categories, and handling missing values.",
+        "The same transformations must be applied identically at training and at inference, or predictions will be wrong."
+      ],
+      "myths": [
+        "Deep learning removes the need for feature engineering — it reduces it for images and text, not for tabular business data."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Feature%20engineering",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "inference-types",
+      "name": "Inference options",
+      "tags": [
+        "ml",
+        "compute",
+        "cost",
+        "ml-ops"
+      ],
+      "purpose": "covers the ways a trained model can be made available to make predictions",
+      "beginner": "Once a model is trained you have to decide how people reach it. A live endpoint answers instantly but costs money around the clock. Batch scoring runs over a big file when you need it and costs nothing in between. Serverless sits in the middle for spiky traffic, and asynchronous suits requests that take a while.",
+      "facts": [
+        "Real-time endpoints bill for the instance while it exists, whether or not anyone calls it.",
+        "Batch transform spins up, scores a dataset and shuts down — the cheapest option when latency does not matter.",
+        "Serverless inference suits intermittent traffic but pays a cold-start penalty."
+      ],
+      "myths": [
+        "A real-time endpoint is always the right default — an idle endpoint is one of the most common sources of wasted ML spend."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Inference%20options",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "model-drift",
+      "name": "Model and data drift",
+      "tags": [
+        "ml",
+        "management",
+        "ml-ops"
+      ],
+      "purpose": "describes a model getting worse over time because the world changed, not because the model did",
+      "beginner": "A model learns the pattern that held when it was trained. Customers change, prices change, fraud tactics change — and the model silently gets worse while still returning confident answers. Drift is that decay, and catching it needs active monitoring rather than trust.",
+      "facts": [
+        "Data drift is a change in the inputs; concept drift is a change in the relationship between inputs and the right answer.",
+        "The usual remedy is scheduled retraining on recent data, triggered by monitoring rather than the calendar."
+      ],
+      "myths": [
+        "A model that tested well is finished — accuracy decays continuously once it meets the real world."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Model%20and%20data%20drift",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "foundation-models",
+      "name": "Foundation models",
+      "tags": [
+        "genai",
+        "ml",
+        "ml-modeling"
+      ],
+      "purpose": "are very large models trained on broad data that can be adapted to many tasks",
+      "beginner": "Rather than training a separate model for each job, one very large model is trained on an enormous amount of general material and then pointed at whatever you need — summarising, answering, drafting. It is a general-purpose engine rather than a single-purpose tool.",
+      "facts": [
+        "Adapting one costs far less than training from scratch, which is beyond nearly every organisation.",
+        "The same model can serve many tasks through prompting alone, with no retraining."
+      ],
+      "myths": [
+        "A bigger foundation model is always better for your task — a smaller, cheaper, faster one often performs identically on a narrow job."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Foundation%20models",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "prompt-engineering",
+      "name": "Prompt engineering",
+      "tags": [
+        "genai",
+        "ml",
+        "genai-apps"
+      ],
+      "purpose": "is the craft of phrasing an instruction so a model reliably produces what you want",
+      "beginner": "How you ask changes what you get. Giving the model a role, showing it two or three worked examples, and stating the output format you expect all raise the hit rate sharply. It is the cheapest lever available — no training, no infrastructure, just clearer instructions.",
+      "facts": [
+        "Zero-shot gives no examples; few-shot includes a handful to demonstrate the pattern.",
+        "Asking a model to work through its reasoning step by step improves accuracy on multi-step problems.",
+        "Prompts are attack surface: untrusted text placed into a prompt can attempt to override your instructions."
+      ],
+      "myths": [
+        "Prompt engineering is a temporary trick that better models will remove the need for — instruction clarity keeps mattering regardless of model quality."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Prompt%20engineering",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "rag",
+      "name": "Retrieval Augmented Generation (RAG)",
+      "tags": [
+        "genai",
+        "ml",
+        "storage",
+        "genai-apps"
+      ],
+      "purpose": "supplies a model with relevant documents at question time so answers are grounded in your data",
+      "beginner": "Instead of hoping the model already knows, you look up the relevant passages from your own material first and hand them over with the question. The model answers from what it was given. It is the difference between an open-book and a closed-book exam, and it is why answers can be cited.",
+      "facts": [
+        "RAG changes what the model is given, not what the model is — no training is involved.",
+        "It is usually cheaper and faster than fine-tuning, and the underlying documents can be updated instantly.",
+        "Retrieval quality caps answer quality: if the wrong passages are fetched, the model answers from the wrong material."
+      ],
+      "myths": [
+        "RAG eliminates hallucination — it reduces it substantially, but a model can still misread or over-extend the passages it is given."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Retrieval%20Augmented%20Generation%20(RAG)",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "embeddings",
+      "name": "Embeddings and vector search",
+      "tags": [
+        "genai",
+        "ml",
+        "database",
+        "genai-apps"
+      ],
+      "purpose": "turn text into numbers that place similar meanings close together, so search can match on meaning",
+      "beginner": "Each piece of text is converted into a long list of numbers positioned so that things meaning roughly the same land near each other. Then finding relevant material is a matter of finding nearby points. That is how a search for 'time off' returns a document about annual leave with no shared words.",
+      "facts": [
+        "A vector store such as OpenSearch, Aurora with pgvector, or a Bedrock knowledge base holds these vectors for nearest-neighbour search.",
+        "This is what makes retrieval in a RAG pipeline work on meaning rather than keywords."
+      ],
+      "myths": [
+        "Vector search replaces keyword search entirely — hybrid approaches usually beat either alone, since exact terms still matter."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Embeddings%20and%20vector%20search",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "fine-tuning",
+      "name": "Fine-tuning versus prompting versus RAG",
+      "tags": [
+        "genai",
+        "ml",
+        "cost",
+        "ml-modeling"
+      ],
+      "purpose": "contrasts the three ways to make a general model behave the way you need",
+      "beginner": "Three levers, in increasing cost. Change the prompt: instant and free. Give it your documents at question time: cheap, and the material stays current. Fine-tune: retrain the model on your examples, which is the expensive option and best reserved for teaching a style or format the others cannot reach.",
+      "facts": [
+        "Fine-tuning teaches form and behaviour well; it is a poor way to inject facts, which go stale in the weights.",
+        "RAG is the usual answer when the requirement is \"answer from our documents\".",
+        "Fine-tuning has to be redone whenever you move to a newer base model."
+      ],
+      "myths": [
+        "Fine-tuning is how you give a model your company knowledge — retrieval does that better, more cheaply, and stays up to date."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Fine-tuning%20versus%20prompting%20versus%20RAG",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "hallucination",
+      "name": "Hallucination",
+      "tags": [
+        "genai",
+        "ml",
+        "compliance"
+      ],
+      "purpose": "is a model stating something false with complete confidence",
+      "beginner": "Models generate plausible text, and plausible is not the same as true. They will invent a citation, a policy clause or a figure and present it exactly as confidently as a fact. This is the single biggest risk in putting one in front of customers, and confidence in the output is no signal of accuracy.",
+      "facts": [
+        "Grounding answers in retrieved documents and requiring citations both reduce it substantially.",
+        "Human review remains necessary wherever a wrong answer carries real consequences."
+      ],
+      "myths": [
+        "A model that sounds certain is more likely to be right — tone carries no information about accuracy."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Hallucination",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "inference-parameters",
+      "name": "Temperature, top-p and token limits",
+      "tags": [
+        "genai",
+        "ml",
+        "genai-apps"
+      ],
+      "purpose": "are the dials that control how a model generates its output",
+      "beginner": "Temperature controls how adventurous the model is: low values keep it predictable and repetitive, high values make it creative and less reliable. Top-p limits how wide a pool of next words it may choose from. Token limits cap how much it reads and writes — and tokens are what you are billed for.",
+      "facts": [
+        "For factual extraction, low temperature is usually correct; for creative drafting, higher.",
+        "The context window bounds prompt plus response together, which is what constrains how much document you can supply."
+      ],
+      "myths": [
+        "Temperature zero guarantees identical output every time — it makes output far more deterministic, but is not an absolute guarantee."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Temperature%2C%20top-p%20and%20token%20limits",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "responsible-ai",
+      "name": "Responsible AI",
+      "tags": [
+        "genai",
+        "compliance",
+        "ml"
+      ],
+      "purpose": "covers the fairness, transparency, accountability and safety expected of an AI system",
+      "beginner": "An AI system affects people, so it carries obligations beyond accuracy. Does it treat groups fairly? Can you explain a decision to someone it affected? Is it clear that a machine produced this? Who is accountable when it is wrong? These are design requirements, not an afterthought.",
+      "facts": [
+        "AWS frames this around fairness, explainability, privacy and security, robustness, governance and transparency.",
+        "AI Service Cards document the intended uses and limitations of AWS AI services.",
+        "Human oversight of consequential decisions is a control, not a nicety."
+      ],
+      "myths": [
+        "Responsible AI is purely a legal matter — most of it is decided in design and data choices, long before anyone reads a policy."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Responsible%20AI",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "ai-governance",
+      "name": "AI governance and data privacy",
+      "tags": [
+        "genai",
+        "compliance",
+        "security",
+        "identity"
+      ],
+      "purpose": "covers who may use a model, what data reaches it, and how that is proved afterwards",
+      "beginner": "Putting a model into a business raises ordinary governance questions. Which staff may use it? Does customer data end up in a prompt? Is that logged, and who can read the logs? Can you show an auditor what happened? The AI part is new; the obligations are the familiar ones.",
+      "facts": [
+        "Amazon Bedrock states that customer prompts and outputs are not used to train the base models.",
+        "Prompts and completions can contain personal data, so logging them is a privacy decision, not just an operational one.",
+        "IAM controls which principals may invoke which models, and CloudTrail records that they did."
+      ],
+      "myths": [
+        "Sending data to a hosted model always means it will be trained on — that depends on the service and its terms; on Bedrock it is not."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=AI%20governance%20and%20data%20privacy",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
+    },
+    {
+      "id": "deployment-strategies",
+      "name": "Deployment strategies",
+      "tags": [
+        "developer-tools",
+        "resilience",
+        "management"
+      ],
+      "purpose": "are the ways new code can be released without taking the service down or exposing everyone to a bad change",
+      "beginner": "Releasing to everyone at once means everyone gets the bug. Instead: canary sends the change to a small percentage first and watches. Blue/green runs the new version alongside the old and switches traffic once it looks healthy, so rollback is instant. Rolling replaces instances gradually.",
+      "facts": [
+        "Blue/green gives the fastest rollback because the previous environment is still running.",
+        "Canary and linear traffic shifting are built into CodeDeploy for Lambda and ECS, with automatic rollback on a CloudWatch alarm.",
+        "In-place deployment is cheapest but has no quick way back."
+      ],
+      "myths": [
+        "Blue/green and canary are the same thing — blue/green switches whole environments, canary shifts a slice of live traffic."
+      ],
+      "category": "concept",
+      "videoUrl": "https://www.youtube.com/@amazonwebservices/search?query=Deployment%20strategies",
+      "videoTitle": null,
+      "videoChannel": null,
+      "videoIsSearchFallback": true,
+      "useCases": []
     }
   ],
   "sharedResponsibility": [

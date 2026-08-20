@@ -61,7 +61,7 @@ export function render(ctx) {
           <span class="pill">${esc(certData.tiers[cert.tier].label)}</span>
           <span class="pill code">${esc(cert.code)}</span>
           <span class="pill status ${status}">${status.replace('-', ' ')}</span>
-          ${cert.dataStatus === 'stub' ? '<span class="pill draft">draft question pool</span>' : ''}
+          ${cert.dataStatus !== 'full' ? `<span class="pill draft" title="${esc(cert.contentTodo || '')}">${cert.scenarioCount} exam-style scenarios</span>` : ''}
         </div>
         <h2>${esc(cert.name)}</h2>
         <p class="lede">${esc(cert.tagline)}</p>

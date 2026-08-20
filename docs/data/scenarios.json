@@ -11,378 +11,1964 @@
   "scenarios": [
     {
       "id": "clf-shared-resp-patching",
-      "certs": ["CLF-C02", "SAA-C03"],
-      "domainTags": ["security", "compliance", "cloud-concepts"],
+      "certs": [
+        "CLF-C02",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "security",
+        "compliance",
+        "cloud-concepts"
+      ],
       "difficulty": "easy",
       "situation": "A company runs its application on Amazon EC2 instances and stores data in Amazon RDS for PostgreSQL. An auditor asks who is responsible for applying operating system security patches to each tier.",
       "question": "Under the AWS shared responsibility model, who patches the operating systems?",
       "options": [
-        { "text": "AWS patches both the EC2 operating system and the RDS operating system", "correct": false, "why": "AWS never patches the guest operating system on EC2. That instance is yours to maintain — this is the single most common misreading of the model." },
-        { "text": "The customer patches both the EC2 operating system and the RDS operating system", "correct": false, "why": "RDS is a managed service. You have no operating system access to patch, and AWS handles it during your maintenance window." },
-        { "text": "The customer patches the EC2 operating system; AWS patches the RDS operating system", "correct": true, "why": "The boundary moves with the service. EC2 gives you the OS, so you own it. RDS abstracts the OS away, so AWS owns it. You still own your data and access control in both." },
-        { "text": "AWS patches the EC2 operating system; the customer patches the RDS operating system", "correct": false, "why": "Exactly backwards. You cannot even reach the RDS operating system, and AWS deliberately does not touch your EC2 guest OS." }
+        {
+          "text": "AWS patches both the EC2 operating system and the RDS operating system",
+          "correct": false,
+          "why": "AWS never patches the guest operating system on EC2. That instance is yours to maintain — this is the single most common misreading of the model."
+        },
+        {
+          "text": "The customer patches both the EC2 operating system and the RDS operating system",
+          "correct": false,
+          "why": "RDS is a managed service. You have no operating system access to patch, and AWS handles it during your maintenance window."
+        },
+        {
+          "text": "The customer patches the EC2 operating system; AWS patches the RDS operating system",
+          "correct": true,
+          "why": "The boundary moves with the service. EC2 gives you the OS, so you own it. RDS abstracts the OS away, so AWS owns it. You still own your data and access control in both."
+        },
+        {
+          "text": "AWS patches the EC2 operating system; the customer patches the RDS operating system",
+          "correct": false,
+          "why": "Exactly backwards. You cannot even reach the RDS operating system, and AWS deliberately does not touch your EC2 guest OS."
+        }
       ],
-      "teaches": ["shared-responsibility-model", "ec2", "rds"]
+      "teaches": [
+        "shared-responsibility-model",
+        "ec2",
+        "rds"
+      ]
     },
     {
       "id": "clf-support-plan-tam",
-      "certs": ["CLF-C02"],
-      "domainTags": ["support", "billing"],
+      "certs": [
+        "CLF-C02"
+      ],
+      "domainTags": [
+        "support",
+        "billing"
+      ],
       "difficulty": "easy",
       "situation": "A company is moving a production workload to AWS. They need 24/7 phone access to Cloud Support Engineers and a designated Technical Account Manager who knows their environment.",
       "question": "Which AWS Support plan is the lowest tier that meets both requirements?",
       "options": [
-        { "text": "Developer", "correct": false, "why": "Business-hours email access to Cloud Support Associates only. No phone, no TAM." },
-        { "text": "Business", "correct": false, "why": "Does give 24/7 phone, chat and email access — but no Technical Account Manager. This is the classic near-miss on this question." },
-        { "text": "Enterprise On-Ramp", "correct": true, "why": "The lowest tier with both: 24/7 access to Cloud Support Engineers and a TAM, though the TAM is pooled rather than designated." },
-        { "text": "Basic", "correct": false, "why": "Covers billing and account questions plus service health only. No technical support at all." }
+        {
+          "text": "Developer",
+          "correct": false,
+          "why": "Business-hours email access to Cloud Support Associates only. No phone, no TAM."
+        },
+        {
+          "text": "Business",
+          "correct": false,
+          "why": "Does give 24/7 phone, chat and email access — but no Technical Account Manager. This is the classic near-miss on this question."
+        },
+        {
+          "text": "Enterprise On-Ramp",
+          "correct": true,
+          "why": "The lowest tier with both: 24/7 access to Cloud Support Engineers and a TAM, though the TAM is pooled rather than designated."
+        },
+        {
+          "text": "Basic",
+          "correct": false,
+          "why": "Covers billing and account questions plus service health only. No technical support at all."
+        }
       ],
-      "teaches": ["support-plans"]
+      "teaches": [
+        "support-plans"
+      ]
     },
     {
       "id": "clf-steady-workload-cost",
-      "certs": ["CLF-C02", "SAA-C03"],
-      "domainTags": ["cost", "billing", "economics"],
+      "certs": [
+        "CLF-C02",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "cost",
+        "billing",
+        "economics"
+      ],
       "difficulty": "easy",
       "situation": "A company has run the same fleet of EC2 instances continuously for two years and expects to keep running them for at least three more. They are currently paying On-Demand rates and want to cut the bill without changing the architecture.",
       "question": "Which purchasing option best reduces cost?",
       "options": [
-        { "text": "Move the fleet to Spot Instances", "correct": false, "why": "Cheapest per hour, but AWS can reclaim Spot capacity with two minutes' notice. Unacceptable for a steady production fleet." },
-        { "text": "Commit to a three-year Compute Savings Plan", "correct": true, "why": "Steady, predictable, long-running usage is exactly what a commitment discount is for, and a Compute Savings Plan still allows changes of instance family and Region." },
-        { "text": "Keep On-Demand but enable Auto Scaling", "correct": false, "why": "Auto Scaling helps when load varies. This load does not vary — you would still pay full On-Demand rates for the same steady capacity." },
-        { "text": "Move the fleet to Dedicated Hosts", "correct": false, "why": "Dedicated Hosts cost more, not less. They exist for licence compliance and physical isolation." }
+        {
+          "text": "Move the fleet to Spot Instances",
+          "correct": false,
+          "why": "Cheapest per hour, but AWS can reclaim Spot capacity with two minutes' notice. Unacceptable for a steady production fleet."
+        },
+        {
+          "text": "Commit to a three-year Compute Savings Plan",
+          "correct": true,
+          "why": "Steady, predictable, long-running usage is exactly what a commitment discount is for, and a Compute Savings Plan still allows changes of instance family and Region."
+        },
+        {
+          "text": "Keep On-Demand but enable Auto Scaling",
+          "correct": false,
+          "why": "Auto Scaling helps when load varies. This load does not vary — you would still pay full On-Demand rates for the same steady capacity."
+        },
+        {
+          "text": "Move the fleet to Dedicated Hosts",
+          "correct": false,
+          "why": "Dedicated Hosts cost more, not less. They exist for licence compliance and physical isolation."
+        }
       ],
-      "teaches": ["ec2-pricing-models", "ec2", "auto-scaling"]
+      "teaches": [
+        "ec2-pricing-models",
+        "ec2",
+        "auto-scaling"
+      ]
     },
     {
       "id": "clf-compliance-report",
-      "certs": ["CLF-C02", "SCS-C03"],
-      "domainTags": ["compliance", "security"],
+      "certs": [
+        "CLF-C02",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "compliance",
+        "security"
+      ],
       "difficulty": "easy",
       "situation": "An external auditor asks the company to provide AWS's current SOC 2 Type II report as evidence that the underlying cloud infrastructure is independently audited.",
       "question": "Where should the company obtain this report?",
       "options": [
-        { "text": "AWS Artifact", "correct": true, "why": "Artifact is the self-service portal for AWS's own audit reports and agreements. This is exactly what it exists for." },
-        { "text": "AWS Config", "correct": false, "why": "Config records how your resources are configured and whether they match your rules. It says nothing about AWS's own certifications." },
-        { "text": "AWS Security Hub", "correct": false, "why": "Aggregates security findings about your account against best-practice standards. It does not supply AWS's audit reports." },
-        { "text": "Open a support case with AWS Support", "correct": false, "why": "Unnecessary — the documents are available immediately in Artifact without waiting on a case." }
+        {
+          "text": "AWS Artifact",
+          "correct": true,
+          "why": "Artifact is the self-service portal for AWS's own audit reports and agreements. This is exactly what it exists for."
+        },
+        {
+          "text": "AWS Config",
+          "correct": false,
+          "why": "Config records how your resources are configured and whether they match your rules. It says nothing about AWS's own certifications."
+        },
+        {
+          "text": "AWS Security Hub",
+          "correct": false,
+          "why": "Aggregates security findings about your account against best-practice standards. It does not supply AWS's audit reports."
+        },
+        {
+          "text": "Open a support case with AWS Support",
+          "correct": false,
+          "why": "Unnecessary — the documents are available immediately in Artifact without waiting on a case."
+        }
       ],
-      "teaches": ["artifact", "config", "security-hub"]
+      "teaches": [
+        "artifact",
+        "config",
+        "security-hub"
+      ]
     },
     {
       "id": "clf-forecast-alert",
-      "certs": ["CLF-C02", "SOA-C03"],
-      "domainTags": ["cost", "billing"],
+      "certs": [
+        "CLF-C02",
+        "SOA-C03"
+      ],
+      "domainTags": [
+        "cost",
+        "billing"
+      ],
       "difficulty": "easy",
       "situation": "A finance team wants an email as soon as it looks likely that this month's AWS spend will exceed £5,000 — ideally before the money has actually been spent.",
       "question": "Which service meets this requirement?",
       "options": [
-        { "text": "AWS Cost Explorer", "correct": false, "why": "Excellent for analysing and forecasting spend visually, but it does not send alerts. Someone has to go and look." },
-        { "text": "AWS Budgets", "correct": true, "why": "Budgets alerts on both actual and *forecast* spend. The forecast alarm is the part that gives you time to react before the money is gone." },
-        { "text": "AWS Cost and Usage Report", "correct": false, "why": "Delivers detailed line-item billing data to S3 for analysis. No alerting of its own." },
-        { "text": "Amazon CloudWatch billing metrics with no alarm configured", "correct": false, "why": "The metric alone notifies nobody. Without an alarm and an SNS topic, nothing is sent." }
+        {
+          "text": "AWS Cost Explorer",
+          "correct": false,
+          "why": "Excellent for analysing and forecasting spend visually, but it does not send alerts. Someone has to go and look."
+        },
+        {
+          "text": "AWS Budgets",
+          "correct": true,
+          "why": "Budgets alerts on both actual and *forecast* spend. The forecast alarm is the part that gives you time to react before the money is gone."
+        },
+        {
+          "text": "AWS Cost and Usage Report",
+          "correct": false,
+          "why": "Delivers detailed line-item billing data to S3 for analysis. No alerting of its own."
+        },
+        {
+          "text": "Amazon CloudWatch billing metrics with no alarm configured",
+          "correct": false,
+          "why": "The metric alone notifies nobody. Without an alarm and an SNS topic, nothing is sent."
+        }
       ],
-      "teaches": ["budgets", "cost-explorer", "cost-and-usage-report", "cloudwatch"]
+      "teaches": [
+        "budgets",
+        "cost-explorer",
+        "cost-and-usage-report",
+        "cloudwatch"
+      ]
     },
     {
       "id": "clf-idle-waste",
-      "certs": ["CLF-C02"],
-      "domainTags": ["cost", "management"],
+      "certs": [
+        "CLF-C02"
+      ],
+      "domainTags": [
+        "cost",
+        "management"
+      ],
       "difficulty": "easy",
       "situation": "A new cloud team has inherited an AWS account that has grown organically for three years. They suspect there are idle resources, security groups open to the world, and service limits close to being hit.",
       "question": "Which service gives them a single review covering all three concerns?",
       "options": [
-        { "text": "AWS Trusted Advisor", "correct": true, "why": "Trusted Advisor checks span cost optimisation, security, fault tolerance, performance and service limits — the exact three areas named." },
-        { "text": "Amazon Inspector", "correct": false, "why": "Finds software vulnerabilities and unintended network exposure. It says nothing about idle spend or service quotas." },
-        { "text": "AWS Compute Optimizer", "correct": false, "why": "Right-sizes compute from real utilisation. Useful for the idle resources, but covers neither security groups nor quotas." },
-        { "text": "AWS Cost Explorer", "correct": false, "why": "Cost only, and it reports spend rather than flagging idle resources as findings." }
+        {
+          "text": "AWS Trusted Advisor",
+          "correct": true,
+          "why": "Trusted Advisor checks span cost optimisation, security, fault tolerance, performance and service limits — the exact three areas named."
+        },
+        {
+          "text": "Amazon Inspector",
+          "correct": false,
+          "why": "Finds software vulnerabilities and unintended network exposure. It says nothing about idle spend or service quotas."
+        },
+        {
+          "text": "AWS Compute Optimizer",
+          "correct": false,
+          "why": "Right-sizes compute from real utilisation. Useful for the idle resources, but covers neither security groups nor quotas."
+        },
+        {
+          "text": "AWS Cost Explorer",
+          "correct": false,
+          "why": "Cost only, and it reports spend rather than flagging idle resources as findings."
+        }
       ],
-      "teaches": ["trusted-advisor", "inspector", "compute-optimizer", "cost-explorer"]
+      "teaches": [
+        "trusted-advisor",
+        "inspector",
+        "compute-optimizer",
+        "cost-explorer"
+      ]
     },
     {
       "id": "saa-archive-retrieval-minutes",
-      "certs": ["SAA-C03", "DEA-C01"],
-      "domainTags": ["storage", "cost"],
+      "certs": [
+        "SAA-C03",
+        "DEA-C01"
+      ],
+      "domainTags": [
+        "storage",
+        "cost"
+      ],
       "difficulty": "medium",
       "situation": "A media company keeps 40 TB of finished video renders in Amazon S3 Standard. After the first 30 days a file is almost never requested, but when a client does request one it must be retrievable within minutes. Storage cost is the primary concern.",
       "question": "Which approach meets the requirements at the lowest storage cost?",
       "options": [
-        { "text": "A lifecycle rule moving objects to S3 Glacier Deep Archive after 30 days", "correct": false, "why": "The cheapest storage of all, but standard retrieval takes up to 12 hours. That breaks the 'within minutes' requirement outright." },
-        { "text": "A lifecycle rule moving objects to S3 Glacier Flexible Retrieval after 30 days", "correct": true, "why": "Far cheaper than Standard, and Expedited retrieval returns objects in minutes. The lifecycle rule automates the transition at exactly the 30-day mark described." },
-        { "text": "A lifecycle rule moving objects to S3 Standard-IA after 30 days", "correct": false, "why": "Retrieval is immediate, which satisfies the time constraint, but Standard-IA costs considerably more per GB than Glacier. The question asks for lowest cost." },
-        { "text": "Leave objects in S3 Standard and enable S3 Versioning", "correct": false, "why": "Changes nothing about cost, and versioning increases storage by keeping old copies." }
+        {
+          "text": "A lifecycle rule moving objects to S3 Glacier Deep Archive after 30 days",
+          "correct": false,
+          "why": "The cheapest storage of all, but standard retrieval takes up to 12 hours. That breaks the 'within minutes' requirement outright."
+        },
+        {
+          "text": "A lifecycle rule moving objects to S3 Glacier Flexible Retrieval after 30 days",
+          "correct": true,
+          "why": "Far cheaper than Standard, and Expedited retrieval returns objects in minutes. The lifecycle rule automates the transition at exactly the 30-day mark described."
+        },
+        {
+          "text": "A lifecycle rule moving objects to S3 Standard-IA after 30 days",
+          "correct": false,
+          "why": "Retrieval is immediate, which satisfies the time constraint, but Standard-IA costs considerably more per GB than Glacier. The question asks for lowest cost."
+        },
+        {
+          "text": "Leave objects in S3 Standard and enable S3 Versioning",
+          "correct": false,
+          "why": "Changes nothing about cost, and versioning increases storage by keeping old copies."
+        }
       ],
-      "teaches": ["s3-glacier", "s3"]
+      "teaches": [
+        "s3-glacier",
+        "s3"
+      ]
     },
     {
       "id": "saa-shared-filesystem-linux",
-      "certs": ["SAA-C03"],
-      "domainTags": ["storage", "resilience"],
+      "certs": [
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "storage",
+        "resilience"
+      ],
       "difficulty": "medium",
       "situation": "A content management application runs on a fleet of Linux EC2 instances behind a load balancer, spread across three Availability Zones. Every instance must read and write the same set of uploaded files, and the fleet scales up and down through the day.",
       "question": "Which storage option meets the requirement?",
       "options": [
-        { "text": "Attach a single Amazon EBS volume to all instances", "correct": false, "why": "An EBS volume lives in one Availability Zone, and even Multi-Attach is limited to instances in that same AZ. It cannot serve a three-AZ fleet." },
-        { "text": "Use Amazon EFS mounted on every instance", "correct": true, "why": "EFS is a regional NFS file system with mount targets in each AZ, shared concurrently by many Linux instances, and it grows and shrinks automatically as the fleet does." },
-        { "text": "Use Amazon FSx for Windows File Server", "correct": false, "why": "FSx for Windows speaks SMB and targets Windows workloads. These are Linux instances, and SMB is the wrong protocol here." },
-        { "text": "Copy files to each instance's instance store at launch", "correct": false, "why": "Instance store is ephemeral and local to one instance. Writes on one machine would be invisible to the others and lost on stop." }
+        {
+          "text": "Attach a single Amazon EBS volume to all instances",
+          "correct": false,
+          "why": "An EBS volume lives in one Availability Zone, and even Multi-Attach is limited to instances in that same AZ. It cannot serve a three-AZ fleet."
+        },
+        {
+          "text": "Use Amazon EFS mounted on every instance",
+          "correct": true,
+          "why": "EFS is a regional NFS file system with mount targets in each AZ, shared concurrently by many Linux instances, and it grows and shrinks automatically as the fleet does."
+        },
+        {
+          "text": "Use Amazon FSx for Windows File Server",
+          "correct": false,
+          "why": "FSx for Windows speaks SMB and targets Windows workloads. These are Linux instances, and SMB is the wrong protocol here."
+        },
+        {
+          "text": "Copy files to each instance's instance store at launch",
+          "correct": false,
+          "why": "Instance store is ephemeral and local to one instance. Writes on one machine would be invisible to the others and lost on stop."
+        }
       ],
-      "teaches": ["efs", "ebs", "fsx"]
+      "teaches": [
+        "efs",
+        "ebs",
+        "fsx"
+      ]
     },
     {
       "id": "saa-decouple-spike",
-      "certs": ["SAA-C03", "DVA-C02"],
-      "domainTags": ["decoupling", "integration", "resilience"],
+      "certs": [
+        "SAA-C03",
+        "DVA-C02"
+      ],
+      "domainTags": [
+        "decoupling",
+        "integration",
+        "resilience"
+      ],
       "difficulty": "medium",
       "situation": "An online shop's web tier writes orders directly to a backend processing service. During flash sales the web tier accepts orders far faster than the backend can process them, and orders are being lost when the backend becomes overwhelmed.",
       "question": "Which change best prevents order loss during traffic spikes?",
       "options": [
-        { "text": "Place orders on an Amazon SQS queue that the backend polls at its own rate", "correct": true, "why": "The queue absorbs the burst and holds each order durably until processed. If a consumer crashes mid-order the message reappears after the visibility timeout rather than being lost." },
-        { "text": "Publish orders to an Amazon SNS topic the backend subscribes to", "correct": false, "why": "SNS pushes immediately and does not store messages waiting for a slow consumer. An overwhelmed backend would still drop work — this is the most tempting wrong answer." },
-        { "text": "Scale the backend vertically to a larger instance type", "correct": false, "why": "Raises the ceiling but does not remove it, requires downtime to resize, and leaves you paying for peak capacity all the time." },
-        { "text": "Add retry logic with exponential backoff in the web tier", "correct": false, "why": "Helps with transient errors, but the web tier still has to hold the order in memory while retrying. A web-tier restart loses it." }
+        {
+          "text": "Place orders on an Amazon SQS queue that the backend polls at its own rate",
+          "correct": true,
+          "why": "The queue absorbs the burst and holds each order durably until processed. If a consumer crashes mid-order the message reappears after the visibility timeout rather than being lost."
+        },
+        {
+          "text": "Publish orders to an Amazon SNS topic the backend subscribes to",
+          "correct": false,
+          "why": "SNS pushes immediately and does not store messages waiting for a slow consumer. An overwhelmed backend would still drop work — this is the most tempting wrong answer."
+        },
+        {
+          "text": "Scale the backend vertically to a larger instance type",
+          "correct": false,
+          "why": "Raises the ceiling but does not remove it, requires downtime to resize, and leaves you paying for peak capacity all the time."
+        },
+        {
+          "text": "Add retry logic with exponential backoff in the web tier",
+          "correct": false,
+          "why": "Helps with transient errors, but the web tier still has to hold the order in memory while retrying. A web-tier restart loses it."
+        }
       ],
-      "teaches": ["sqs", "sns", "decoupling", "scaling"]
+      "teaches": [
+        "sqs",
+        "sns",
+        "decoupling",
+        "scaling"
+      ]
     },
     {
       "id": "saa-rds-failover-vs-read",
-      "certs": ["SAA-C03", "SOA-C03"],
-      "domainTags": ["database", "resilience"],
+      "certs": [
+        "SAA-C03",
+        "SOA-C03"
+      ],
+      "domainTags": [
+        "database",
+        "resilience"
+      ],
       "difficulty": "medium",
       "situation": "A team runs Amazon RDS for MySQL. They have two separate goals: the database must survive the loss of an Availability Zone with automatic failover, and a growing reporting workload is slowing down the primary.",
       "question": "Which combination addresses both goals?",
       "options": [
-        { "text": "Enable Multi-AZ only", "correct": false, "why": "Solves the failover goal, but the standby cannot be read from. Reporting queries would still hit the primary." },
-        { "text": "Add read replicas only", "correct": false, "why": "Solves the reporting goal, but replicas are asynchronous and are not an automatic failover mechanism." },
-        { "text": "Enable Multi-AZ and add one or more read replicas", "correct": true, "why": "The two features solve different problems and are designed to be used together: Multi-AZ for automatic failover, read replicas for scaling reads away from the primary." },
-        { "text": "Enable Multi-AZ and direct reporting queries to the standby", "correct": false, "why": "The Multi-AZ standby is not readable. This is the single most common misconception about RDS." }
+        {
+          "text": "Enable Multi-AZ only",
+          "correct": false,
+          "why": "Solves the failover goal, but the standby cannot be read from. Reporting queries would still hit the primary."
+        },
+        {
+          "text": "Add read replicas only",
+          "correct": false,
+          "why": "Solves the reporting goal, but replicas are asynchronous and are not an automatic failover mechanism."
+        },
+        {
+          "text": "Enable Multi-AZ and add one or more read replicas",
+          "correct": true,
+          "why": "The two features solve different problems and are designed to be used together: Multi-AZ for automatic failover, read replicas for scaling reads away from the primary."
+        },
+        {
+          "text": "Enable Multi-AZ and direct reporting queries to the standby",
+          "correct": false,
+          "why": "The Multi-AZ standby is not readable. This is the single most common misconception about RDS."
+        }
       ],
-      "teaches": ["rds", "high-availability-vs-dr"]
+      "teaches": [
+        "rds",
+        "high-availability-vs-dr"
+      ]
     },
     {
       "id": "saa-private-subnet-s3",
-      "certs": ["SAA-C03", "SCS-C03"],
-      "domainTags": ["networking", "security", "cost"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "networking",
+        "security",
+        "cost"
+      ],
       "difficulty": "medium",
       "situation": "EC2 instances in a private subnet need to read objects from an Amazon S3 bucket in the same Region. Security requires that this traffic never traverses the public internet, and the team wants to avoid unnecessary data-processing charges.",
       "question": "What should the architect implement?",
       "options": [
-        { "text": "A NAT gateway in a public subnet with a route for S3 traffic", "correct": false, "why": "Works, but the traffic leaves your VPC toward the public S3 endpoint, and NAT gateways charge hourly plus per GB processed. It fails both stated requirements." },
-        { "text": "A gateway VPC endpoint for Amazon S3", "correct": true, "why": "Gateway endpoints keep S3 traffic inside the AWS network via a route-table entry, and they carry no hourly or per-GB charge at all." },
-        { "text": "An interface VPC endpoint for Amazon S3", "correct": false, "why": "Also keeps traffic private and does work — but interface endpoints bill per hour and per GB. For S3 in the same Region the gateway endpoint is the cheaper, purpose-built answer." },
-        { "text": "An internet gateway with a restrictive security group", "correct": false, "why": "An internet gateway makes the subnet public by definition, which contradicts the requirement that traffic stay off the internet." }
+        {
+          "text": "A NAT gateway in a public subnet with a route for S3 traffic",
+          "correct": false,
+          "why": "Works, but the traffic leaves your VPC toward the public S3 endpoint, and NAT gateways charge hourly plus per GB processed. It fails both stated requirements."
+        },
+        {
+          "text": "A gateway VPC endpoint for Amazon S3",
+          "correct": true,
+          "why": "Gateway endpoints keep S3 traffic inside the AWS network via a route-table entry, and they carry no hourly or per-GB charge at all."
+        },
+        {
+          "text": "An interface VPC endpoint for Amazon S3",
+          "correct": false,
+          "why": "Also keeps traffic private and does work — but interface endpoints bill per hour and per GB. For S3 in the same Region the gateway endpoint is the cheaper, purpose-built answer."
+        },
+        {
+          "text": "An internet gateway with a restrictive security group",
+          "correct": false,
+          "why": "An internet gateway makes the subnet public by definition, which contradicts the requirement that traffic stay off the internet."
+        }
       ],
-      "teaches": ["vpc-endpoints", "nat-gateway", "vpc", "s3"]
+      "teaches": [
+        "vpc-endpoints",
+        "nat-gateway",
+        "vpc",
+        "s3"
+      ]
     },
     {
       "id": "saa-session-state",
-      "certs": ["SAA-C03", "DVA-C02"],
-      "domainTags": ["compute", "performance", "resilience"],
+      "certs": [
+        "SAA-C03",
+        "DVA-C02"
+      ],
+      "domainTags": [
+        "compute",
+        "performance",
+        "resilience"
+      ],
       "difficulty": "medium",
       "situation": "A web application stores user session data in memory on each EC2 instance. When Auto Scaling removes an instance, those users are logged out and lose their shopping baskets.",
       "question": "Which change resolves this most effectively?",
       "options": [
-        { "text": "Enable sticky sessions on the Application Load Balancer", "correct": false, "why": "Pins a user to one instance, so the problem returns the moment that instance is replaced — and it undermines even load distribution. A workaround, not a fix." },
-        { "text": "Store session data in Amazon ElastiCache or Amazon DynamoDB", "correct": true, "why": "Moving state off the instance makes the tier genuinely stateless: any instance can serve any request, and instances can be added or destroyed freely." },
-        { "text": "Store session data on an Amazon EBS volume attached to each instance", "correct": false, "why": "The volume is still tied to a single instance and is deleted with it by default. Same failure, different storage." },
-        { "text": "Disable Auto Scaling so instances are never removed", "correct": false, "why": "Removes elasticity and does not help when an instance fails on its own, which it eventually will." }
+        {
+          "text": "Enable sticky sessions on the Application Load Balancer",
+          "correct": false,
+          "why": "Pins a user to one instance, so the problem returns the moment that instance is replaced — and it undermines even load distribution. A workaround, not a fix."
+        },
+        {
+          "text": "Store session data in Amazon ElastiCache or Amazon DynamoDB",
+          "correct": true,
+          "why": "Moving state off the instance makes the tier genuinely stateless: any instance can serve any request, and instances can be added or destroyed freely."
+        },
+        {
+          "text": "Store session data on an Amazon EBS volume attached to each instance",
+          "correct": false,
+          "why": "The volume is still tied to a single instance and is deleted with it by default. Same failure, different storage."
+        },
+        {
+          "text": "Disable Auto Scaling so instances are never removed",
+          "correct": false,
+          "why": "Removes elasticity and does not help when an instance fails on its own, which it eventually will."
+        }
       ],
-      "teaches": ["statelessness", "elasticache", "dynamodb", "auto-scaling", "elb"]
+      "teaches": [
+        "statelessness",
+        "elasticache",
+        "dynamodb",
+        "auto-scaling",
+        "elb"
+      ]
     },
     {
       "id": "saa-spot-batch",
-      "certs": ["SAA-C03"],
-      "domainTags": ["compute", "cost"],
+      "certs": [
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "compute",
+        "cost"
+      ],
       "difficulty": "medium",
       "situation": "A research team runs nightly image-processing jobs. Each job takes about 90 minutes, jobs are independent, and a job that is interrupted can simply be re-run. The team wants the lowest possible compute cost.",
       "question": "Which purchasing option should they use?",
       "options": [
-        { "text": "Spot Instances", "correct": true, "why": "The deepest discount available, and the workload has exactly the property Spot requires: interruption is harmless because the job can be re-run." },
-        { "text": "On-Demand Instances", "correct": false, "why": "No interruption risk, but the most expensive per hour — and the workload does not need that guarantee." },
-        { "text": "Reserved Instances", "correct": false, "why": "Commitment discounts suit steady, always-on usage. A nightly batch leaves the reservation idle most of the day." },
-        { "text": "Dedicated Hosts", "correct": false, "why": "The most expensive option, intended for licence compliance and physical isolation. Neither applies here." }
+        {
+          "text": "Spot Instances",
+          "correct": true,
+          "why": "The deepest discount available, and the workload has exactly the property Spot requires: interruption is harmless because the job can be re-run."
+        },
+        {
+          "text": "On-Demand Instances",
+          "correct": false,
+          "why": "No interruption risk, but the most expensive per hour — and the workload does not need that guarantee."
+        },
+        {
+          "text": "Reserved Instances",
+          "correct": false,
+          "why": "Commitment discounts suit steady, always-on usage. A nightly batch leaves the reservation idle most of the day."
+        },
+        {
+          "text": "Dedicated Hosts",
+          "correct": false,
+          "why": "The most expensive option, intended for licence compliance and physical isolation. Neither applies here."
+        }
       ],
-      "teaches": ["ec2-pricing-models", "batch", "ec2"]
+      "teaches": [
+        "ec2-pricing-models",
+        "batch",
+        "ec2"
+      ]
     },
     {
       "id": "saa-bulk-transfer",
-      "certs": ["SAA-C03", "DEA-C01"],
-      "domainTags": ["migration", "storage"],
+      "certs": [
+        "SAA-C03",
+        "DEA-C01"
+      ],
+      "domainTags": [
+        "migration",
+        "storage"
+      ],
       "difficulty": "medium",
       "situation": "A company must move 500 TB of archival data from an on-premises data centre into Amazon S3. The site has a 100 Mbps internet connection that is also used by staff, and the migration should complete within a few weeks.",
       "question": "What is the most appropriate transfer method?",
       "options": [
-        { "text": "AWS DataSync over the existing internet connection", "correct": false, "why": "At 100 Mbps, 500 TB would take well over a year even with the line fully saturated — which would also cripple staff connectivity." },
-        { "text": "AWS Snowball devices", "correct": true, "why": "When the network would take longer than shipping physical media, Snow is the answer. Data is encrypted on tamper-evident devices and posted, bypassing the constrained line entirely." },
-        { "text": "Order AWS Direct Connect and transfer over the dedicated link", "correct": false, "why": "Provisioning Direct Connect commonly takes weeks to months before a single byte moves, and the circuit is an ongoing cost for a one-off migration." },
-        { "text": "Upload directly with the AWS CLI using multipart upload", "correct": false, "why": "Multipart improves reliability and parallelism but cannot exceed the 100 Mbps physical limit." }
+        {
+          "text": "AWS DataSync over the existing internet connection",
+          "correct": false,
+          "why": "At 100 Mbps, 500 TB would take well over a year even with the line fully saturated — which would also cripple staff connectivity."
+        },
+        {
+          "text": "AWS Snowball devices",
+          "correct": true,
+          "why": "When the network would take longer than shipping physical media, Snow is the answer. Data is encrypted on tamper-evident devices and posted, bypassing the constrained line entirely."
+        },
+        {
+          "text": "Order AWS Direct Connect and transfer over the dedicated link",
+          "correct": false,
+          "why": "Provisioning Direct Connect commonly takes weeks to months before a single byte moves, and the circuit is an ongoing cost for a one-off migration."
+        },
+        {
+          "text": "Upload directly with the AWS CLI using multipart upload",
+          "correct": false,
+          "why": "Multipart improves reliability and parallelism but cannot exceed the 100 Mbps physical limit."
+        }
       ],
-      "teaches": ["snow-family", "datasync", "direct-connect", "s3"]
+      "teaches": [
+        "snow-family",
+        "datasync",
+        "direct-connect",
+        "s3"
+      ]
     },
     {
       "id": "saa-least-privilege-ec2",
-      "certs": ["SAA-C03", "SCS-C03", "DVA-C02"],
-      "domainTags": ["identity", "security"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03",
+        "DVA-C02"
+      ],
+      "domainTags": [
+        "identity",
+        "security"
+      ],
       "difficulty": "medium",
       "situation": "An application on EC2 needs to read objects from one specific S3 bucket. A developer has hard-coded their own IAM user's access keys into the application configuration file.",
       "question": "What should the architect do instead?",
       "options": [
-        { "text": "Attach an IAM role to the EC2 instance granting read access to that bucket only", "correct": true, "why": "Roles supply temporary, automatically rotated credentials that never sit in a config file, scoped to exactly the access needed. This is the textbook answer." },
-        { "text": "Create a dedicated IAM user for the application and store its keys in the config file", "correct": false, "why": "Better scoped, but long-lived keys in a file are still the leak everyone worries about, and they do not rotate on their own." },
-        { "text": "Store the developer's access keys in AWS Secrets Manager and fetch them at runtime", "correct": false, "why": "An improvement on plaintext, but the application still needs credentials to reach Secrets Manager — and a human's personal keys should never back an application in the first place." },
-        { "text": "Make the S3 bucket public so no credentials are required", "correct": false, "why": "Exposes the data to the entire internet to avoid a credential problem. Never the answer." }
+        {
+          "text": "Attach an IAM role to the EC2 instance granting read access to that bucket only",
+          "correct": true,
+          "why": "Roles supply temporary, automatically rotated credentials that never sit in a config file, scoped to exactly the access needed. This is the textbook answer."
+        },
+        {
+          "text": "Create a dedicated IAM user for the application and store its keys in the config file",
+          "correct": false,
+          "why": "Better scoped, but long-lived keys in a file are still the leak everyone worries about, and they do not rotate on their own."
+        },
+        {
+          "text": "Store the developer's access keys in AWS Secrets Manager and fetch them at runtime",
+          "correct": false,
+          "why": "An improvement on plaintext, but the application still needs credentials to reach Secrets Manager — and a human's personal keys should never back an application in the first place."
+        },
+        {
+          "text": "Make the S3 bucket public so no credentials are required",
+          "correct": false,
+          "why": "Exposes the data to the entire internet to avoid a credential problem. Never the answer."
+        }
       ],
-      "teaches": ["iam", "least-privilege", "ec2", "s3", "secrets-manager"]
+      "teaches": [
+        "iam",
+        "least-privilege",
+        "ec2",
+        "s3",
+        "secrets-manager"
+      ]
     },
     {
       "id": "saa-static-site-global",
-      "certs": ["SAA-C03", "CLF-C02"],
-      "domainTags": ["edge", "storage", "cost", "performance"],
+      "certs": [
+        "SAA-C03",
+        "CLF-C02"
+      ],
+      "domainTags": [
+        "edge",
+        "storage",
+        "cost",
+        "performance"
+      ],
       "difficulty": "easy",
       "situation": "A company hosts a marketing website consisting entirely of static HTML, CSS, images and JavaScript. Visitors are spread worldwide and complain that the site is slow outside Europe. The team wants minimal operational overhead and low cost.",
       "question": "Which architecture best meets the requirements?",
       "options": [
-        { "text": "Host the files in Amazon S3 and serve them through Amazon CloudFront", "correct": true, "why": "No servers to manage, and CloudFront caches at edge locations worldwide so distant visitors are served locally. Egress through CloudFront is also cheaper than straight from S3." },
-        { "text": "Run EC2 web servers behind an Application Load Balancer in one Region", "correct": false, "why": "Servers to patch and scale, and every request still crosses the world to that single Region. Highest cost, highest overhead, does not fix latency." },
-        { "text": "Host the files in Amazon S3 with public read access and no CDN", "correct": false, "why": "Removes the servers but not the distance. Requests from other continents still travel to the bucket's Region." },
-        { "text": "Deploy EC2 web servers in six Regions with Route 53 latency routing", "correct": false, "why": "Would improve latency, but at six times the fleet management and cost for content that is entirely static." }
+        {
+          "text": "Host the files in Amazon S3 and serve them through Amazon CloudFront",
+          "correct": true,
+          "why": "No servers to manage, and CloudFront caches at edge locations worldwide so distant visitors are served locally. Egress through CloudFront is also cheaper than straight from S3."
+        },
+        {
+          "text": "Run EC2 web servers behind an Application Load Balancer in one Region",
+          "correct": false,
+          "why": "Servers to patch and scale, and every request still crosses the world to that single Region. Highest cost, highest overhead, does not fix latency."
+        },
+        {
+          "text": "Host the files in Amazon S3 with public read access and no CDN",
+          "correct": false,
+          "why": "Removes the servers but not the distance. Requests from other continents still travel to the bucket's Region."
+        },
+        {
+          "text": "Deploy EC2 web servers in six Regions with Route 53 latency routing",
+          "correct": false,
+          "why": "Would improve latency, but at six times the fleet management and cost for content that is entirely static."
+        }
       ],
-      "teaches": ["s3", "cloudfront", "elb", "route53"]
+      "teaches": [
+        "s3",
+        "cloudfront",
+        "elb",
+        "route53"
+      ]
     },
     {
       "id": "saa-waf-injection",
-      "certs": ["SAA-C03", "SCS-C03"],
-      "domainTags": ["security", "edge", "networking"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "security",
+        "edge",
+        "networking"
+      ],
       "difficulty": "medium",
       "situation": "A public web application behind Amazon CloudFront is receiving SQL injection attempts and requests from a handful of IP addresses making thousands of requests per minute.",
       "question": "Which service should be used to block this traffic?",
       "options": [
-        { "text": "AWS WAF attached to the CloudFront distribution", "correct": true, "why": "WAF inspects HTTP(S) requests at the application layer: managed rule groups cover SQL injection, and rate-based rules throttle abusive IPs. Attaching at CloudFront stops it at the edge." },
-        { "text": "AWS Shield Standard", "correct": false, "why": "Already enabled for every customer and aimed at volumetric network-layer floods. It does not inspect request content for injection patterns." },
-        { "text": "Network ACLs on the VPC subnets", "correct": false, "why": "Operate at layer 4 on IP and port. They cannot see an SQL injection string inside an HTTP request body." },
-        { "text": "Security groups on the origin instances", "correct": false, "why": "Stateful allow-only firewalls attached to resources. They cannot deny specific addresses, nor inspect request content." }
+        {
+          "text": "AWS WAF attached to the CloudFront distribution",
+          "correct": true,
+          "why": "WAF inspects HTTP(S) requests at the application layer: managed rule groups cover SQL injection, and rate-based rules throttle abusive IPs. Attaching at CloudFront stops it at the edge."
+        },
+        {
+          "text": "AWS Shield Standard",
+          "correct": false,
+          "why": "Already enabled for every customer and aimed at volumetric network-layer floods. It does not inspect request content for injection patterns."
+        },
+        {
+          "text": "Network ACLs on the VPC subnets",
+          "correct": false,
+          "why": "Operate at layer 4 on IP and port. They cannot see an SQL injection string inside an HTTP request body."
+        },
+        {
+          "text": "Security groups on the origin instances",
+          "correct": false,
+          "why": "Stateful allow-only firewalls attached to resources. They cannot deny specific addresses, nor inspect request content."
+        }
       ],
-      "teaches": ["waf", "shield", "security-group-vs-nacl", "cloudfront"]
+      "teaches": [
+        "waf",
+        "shield",
+        "security-group-vs-nacl",
+        "cloudfront"
+      ]
     },
     {
       "id": "saa-dr-rpo-minutes",
-      "certs": ["SAA-C03", "SAP-C02"],
-      "domainTags": ["resilience", "cost"],
+      "certs": [
+        "SAA-C03",
+        "SAP-C02"
+      ],
+      "domainTags": [
+        "resilience",
+        "cost"
+      ],
       "difficulty": "hard",
       "situation": "A business-critical application must be recoverable in another AWS Region. The business states a recovery point objective of five minutes and a recovery time objective of thirty minutes. Cost should be kept as low as the objectives allow.",
       "question": "Which disaster recovery strategy is most appropriate?",
       "options": [
-        { "text": "Backup and restore", "correct": false, "why": "The cheapest strategy, but restoring infrastructure and data from backups takes hours. It cannot meet a thirty-minute RTO." },
-        { "text": "Pilot light", "correct": false, "why": "Keeps data replicated with core services switched off. Closer, but scaling the environment up from nothing typically exceeds thirty minutes." },
-        { "text": "Warm standby", "correct": true, "why": "A scaled-down but running copy in the second Region with continuous replication. Data is minutes behind, and scaling an already-running environment fits a thirty-minute RTO — without the cost of full active/active." },
-        { "text": "Multi-site active/active", "correct": false, "why": "Would comfortably beat both objectives, but runs full production capacity in two Regions. The question explicitly asks for the lowest cost that still meets the targets." }
+        {
+          "text": "Backup and restore",
+          "correct": false,
+          "why": "The cheapest strategy, but restoring infrastructure and data from backups takes hours. It cannot meet a thirty-minute RTO."
+        },
+        {
+          "text": "Pilot light",
+          "correct": false,
+          "why": "Keeps data replicated with core services switched off. Closer, but scaling the environment up from nothing typically exceeds thirty minutes."
+        },
+        {
+          "text": "Warm standby",
+          "correct": true,
+          "why": "A scaled-down but running copy in the second Region with continuous replication. Data is minutes behind, and scaling an already-running environment fits a thirty-minute RTO — without the cost of full active/active."
+        },
+        {
+          "text": "Multi-site active/active",
+          "correct": false,
+          "why": "Would comfortably beat both objectives, but runs full production capacity in two Regions. The question explicitly asks for the lowest cost that still meets the targets."
+        }
       ],
-      "teaches": ["high-availability-vs-dr", "aws-backup"]
+      "teaches": [
+        "high-availability-vs-dr",
+        "aws-backup"
+      ]
     },
     {
       "id": "saa-global-accelerator-vs-cloudfront",
-      "certs": ["SAA-C03"],
-      "domainTags": ["edge", "networking", "performance"],
+      "certs": [
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "edge",
+        "networking",
+        "performance"
+      ],
       "difficulty": "hard",
       "situation": "A multiplayer game server communicates with clients over UDP. Players worldwide report inconsistent latency, and the studio also needs fixed IP addresses that can be embedded in the game client, plus fast failover between Regions.",
       "question": "Which service should the architect use?",
       "options": [
-        { "text": "Amazon CloudFront", "correct": false, "why": "A content delivery network built around caching HTTP(S) content. It does not carry UDP game traffic, and there is nothing cacheable here." },
-        { "text": "AWS Global Accelerator", "correct": true, "why": "Provides static anycast IP addresses, moves TCP and UDP traffic onto the AWS backbone at the nearest edge, and fails over between regional endpoints quickly. Purpose-built for this case." },
-        { "text": "Amazon Route 53 with latency-based routing", "correct": false, "why": "Improves endpoint selection, but DNS answers are cached by clients and resolvers, so failover is slow — and it provides no static IPs." },
-        { "text": "An Application Load Balancer in each Region", "correct": false, "why": "ALBs handle HTTP(S) only and cannot balance UDP. A Network Load Balancer could, but that alone gives no global routing." }
+        {
+          "text": "Amazon CloudFront",
+          "correct": false,
+          "why": "A content delivery network built around caching HTTP(S) content. It does not carry UDP game traffic, and there is nothing cacheable here."
+        },
+        {
+          "text": "AWS Global Accelerator",
+          "correct": true,
+          "why": "Provides static anycast IP addresses, moves TCP and UDP traffic onto the AWS backbone at the nearest edge, and fails over between regional endpoints quickly. Purpose-built for this case."
+        },
+        {
+          "text": "Amazon Route 53 with latency-based routing",
+          "correct": false,
+          "why": "Improves endpoint selection, but DNS answers are cached by clients and resolvers, so failover is slow — and it provides no static IPs."
+        },
+        {
+          "text": "An Application Load Balancer in each Region",
+          "correct": false,
+          "why": "ALBs handle HTTP(S) only and cannot balance UDP. A Network Load Balancer could, but that alone gives no global routing."
+        }
       ],
-      "teaches": ["global-accelerator", "cloudfront", "route53", "elb"]
+      "teaches": [
+        "global-accelerator",
+        "cloudfront",
+        "route53",
+        "elb"
+      ]
     },
     {
       "id": "saa-encrypt-existing-ebs",
-      "certs": ["SAA-C03", "SCS-C03", "SOA-C03"],
-      "domainTags": ["encryption", "storage", "security"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03",
+        "SOA-C03"
+      ],
+      "domainTags": [
+        "encryption",
+        "storage",
+        "security"
+      ],
       "difficulty": "hard",
       "situation": "A compliance review finds an existing production EBS volume was created without encryption. The data must be encrypted at rest, and the team wants the shortest possible maintenance window.",
       "question": "What is the correct procedure?",
       "options": [
-        { "text": "Enable encryption on the existing volume in the console", "correct": false, "why": "There is no such toggle. Encryption is set when a volume is created and cannot be turned on in place — this is the whole reason the question exists." },
-        { "text": "Take a snapshot, copy the snapshot with encryption enabled, create a new volume from the encrypted copy and attach it", "correct": true, "why": "The supported path. The snapshot copy operation is where encryption gets applied, and the only downtime is detaching the old volume and attaching the new one." },
-        { "text": "Create an encrypted volume and change the instance's root device mapping to point at it", "correct": false, "why": "Produces an empty encrypted volume. The existing data is never copied across." },
-        { "text": "Enable default EBS encryption for the Region", "correct": false, "why": "An excellent control going forward, but it applies only to newly created volumes. The existing one stays unencrypted." }
+        {
+          "text": "Enable encryption on the existing volume in the console",
+          "correct": false,
+          "why": "There is no such toggle. Encryption is set when a volume is created and cannot be turned on in place — this is the whole reason the question exists."
+        },
+        {
+          "text": "Take a snapshot, copy the snapshot with encryption enabled, create a new volume from the encrypted copy and attach it",
+          "correct": true,
+          "why": "The supported path. The snapshot copy operation is where encryption gets applied, and the only downtime is detaching the old volume and attaching the new one."
+        },
+        {
+          "text": "Create an encrypted volume and change the instance's root device mapping to point at it",
+          "correct": false,
+          "why": "Produces an empty encrypted volume. The existing data is never copied across."
+        },
+        {
+          "text": "Enable default EBS encryption for the Region",
+          "correct": false,
+          "why": "An excellent control going forward, but it applies only to newly created volumes. The existing one stays unencrypted."
+        }
       ],
-      "teaches": ["ebs", "kms", "encryption-states"]
+      "teaches": [
+        "ebs",
+        "kms",
+        "encryption-states"
+      ]
     },
     {
       "id": "saa-dynamodb-microsecond",
-      "certs": ["SAA-C03", "DVA-C02"],
-      "domainTags": ["database", "caching", "performance"],
+      "certs": [
+        "SAA-C03",
+        "DVA-C02"
+      ],
+      "domainTags": [
+        "database",
+        "caching",
+        "performance"
+      ],
       "difficulty": "medium",
       "situation": "A product catalogue in Amazon DynamoDB serves a very high volume of repeated reads for the same popular items. Response times of single-digit milliseconds are no longer fast enough, and the team wants microsecond reads without rewriting the application's DynamoDB API calls.",
       "question": "What should be added?",
       "options": [
-        { "text": "Amazon DynamoDB Accelerator (DAX)", "correct": true, "why": "A DynamoDB-native in-memory cache delivering microsecond reads, and it is API-compatible — the application keeps making the same calls." },
-        { "text": "Amazon ElastiCache for Redis in front of the table", "correct": false, "why": "Would deliver the speed, but the application must be rewritten to check the cache, handle misses and manage invalidation. The question rules that out." },
-        { "text": "Increase the table's provisioned read capacity", "correct": false, "why": "Removes throttling if that were the issue, but does not reduce per-request latency below DynamoDB's single-digit milliseconds." },
-        { "text": "Add a global secondary index on the popular items", "correct": false, "why": "Indexes change how you can query, not how fast an already-fast key lookup returns." }
+        {
+          "text": "Amazon DynamoDB Accelerator (DAX)",
+          "correct": true,
+          "why": "A DynamoDB-native in-memory cache delivering microsecond reads, and it is API-compatible — the application keeps making the same calls."
+        },
+        {
+          "text": "Amazon ElastiCache for Redis in front of the table",
+          "correct": false,
+          "why": "Would deliver the speed, but the application must be rewritten to check the cache, handle misses and manage invalidation. The question rules that out."
+        },
+        {
+          "text": "Increase the table's provisioned read capacity",
+          "correct": false,
+          "why": "Removes throttling if that were the issue, but does not reduce per-request latency below DynamoDB's single-digit milliseconds."
+        },
+        {
+          "text": "Add a global secondary index on the popular items",
+          "correct": false,
+          "why": "Indexes change how you can query, not how fast an already-fast key lookup returns."
+        }
       ],
-      "teaches": ["dynamodb", "elasticache", "caching"]
+      "teaches": [
+        "dynamodb",
+        "elasticache",
+        "caching"
+      ]
     },
     {
       "id": "saa-org-cloudtrail",
-      "certs": ["SAA-C03", "SCS-C03", "SAP-C02"],
-      "domainTags": ["management", "security", "compliance"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03",
+        "SAP-C02"
+      ],
+      "domainTags": [
+        "management",
+        "security",
+        "compliance"
+      ],
       "difficulty": "medium",
       "situation": "A company runs 40 AWS accounts under AWS Organizations. Security needs an immutable record of every API call in every account, stored centrally, including any accounts created in future.",
       "question": "What should be configured?",
       "options": [
-        { "text": "An organization trail in AWS CloudTrail delivering to a central S3 bucket", "correct": true, "why": "An organization trail applies to every member account automatically, including accounts added later, and delivers to one bucket in a dedicated logging account." },
-        { "text": "A separate CloudTrail trail in each account delivering to that account's own bucket", "correct": false, "why": "Logs stay scattered, and every new account needs manual setup that will eventually be forgotten." },
-        { "text": "Enable AWS Config in every account with an aggregator", "correct": false, "why": "Config records resource configuration state and compliance, not the API calls that changed it. Wrong tool for an audit trail of actions." },
-        { "text": "Rely on CloudTrail Event history in each account", "correct": false, "why": "Event history keeps only the last 90 days, is not centralised, and cannot be made immutable." }
+        {
+          "text": "An organization trail in AWS CloudTrail delivering to a central S3 bucket",
+          "correct": true,
+          "why": "An organization trail applies to every member account automatically, including accounts added later, and delivers to one bucket in a dedicated logging account."
+        },
+        {
+          "text": "A separate CloudTrail trail in each account delivering to that account's own bucket",
+          "correct": false,
+          "why": "Logs stay scattered, and every new account needs manual setup that will eventually be forgotten."
+        },
+        {
+          "text": "Enable AWS Config in every account with an aggregator",
+          "correct": false,
+          "why": "Config records resource configuration state and compliance, not the API calls that changed it. Wrong tool for an audit trail of actions."
+        },
+        {
+          "text": "Rely on CloudTrail Event history in each account",
+          "correct": false,
+          "why": "Event history keeps only the last 90 days, is not centralised, and cannot be made immutable."
+        }
       ],
-      "teaches": ["cloudtrail", "organizations", "config", "s3"]
+      "teaches": [
+        "cloudtrail",
+        "organizations",
+        "config",
+        "s3"
+      ]
     },
     {
       "id": "saa-step-functions-retry",
-      "certs": ["SAA-C03", "DVA-C02"],
-      "domainTags": ["integration", "decoupling"],
+      "certs": [
+        "SAA-C03",
+        "DVA-C02"
+      ],
+      "domainTags": [
+        "integration",
+        "decoupling"
+      ],
       "difficulty": "medium",
       "situation": "An order pipeline runs five AWS Lambda functions in sequence. Each function invokes the next directly. When a middle step fails intermittently the team cannot tell which order failed at which step, and the retry logic has been copied into every function.",
       "question": "Which change best addresses both problems?",
       "options": [
-        { "text": "Orchestrate the five functions with AWS Step Functions", "correct": true, "why": "Retry and catch behaviour is declared per state instead of duplicated in code, and each execution is visible step by step so a failure is immediately attributable." },
-        { "text": "Put an SQS queue between each pair of functions", "correct": false, "why": "Improves durability between steps, but you still have no single view of one order's journey, and the retry code stays scattered." },
-        { "text": "Increase each function's timeout and memory", "correct": false, "why": "Addresses neither visibility nor duplicated retry logic. It only masks slow steps." },
-        { "text": "Combine all five functions into one larger function", "correct": false, "why": "Makes failures harder to isolate, not easier, and risks hitting the 15-minute Lambda limit." }
+        {
+          "text": "Orchestrate the five functions with AWS Step Functions",
+          "correct": true,
+          "why": "Retry and catch behaviour is declared per state instead of duplicated in code, and each execution is visible step by step so a failure is immediately attributable."
+        },
+        {
+          "text": "Put an SQS queue between each pair of functions",
+          "correct": false,
+          "why": "Improves durability between steps, but you still have no single view of one order's journey, and the retry code stays scattered."
+        },
+        {
+          "text": "Increase each function's timeout and memory",
+          "correct": false,
+          "why": "Addresses neither visibility nor duplicated retry logic. It only masks slow steps."
+        },
+        {
+          "text": "Combine all five functions into one larger function",
+          "correct": false,
+          "why": "Makes failures harder to isolate, not easier, and risks hitting the 15-minute Lambda limit."
+        }
       ],
-      "teaches": ["step-functions", "lambda", "sqs", "decoupling"]
+      "teaches": [
+        "step-functions",
+        "lambda",
+        "sqs",
+        "decoupling"
+      ]
     },
     {
       "id": "saa-cloudhsm-single-tenant",
-      "certs": ["SAA-C03", "SCS-C03"],
-      "domainTags": ["encryption", "compliance", "security"],
+      "certs": [
+        "SAA-C03",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "encryption",
+        "compliance",
+        "security"
+      ],
       "difficulty": "hard",
       "situation": "A financial services regulator requires that encryption keys be held in single-tenant, FIPS 140-3 Level 3 validated hardware that the cloud provider cannot access, and the customer must control the entire key lifecycle.",
       "question": "Which service satisfies the requirement?",
       "options": [
-        { "text": "AWS KMS with a customer managed key", "correct": false, "why": "You control policy and rotation, but the underlying HSM fleet is multi-tenant and operated by AWS. It does not meet a single-tenant requirement." },
-        { "text": "AWS CloudHSM", "correct": true, "why": "Dedicated single-tenant HSMs that only you can access — AWS cannot recover your keys, which is precisely the property the regulator is asking for." },
-        { "text": "AWS Secrets Manager with automatic rotation", "correct": false, "why": "Stores and rotates secrets such as passwords. It is not key-storage hardware and has no FIPS Level 3 single-tenant guarantee." },
-        { "text": "AWS KMS with an imported key", "correct": false, "why": "Lets you supply key material, but it still resides in AWS's multi-tenant KMS infrastructure." }
+        {
+          "text": "AWS KMS with a customer managed key",
+          "correct": false,
+          "why": "You control policy and rotation, but the underlying HSM fleet is multi-tenant and operated by AWS. It does not meet a single-tenant requirement."
+        },
+        {
+          "text": "AWS CloudHSM",
+          "correct": true,
+          "why": "Dedicated single-tenant HSMs that only you can access — AWS cannot recover your keys, which is precisely the property the regulator is asking for."
+        },
+        {
+          "text": "AWS Secrets Manager with automatic rotation",
+          "correct": false,
+          "why": "Stores and rotates secrets such as passwords. It is not key-storage hardware and has no FIPS Level 3 single-tenant guarantee."
+        },
+        {
+          "text": "AWS KMS with an imported key",
+          "correct": false,
+          "why": "Lets you supply key material, but it still resides in AWS's multi-tenant KMS infrastructure."
+        }
       ],
-      "teaches": ["cloudhsm", "kms", "secrets-manager"]
+      "teaches": [
+        "cloudhsm",
+        "kms",
+        "secrets-manager"
+      ]
     },
     {
       "id": "saa-serverless-low-traffic",
-      "certs": ["SAA-C03", "DVA-C02", "CLF-C02"],
-      "domainTags": ["compute", "cost"],
+      "certs": [
+        "SAA-C03",
+        "DVA-C02",
+        "CLF-C02"
+      ],
+      "domainTags": [
+        "compute",
+        "cost"
+      ],
       "difficulty": "easy",
       "situation": "An internal expenses API receives roughly 200 requests per day, clustered around month end and almost nothing in between. It currently runs on two t3.medium EC2 instances behind a load balancer, running 24 hours a day.",
       "question": "Which change would most reduce cost?",
       "options": [
-        { "text": "Re-implement the API on AWS Lambda behind Amazon API Gateway", "correct": true, "why": "With 200 requests a day the compute is idle over 99% of the time. Lambda charges only for actual execution, so the idle cost falls to nothing." },
-        { "text": "Move to smaller t3.micro instances", "correct": false, "why": "Cuts the bill somewhat but still pays for two instances running around the clock to serve a handful of requests." },
-        { "text": "Purchase Reserved Instances for the two instances", "correct": false, "why": "Discounts capacity that should not be running at all. Committing to three years of waste is not optimisation." },
-        { "text": "Add Auto Scaling to the existing fleet", "correct": false, "why": "Auto Scaling has a minimum size, and the load never justifies scaling out. The idle baseline cost remains." }
+        {
+          "text": "Re-implement the API on AWS Lambda behind Amazon API Gateway",
+          "correct": true,
+          "why": "With 200 requests a day the compute is idle over 99% of the time. Lambda charges only for actual execution, so the idle cost falls to nothing."
+        },
+        {
+          "text": "Move to smaller t3.micro instances",
+          "correct": false,
+          "why": "Cuts the bill somewhat but still pays for two instances running around the clock to serve a handful of requests."
+        },
+        {
+          "text": "Purchase Reserved Instances for the two instances",
+          "correct": false,
+          "why": "Discounts capacity that should not be running at all. Committing to three years of waste is not optimisation."
+        },
+        {
+          "text": "Add Auto Scaling to the existing fleet",
+          "correct": false,
+          "why": "Auto Scaling has a minimum size, and the load never justifies scaling out. The idle baseline cost remains."
+        }
       ],
-      "teaches": ["lambda", "api-gateway", "ec2", "ec2-pricing-models"]
+      "teaches": [
+        "lambda",
+        "api-gateway",
+        "ec2",
+        "ec2-pricing-models"
+      ]
+    },
+    {
+      "id": "aif-rag-vs-finetune",
+      "certs": [
+        "AIF-C01",
+        "AIP-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "ml"
+      ],
+      "difficulty": "medium",
+      "situation": "A company wants an internal assistant that answers staff questions from its HR policy documents. The policies are revised every few weeks, and answers must be traceable to the document they came from.",
+      "question": "Which approach best meets the requirements?",
+      "options": [
+        {
+          "text": "Fine-tune a foundation model on the policy documents",
+          "correct": false,
+          "why": "Fine-tuning bakes information into the weights, so every revision means retraining, and the model cannot cite which document an answer came from."
+        },
+        {
+          "text": "Use Retrieval Augmented Generation over the policy documents",
+          "correct": true,
+          "why": "Documents are retrieved at question time, so a revision takes effect immediately, and the retrieved passages give you the citation the requirement asks for."
+        },
+        {
+          "text": "Paste all policy documents into every prompt",
+          "correct": false,
+          "why": "Would ground the answer, but the documents will exceed the context window, and you would pay for those tokens on every single question."
+        },
+        {
+          "text": "Train a model from scratch on the company corpus",
+          "correct": false,
+          "why": "Astronomically expensive, needs far more data than an HR policy set, and still has the staleness and citation problems."
+        }
+      ],
+      "teaches": [
+        "rag",
+        "fine-tuning",
+        "bedrock-knowledge-bases",
+        "foundation-models"
+      ]
+    },
+    {
+      "id": "aif-hallucination",
+      "certs": [
+        "AIF-C01",
+        "AIP-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "compliance"
+      ],
+      "difficulty": "medium",
+      "situation": "A customer-facing assistant built on a foundation model has begun quoting refund terms that do not exist. The wording is confident and reads exactly like the genuine policy.",
+      "question": "What is the most effective first mitigation?",
+      "options": [
+        {
+          "text": "Lower the temperature setting to zero",
+          "correct": false,
+          "why": "Makes output more deterministic and repetitive, but a model can state a fabricated policy just as consistently. It treats a symptom, not the cause."
+        },
+        {
+          "text": "Ground answers in the actual policy documents and require citations",
+          "correct": true,
+          "why": "Hallucination is the model filling gaps from its own weights. Supplying the real text at question time removes the gap, and citations let a reader verify the claim."
+        },
+        {
+          "text": "Add \"do not make anything up\" to the system prompt",
+          "correct": false,
+          "why": "Helps marginally, but the model has no reliable way to know what it does not know. Instructions cannot make it aware of its own gaps."
+        },
+        {
+          "text": "Switch to a larger foundation model",
+          "correct": false,
+          "why": "Larger models hallucinate less often, but they still hallucinate, and on a customer-facing refund policy \"less often\" is not an acceptable control."
+        }
+      ],
+      "teaches": [
+        "hallucination",
+        "rag",
+        "inference-parameters",
+        "bedrock-guardrails"
+      ]
+    },
+    {
+      "id": "aif-bias-check",
+      "certs": [
+        "AIF-C01",
+        "MLA-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "compliance",
+        "ml"
+      ],
+      "difficulty": "medium",
+      "situation": "A bank must demonstrate to a regulator that its loan-approval model does not treat applicants differently by an attribute it is not permitted to use. The model was never given that attribute as an input.",
+      "question": "What should the team do?",
+      "options": [
+        {
+          "text": "Confirm the attribute is absent from the training data and consider the matter closed",
+          "correct": false,
+          "why": "The common and dangerous assumption. Correlated features — postcode, occupation, purchase history — routinely reconstruct a protected attribute the model never saw directly."
+        },
+        {
+          "text": "Measure bias in the data and the model output with SageMaker Clarify",
+          "correct": true,
+          "why": "Clarify measures disparity in outcomes across groups before and after training, which is the evidence a regulator actually wants, and explains which features drove predictions."
+        },
+        {
+          "text": "Retrain with a larger dataset",
+          "correct": false,
+          "why": "More data does not remove bias; if the historical data reflects biased decisions, more of it reinforces the pattern."
+        },
+        {
+          "text": "Publish the model architecture for transparency",
+          "correct": false,
+          "why": "Architecture says nothing about outcomes. Fairness is measured in results, not in the diagram."
+        }
+      ],
+      "teaches": [
+        "sagemaker-clarify",
+        "responsible-ai",
+        "feature-engineering"
+      ]
+    },
+    {
+      "id": "mla-overfit",
+      "certs": [
+        "MLA-C01",
+        "AIF-C01"
+      ],
+      "domainTags": [
+        "ml"
+      ],
+      "difficulty": "medium",
+      "situation": "A model reaches 99% accuracy on its training data but only 71% on the held-out validation set. The gap has widened with every additional training epoch.",
+      "question": "What is happening, and what is the appropriate response?",
+      "options": [
+        {
+          "text": "The model is overfitting; add regularisation, more data, or stop training earlier",
+          "correct": true,
+          "why": "A large and widening gap between training and validation accuracy is the definition of overfitting — the model is memorising examples rather than learning the pattern."
+        },
+        {
+          "text": "The model is underfitting; train for more epochs with a larger model",
+          "correct": false,
+          "why": "Exactly backwards. Underfitting shows as poor performance on both sets; here training accuracy is excellent."
+        },
+        {
+          "text": "The validation set is too small; merge it into the training data",
+          "correct": false,
+          "why": "Removes your only honest measure of generalisation, and gives the model the very data you needed to test it with."
+        },
+        {
+          "text": "Tune the learning rate upward to converge faster",
+          "correct": false,
+          "why": "Speeds up convergence toward the same memorised solution. It does not address generalisation."
+        }
+      ],
+      "teaches": [
+        "overfitting",
+        "train-validate-test",
+        "hyperparameter-tuning"
+      ]
+    },
+    {
+      "id": "mla-training-serving-skew",
+      "certs": [
+        "MLA-C01"
+      ],
+      "domainTags": [
+        "ml",
+        "analytics"
+      ],
+      "difficulty": "hard",
+      "situation": "A model performs well in offline evaluation but noticeably worse in production. Investigation shows the feature transformations in the training pipeline and the serving code were written separately and have drifted apart.",
+      "question": "Which approach prevents this class of problem?",
+      "options": [
+        {
+          "text": "Use SageMaker Feature Store so training and inference read the same feature definitions",
+          "correct": true,
+          "why": "Training/serving skew is exactly what a feature store exists to prevent: one definition, an offline store for training and an online store for serving, guaranteed consistent."
+        },
+        {
+          "text": "Retrain the model more frequently",
+          "correct": false,
+          "why": "Retrains on correctly transformed data while serving continues to use different transformations. The mismatch survives."
+        },
+        {
+          "text": "Increase the size of the training dataset",
+          "correct": false,
+          "why": "The model is not short of data. It is being shown different inputs at inference than it learned from."
+        },
+        {
+          "text": "Deploy the model to a larger instance type",
+          "correct": false,
+          "why": "A performance problem in the accuracy sense, not the latency sense. Hardware changes nothing."
+        }
+      ],
+      "teaches": [
+        "sagemaker-feature-store",
+        "feature-engineering",
+        "model-drift"
+      ]
+    },
+    {
+      "id": "mla-drift-monitor",
+      "certs": [
+        "MLA-C01"
+      ],
+      "domainTags": [
+        "ml",
+        "management"
+      ],
+      "difficulty": "medium",
+      "situation": "A demand-forecasting model deployed nine months ago is producing steadily worse forecasts. The code has not changed and the endpoint is healthy. Buying patterns have shifted since it was trained.",
+      "question": "What should be put in place?",
+      "options": [
+        {
+          "text": "SageMaker Model Monitor with a baseline from the training data, alarming on drift",
+          "correct": true,
+          "why": "The inputs no longer resemble what the model learned from. Model Monitor compares live traffic against a training baseline and raises the alarm rather than waiting for someone to notice."
+        },
+        {
+          "text": "CloudWatch alarms on endpoint latency and error rate",
+          "correct": false,
+          "why": "Operational health is fine — the endpoint answers quickly and without errors. It is the answers that are wrong, which infrastructure metrics cannot see."
+        },
+        {
+          "text": "Enable auto scaling on the endpoint",
+          "correct": false,
+          "why": "Addresses load, not accuracy. The model would simply be wrong at greater throughput."
+        },
+        {
+          "text": "Roll back to the previous model version",
+          "correct": false,
+          "why": "The older model was trained on even older data, so it fits the current world less well, not more."
+        }
+      ],
+      "teaches": [
+        "sagemaker-model-monitor",
+        "model-drift",
+        "cloudwatch"
+      ]
+    },
+    {
+      "id": "mla-batch-inference",
+      "certs": [
+        "MLA-C01"
+      ],
+      "domainTags": [
+        "ml",
+        "cost",
+        "compute"
+      ],
+      "difficulty": "medium",
+      "situation": "A retailer scores its entire customer base for churn risk once a night. The job takes about 40 minutes and nothing consumes the predictions until the following morning. A real-time endpoint currently runs continuously to serve it.",
+      "question": "Which change reduces cost without affecting the outcome?",
+      "options": [
+        {
+          "text": "Switch to SageMaker batch transform",
+          "correct": true,
+          "why": "Batch transform starts, scores the dataset, and shuts down. The endpoint currently bills 24 hours a day to do 40 minutes of work nobody reads until morning."
+        },
+        {
+          "text": "Move the endpoint to a smaller instance type",
+          "correct": false,
+          "why": "Reduces the waste rather than removing it, and risks the nightly job no longer finishing in time."
+        },
+        {
+          "text": "Switch to serverless inference",
+          "correct": false,
+          "why": "Better than an always-on endpoint, but it is designed for spiky interactive traffic. For one scheduled bulk job, batch transform is both cheaper and simpler."
+        },
+        {
+          "text": "Add auto scaling with a minimum of one instance",
+          "correct": false,
+          "why": "That minimum is precisely the idle cost being paid now."
+        }
+      ],
+      "teaches": [
+        "inference-types",
+        "sagemaker",
+        "ec2-pricing-models"
+      ]
+    },
+    {
+      "id": "mla-imbalanced-metric",
+      "certs": [
+        "MLA-C01",
+        "AIF-C01"
+      ],
+      "domainTags": [
+        "ml"
+      ],
+      "difficulty": "hard",
+      "situation": "A fraud-detection model is evaluated on a dataset where 0.4% of transactions are fraudulent. The model reports 99.6% accuracy. The fraud team says it never catches anything.",
+      "question": "What explains this, and what should be measured instead?",
+      "options": [
+        {
+          "text": "Accuracy is misleading on imbalanced data; measure recall and precision",
+          "correct": true,
+          "why": "Predicting \"not fraud\" every time scores 99.6% accuracy while catching nothing. Recall shows how much real fraud is caught, precision how many alerts are genuine."
+        },
+        {
+          "text": "The model is overfitting; add regularisation",
+          "correct": false,
+          "why": "Overfitting would show as a training/validation gap. The problem here is that the chosen metric cannot see the failure at all."
+        },
+        {
+          "text": "The training set is too small; collect more transactions",
+          "correct": false,
+          "why": "More data at the same ratio produces the same blind spot. The measurement is the problem, not the volume."
+        },
+        {
+          "text": "Raise the classification threshold to reduce false positives",
+          "correct": false,
+          "why": "Pushes the model further toward never flagging anything — the opposite of what the fraud team needs."
+        }
+      ],
+      "teaches": [
+        "model-metrics",
+        "overfitting"
+      ]
+    },
+    {
+      "id": "aip-guardrails-portable",
+      "certs": [
+        "AIP-C01",
+        "AIF-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "security",
+        "compliance"
+      ],
+      "difficulty": "medium",
+      "situation": "A regulated insurer runs a customer assistant on Amazon Bedrock. It must never discuss competitors or give medical advice, and the team expects to switch to a newer foundation model within the year.",
+      "question": "How should the restrictions be implemented?",
+      "options": [
+        {
+          "text": "Configure Bedrock Guardrails with denied topics",
+          "correct": true,
+          "why": "Guardrails are configured separately from the model and evaluate both prompt and completion, so the restrictions survive a model swap unchanged."
+        },
+        {
+          "text": "Put the restrictions in the system prompt",
+          "correct": false,
+          "why": "Prompts can be argued around by determined users, and every model change means re-tuning the wording. Not an enforcement boundary."
+        },
+        {
+          "text": "Fine-tune the model to refuse those topics",
+          "correct": false,
+          "why": "Expensive, imperfect, and thrown away entirely the moment you move to a newer base model — which the team already plans to do."
+        },
+        {
+          "text": "Filter the responses with a regular expression before display",
+          "correct": false,
+          "why": "Keyword filtering misses paraphrase and blocks legitimate text. It also cannot catch a medical suggestion phrased in ordinary language."
+        }
+      ],
+      "teaches": [
+        "bedrock-guardrails",
+        "bedrock",
+        "prompt-engineering",
+        "responsible-ai"
+      ]
+    },
+    {
+      "id": "aip-agent-action",
+      "certs": [
+        "AIP-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "integration"
+      ],
+      "difficulty": "medium",
+      "situation": "A travel company wants its assistant to do more than answer questions: it should be able to look up a booking, check availability, and cancel a reservation by calling existing internal APIs.",
+      "question": "Which Bedrock capability fits?",
+      "options": [
+        {
+          "text": "Bedrock Agents with action groups mapped to the internal APIs",
+          "correct": true,
+          "why": "Agents let the model plan which API to call, invoke it, read the result and continue. That is exactly the gap between answering about a booking and changing one."
+        },
+        {
+          "text": "Bedrock Knowledge Bases over the booking documentation",
+          "correct": false,
+          "why": "Grounds answers in documents, but retrieval is read-only. It cannot cancel anything."
+        },
+        {
+          "text": "A longer system prompt describing the APIs",
+          "correct": false,
+          "why": "Describing an API does not let the model reach it. Something must actually make the call."
+        },
+        {
+          "text": "Fine-tune the model on past support transcripts",
+          "correct": false,
+          "why": "Might improve tone and phrasing, but confers no ability to invoke a system."
+        }
+      ],
+      "teaches": [
+        "bedrock-agents",
+        "bedrock-knowledge-bases",
+        "bedrock",
+        "api-gateway"
+      ]
+    },
+    {
+      "id": "aip-token-cost",
+      "certs": [
+        "AIP-C01"
+      ],
+      "domainTags": [
+        "genai",
+        "cost",
+        "performance"
+      ],
+      "difficulty": "hard",
+      "situation": "A document-summarisation feature on Bedrock costs far more than forecast. Investigation shows the application sends the entire 80-page document with every request, including for follow-up questions about a single section.",
+      "question": "Which change reduces cost most directly?",
+      "options": [
+        {
+          "text": "Retrieve and send only the relevant passages for each question",
+          "correct": true,
+          "why": "Billing is per token, and the whole document is being paid for on every request. Retrieval sends the few passages that matter instead of all eighty pages."
+        },
+        {
+          "text": "Lower the temperature setting",
+          "correct": false,
+          "why": "Temperature affects how the model chooses words. It has no bearing on how many tokens you send or are billed for."
+        },
+        {
+          "text": "Switch to Provisioned Throughput",
+          "correct": false,
+          "why": "Buys reserved capacity at a committed rate. It suits steady high volume, but here the volume itself is the waste."
+        },
+        {
+          "text": "Reduce the maximum response length",
+          "correct": false,
+          "why": "Trims output tokens, but the cost is dominated by the eighty pages of input sent every time."
+        }
+      ],
+      "teaches": [
+        "rag",
+        "inference-parameters",
+        "bedrock",
+        "embeddings"
+      ]
+    },
+    {
+      "id": "dop-blue-green",
+      "certs": [
+        "DOP-C02",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "developer-tools",
+        "resilience"
+      ],
+      "difficulty": "medium",
+      "situation": "A payments service must be released with no downtime, and if a problem appears the team needs to be back on the previous version within seconds rather than minutes.",
+      "question": "Which deployment strategy meets the requirement?",
+      "options": [
+        {
+          "text": "Blue/green deployment",
+          "correct": true,
+          "why": "The previous environment stays running while traffic moves to the new one, so rollback is a traffic switch measured in seconds rather than a redeploy."
+        },
+        {
+          "text": "Rolling deployment",
+          "correct": false,
+          "why": "Avoids downtime, but rolling back means replacing instances again — minutes, not seconds — and both versions serve traffic throughout."
+        },
+        {
+          "text": "In-place deployment with a backup AMI",
+          "correct": false,
+          "why": "Cheapest, but rollback means redeploying the old build onto the same instances. Far slower than the requirement allows."
+        },
+        {
+          "text": "Canary deployment with a 10% traffic shift",
+          "correct": false,
+          "why": "Excellent for limiting blast radius and often used alongside blue/green — but on its own the old environment is being replaced, so full rollback is not instant."
+        }
+      ],
+      "teaches": [
+        "deployment-strategies",
+        "codedeploy",
+        "elb"
+      ]
+    },
+    {
+      "id": "dop-auto-rollback",
+      "certs": [
+        "DOP-C02"
+      ],
+      "domainTags": [
+        "developer-tools",
+        "management"
+      ],
+      "difficulty": "medium",
+      "situation": "A team deploys a Lambda function several times a day. They want a new version to receive a small share of traffic first, and to roll back automatically if the error rate rises, without anyone watching a dashboard.",
+      "question": "How should this be configured?",
+      "options": [
+        {
+          "text": "CodeDeploy canary traffic shifting on the Lambda alias with a CloudWatch alarm as the rollback trigger",
+          "correct": true,
+          "why": "CodeDeploy shifts a percentage to the new version and monitors the alarm during the bake period, rolling back automatically if it fires. No human in the loop."
+        },
+        {
+          "text": "Publish a new version and update the alias manually after checking metrics",
+          "correct": false,
+          "why": "Works, but requires a person watching, which is exactly what the requirement rules out."
+        },
+        {
+          "text": "Use Lambda provisioned concurrency on the new version",
+          "correct": false,
+          "why": "Addresses cold starts. It has nothing to do with traffic shifting or rollback."
+        },
+        {
+          "text": "Deploy to a second function and switch the API Gateway integration",
+          "correct": false,
+          "why": "A hand-rolled blue/green with no automatic monitoring or rollback, reimplementing what CodeDeploy already does."
+        }
+      ],
+      "teaches": [
+        "codedeploy",
+        "lambda",
+        "cloudwatch",
+        "deployment-strategies"
+      ]
+    },
+    {
+      "id": "dop-stacksets-drift",
+      "certs": [
+        "DOP-C02",
+        "SAP-C02"
+      ],
+      "domainTags": [
+        "management",
+        "compliance"
+      ],
+      "difficulty": "hard",
+      "situation": "A platform team maintains baseline infrastructure across 60 accounts. Engineers occasionally change resources by hand in the console, and the team wants both to deploy the baseline everywhere and to know when an account no longer matches it.",
+      "question": "Which combination addresses both needs?",
+      "options": [
+        {
+          "text": "CloudFormation StackSets to deploy, and drift detection plus AWS Config rules to spot divergence",
+          "correct": true,
+          "why": "StackSets pushes one template to many accounts and Regions including new ones; drift detection and Config rules report where reality has diverged from the template."
+        },
+        {
+          "text": "A separate CloudFormation stack deployed manually in each account",
+          "correct": false,
+          "why": "Sixty manual deployments per change, and nothing watching for hand edits afterwards."
+        },
+        {
+          "text": "Service control policies preventing all console access",
+          "correct": false,
+          "why": "Blunt enough to stop legitimate work, and it does not deploy the baseline in the first place."
+        },
+        {
+          "text": "AWS Systems Manager Automation runbooks triggered per account",
+          "correct": false,
+          "why": "Good for operational tasks, but it is not a declarative baseline and offers no drift comparison against a desired state."
+        }
+      ],
+      "teaches": [
+        "cloudformation",
+        "config",
+        "organizations",
+        "systems-manager"
+      ]
+    },
+    {
+      "id": "dea-athena-cost",
+      "certs": [
+        "DEA-C01",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "analytics",
+        "cost",
+        "storage"
+      ],
+      "difficulty": "medium",
+      "situation": "Analysts query two years of clickstream data in Amazon S3 with Athena. Most queries filter to a single day, but the Athena bill is high and queries are slow. The data is stored as uncompressed JSON in one flat prefix.",
+      "question": "Which change reduces both cost and query time most?",
+      "options": [
+        {
+          "text": "Convert to Parquet and partition by date",
+          "correct": true,
+          "why": "Athena bills per byte scanned. Columnar Parquet reads only the needed columns, and date partitioning means a single-day query touches one partition instead of two years."
+        },
+        {
+          "text": "Move the data to S3 Intelligent-Tiering",
+          "correct": false,
+          "why": "Reduces storage cost for infrequently accessed objects. Athena still scans exactly the same bytes at the same price."
+        },
+        {
+          "text": "Increase the Athena query timeout",
+          "correct": false,
+          "why": "Lets slow queries run longer. It makes nothing faster or cheaper."
+        },
+        {
+          "text": "Load the data into Amazon Redshift",
+          "correct": false,
+          "why": "Would be fast, but introduces a cluster to run and pay for when the existing setup simply needs its file layout fixed."
+        }
+      ],
+      "teaches": [
+        "athena",
+        "s3",
+        "glue",
+        "redshift"
+      ]
+    },
+    {
+      "id": "dea-cdc",
+      "certs": [
+        "DEA-C01",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "analytics",
+        "integration"
+      ],
+      "difficulty": "medium",
+      "situation": "A team must replicate an on-premises Oracle database into Amazon S3 for analytics. The source cannot be taken offline, and the analytics copy should stay within minutes of the source.",
+      "question": "Which approach fits?",
+      "options": [
+        {
+          "text": "AWS DMS with an initial full load followed by change data capture",
+          "correct": true,
+          "why": "DMS copies the existing data while the source stays online, then streams ongoing changes, which is what keeps the target minutes behind rather than a day."
+        },
+        {
+          "text": "A nightly export to CSV uploaded to S3",
+          "correct": false,
+          "why": "Leaves the analytics copy up to 24 hours stale, well outside the stated requirement."
+        },
+        {
+          "text": "AWS DataSync scheduled hourly",
+          "correct": false,
+          "why": "DataSync moves files between storage systems. It does not read a live relational database or understand row-level changes."
+        },
+        {
+          "text": "AWS Snowball to ship the database",
+          "correct": false,
+          "why": "A one-off bulk transfer with no ongoing replication, and the freshness requirement is continuous."
+        }
+      ],
+      "teaches": [
+        "dms",
+        "s3",
+        "datasync",
+        "snow-family"
+      ]
+    },
+    {
+      "id": "soa-memory-metric",
+      "certs": [
+        "SOA-C03",
+        "CLF-C02"
+      ],
+      "domainTags": [
+        "management",
+        "performance"
+      ],
+      "difficulty": "easy",
+      "situation": "An operations team wants to alarm when memory utilisation on their EC2 instances exceeds 85%. They can see CPU and network metrics in CloudWatch but cannot find a memory metric anywhere.",
+      "question": "Why, and what is needed?",
+      "options": [
+        {
+          "text": "Memory is inside the guest OS, so the CloudWatch agent must be installed to publish it",
+          "correct": true,
+          "why": "CloudWatch sees the instance from the hypervisor outward. Memory and disk usage live inside the operating system, which is your responsibility, so an agent has to report them."
+        },
+        {
+          "text": "Detailed monitoring must be enabled on the instances",
+          "correct": false,
+          "why": "Detailed monitoring raises the frequency of existing metrics from five minutes to one. It does not add new ones."
+        },
+        {
+          "text": "The instances need an IAM role granting CloudWatch read access",
+          "correct": false,
+          "why": "A role is needed for the agent to publish, but permissions alone create no metric where nothing is collecting it."
+        },
+        {
+          "text": "Memory metrics only appear once an alarm has been created",
+          "correct": false,
+          "why": "Alarms observe metrics that already exist; they never generate them."
+        }
+      ],
+      "teaches": [
+        "cloudwatch",
+        "ec2",
+        "shared-responsibility-model",
+        "systems-manager"
+      ]
+    },
+    {
+      "id": "soa-patching",
+      "certs": [
+        "SOA-C03",
+        "DOP-C02"
+      ],
+      "domainTags": [
+        "management",
+        "security"
+      ],
+      "difficulty": "medium",
+      "situation": "A compliance requirement states that all EC2 instances must receive operating system security patches within 14 days of release, with evidence of compliance. The fleet spans several accounts and instances have no inbound access from the internet.",
+      "question": "Which service meets this?",
+      "options": [
+        {
+          "text": "AWS Systems Manager Patch Manager with maintenance windows",
+          "correct": true,
+          "why": "Patch Manager applies a baseline on a schedule and reports compliance per instance. The SSM agent works outbound-only, so no inbound access is needed."
+        },
+        {
+          "text": "Amazon Inspector",
+          "correct": false,
+          "why": "Finds and reports vulnerabilities, which is useful evidence — but it does not apply patches."
+        },
+        {
+          "text": "A bastion host with a scripted SSH loop",
+          "correct": false,
+          "why": "Reintroduces inbound access the design deliberately avoids, and produces no compliance reporting."
+        },
+        {
+          "text": "AWS Config with a managed rule for patch compliance",
+          "correct": false,
+          "why": "Can report on compliance state, but like Inspector it observes rather than remediates."
+        }
+      ],
+      "teaches": [
+        "systems-manager",
+        "inspector",
+        "config",
+        "shared-responsibility-model"
+      ]
+    },
+    {
+      "id": "dva-lambda-secret",
+      "certs": [
+        "DVA-C02",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "security",
+        "developer-tools"
+      ],
+      "difficulty": "medium",
+      "situation": "A Lambda function connects to an Amazon RDS database. The password is currently stored in a plaintext environment variable, and security requires that it be rotated every 30 days without a code change or redeployment.",
+      "question": "What should the team use?",
+      "options": [
+        {
+          "text": "AWS Secrets Manager with automatic rotation, retrieved at runtime",
+          "correct": true,
+          "why": "Rotation with no code change is precisely what Secrets Manager adds over the alternatives — it rotates the RDS credential and the function fetches the current value."
+        },
+        {
+          "text": "Systems Manager Parameter Store SecureString",
+          "correct": false,
+          "why": "Encrypts the value and is free for standard parameters, but it does not rotate a database credential for you. The 30-day requirement is the deciding factor."
+        },
+        {
+          "text": "A Lambda environment variable encrypted with a KMS key",
+          "correct": false,
+          "why": "Protects the value at rest, but changing it still means updating and redeploying the function."
+        },
+        {
+          "text": "Hard-code the password and restrict who can view the function",
+          "correct": false,
+          "why": "Puts a live credential in source control, where it will outlive both the restriction and the people who set it."
+        }
+      ],
+      "teaches": [
+        "secrets-manager",
+        "lambda",
+        "systems-manager",
+        "kms",
+        "rds"
+      ]
+    },
+    {
+      "id": "dva-dynamodb-key",
+      "certs": [
+        "DVA-C02",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "database",
+        "performance"
+      ],
+      "difficulty": "hard",
+      "situation": "An application stores events in DynamoDB using the current date as the partition key. During busy periods writes are throttled even though provisioned capacity is well above the total write rate.",
+      "question": "What is the cause?",
+      "options": [
+        {
+          "text": "All writes for a given day share one partition key, creating a hot partition",
+          "correct": true,
+          "why": "Capacity is spread across partitions, not pooled. Every write on a given day targets one key, so that partition throttles while the rest of the table sits idle."
+        },
+        {
+          "text": "Provisioned capacity is set too low for the peak",
+          "correct": false,
+          "why": "The question states total capacity comfortably exceeds the write rate. Adding more would not fix an uneven distribution."
+        },
+        {
+          "text": "The table needs a global secondary index on the timestamp",
+          "correct": false,
+          "why": "Indexes change query options. They do not redistribute writes on the base table."
+        },
+        {
+          "text": "On-demand mode is required for this access pattern",
+          "correct": false,
+          "why": "On-demand adapts to overall volume but still partitions by key, so a single hot key can still throttle."
+        }
+      ],
+      "teaches": [
+        "dynamodb",
+        "scaling"
+      ]
+    },
+    {
+      "id": "sap-scp-guardrail",
+      "certs": [
+        "SAP-C02",
+        "SCS-C03"
+      ],
+      "domainTags": [
+        "management",
+        "identity",
+        "compliance"
+      ],
+      "difficulty": "medium",
+      "situation": "An organisation must guarantee that no workload in any member account can create resources outside two approved Regions — including by an account administrator with full IAM permissions.",
+      "question": "Which control achieves this?",
+      "options": [
+        {
+          "text": "A service control policy on the organizational unit denying actions outside those Regions",
+          "correct": true,
+          "why": "An SCP sets the ceiling on what an account can do at all. Even a full administrator cannot exceed it, which is the \"including administrators\" part of the requirement."
+        },
+        {
+          "text": "An IAM policy attached to every role denying other Regions",
+          "correct": false,
+          "why": "An administrator can edit or detach an IAM policy in their own account. It constrains users, not the account itself."
+        },
+        {
+          "text": "An AWS Config rule flagging resources in other Regions",
+          "correct": false,
+          "why": "Detects afterwards. The requirement is prevention."
+        },
+        {
+          "text": "A permissions boundary on each IAM role",
+          "correct": false,
+          "why": "Caps what a role can do and is useful for delegation, but an account administrator can alter boundaries within their account."
+        }
+      ],
+      "teaches": [
+        "organizations",
+        "iam",
+        "config",
+        "least-privilege"
+      ]
+    },
+    {
+      "id": "sap-network-hub",
+      "certs": [
+        "SAP-C02",
+        "SAA-C03"
+      ],
+      "domainTags": [
+        "networking",
+        "management"
+      ],
+      "difficulty": "medium",
+      "situation": "A company has 80 VPCs across several accounts that all need to reach a shared services VPC and an on-premises data centre. The current design uses VPC peering and has become unmanageable.",
+      "question": "What should the architect move to?",
+      "options": [
+        {
+          "text": "AWS Transit Gateway with one attachment per VPC, shared through Resource Access Manager",
+          "correct": true,
+          "why": "Each VPC attaches once to a hub instead of peering with every other, replacing an n-squared mesh with 80 attachments, and RAM shares the gateway across accounts."
+        },
+        {
+          "text": "A full mesh of VPC peering connections",
+          "correct": false,
+          "why": "That is the current design. Eighty VPCs need over three thousand peering connections, and peering is not transitive."
+        },
+        {
+          "text": "AWS PrivateLink endpoints between every pair of VPCs",
+          "correct": false,
+          "why": "PrivateLink exposes an individual service, not general network reachability, and per-pair endpoints scale no better than peering."
+        },
+        {
+          "text": "A VPN connection from each VPC to the data centre",
+          "correct": false,
+          "why": "Solves on-premises connectivity only, leaves VPC-to-VPC unsolved, and adds 80 tunnels to operate."
+        }
+      ],
+      "teaches": [
+        "transit-gateway",
+        "privatelink",
+        "vpc",
+        "resource-access-manager",
+        "site-to-site-vpn"
+      ]
     }
   ]
 }

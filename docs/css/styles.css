@@ -1188,3 +1188,8 @@ main.container { padding-top: 1.6rem; padding-bottom: 1rem; min-height: 60vh; }
 @media print {
   .site-header, .site-footer, .quiz-actions, .card-actions { display: none; }
 }
+
+/* Data-maturity badge on a roadmap node. "growing pool" means the exam has
+   real services, concepts and scenarios but a thinner scenario bank than the
+   fully built-out exams. */
+.node-draft.developing { background: rgba(11, 98, 196, .14); color: var(--available); }

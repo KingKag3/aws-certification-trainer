@@ -8,6 +8,51 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.8.0] — 2026-08-19
+
+Built out the nine stub certifications. Every exam now has real exam-specific
+content rather than borrowing Cloud Practitioner's.
+
+### Added
+
+- **27 new entities** (9 services, 18 concepts) targeting the measured gaps: ML model development,
+  responsible AI, AI security and GenAI application patterns. Includes SageMaker JumpStart, Feature
+  Store, Pipelines, Model Monitor, Clarify and Ground Truth; Bedrock Knowledge Bases, Agents and
+  Guardrails; and concepts covering overfitting, train/validate/test splits, evaluation metrics,
+  hyperparameter tuning, inference options, drift, RAG, embeddings, prompt engineering,
+  hallucination, fine-tuning versus prompting, responsible AI, AI governance and deployment
+  strategies. Every one carries the same plain-English explanation as the rest.
+- **22 new scenarios** (25 → 47) for the eight certifications that had few or none. AIF-C01,
+  MLA-C01, DOP-C02 and AIP-C01 went from zero.
+
+### Changed
+
+- **`dataStatus` now has three levels rather than two.** Flipping all nine to `full` would have
+  overstated four authored scenarios against SAA-C03's twenty-six, so the nine are `developing`:
+  real services, concepts and scenarios, but a thinner scenario bank. The roadmap badge reads
+  "growing pool" and each dashboard shows its actual scenario count.
+- Domains that shared identical tags were given distinguishing ones (`ml-modeling`, `ml-ops`,
+  `genai-apps`).
+
+### Fixed
+
+- **Four certifications were rendering a domain with nothing in it, and MLA-C01's was 26% of that
+  exam.** Topics are assigned to a single domain for grouping, and where several domains matched,
+  the heaviest-weighted one absorbed everything — MLA's D1 (28%) swallowed every `ml`-tagged topic,
+  leaving D2 "ML Model Development" empty. Retagging alone did not fix it, because entities keep
+  both tags. An otherwise-empty domain now lists the topics that match it, marked "also covered
+  elsewhere", on the basis that a topic genuinely can belong to two domains and hiding a domain is
+  worse than showing one twice.
+- Generated quizzes now reach that domain too: MLA-C01 D2 went from 2 questions in 60 to 10.
+
+### Known gap
+
+Domain spread in generated quizzes is close to the published weightings but not exact — CLF-C02's
+domain 1 under-fills because its pool is mostly concepts, and template kinds needing four service
+distractors get skipped there. Every domain is represented; the proportions drift by a few points.
+
+---
+
 ## [0.7.0] — 2026-08-19
 
 Full-length timed mock exams, and flashcards that fit their content.
@@ -450,6 +495,7 @@ model stem *style*; no sample text or scenario was copied.
 
 ---
 
+[0.8.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.8.0
 [0.7.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.7.0
 [0.6.1]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.1
 [0.6.0]: https://github.com/KingKag3/aws-certification-trainer/releases/tag/v0.6.0

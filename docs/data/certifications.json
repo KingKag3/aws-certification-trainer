@@ -233,14 +233,15 @@
         "videoTitle": "AWS Certified Cloud Practitioner Certification Course (CLF-C02) - Pass the Exam!",
         "videoChannel": "freeCodeCamp.org",
         "videoIsSearchFallback": false
-      }
+      },
+      "scenarioCount": 9
     },
     {
       "code": "AIF-C01",
       "name": "AWS Certified AI Practitioner",
       "shortName": "AI Practitioner",
       "tier": "foundational",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-ai-practitioner/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html",
       "tagline": "Foundational understanding of AI, ML and generative AI concepts and AWS AI tooling.",
@@ -284,7 +285,6 @@
           "name": "Fundamentals of GenAI",
           "weight": 24,
           "tags": [
-            "ml",
             "genai"
           ]
         },
@@ -294,7 +294,7 @@
           "name": "Applications of Foundation Models",
           "weight": 28,
           "tags": [
-            "ml",
+            "genai-apps",
             "genai"
           ]
         },
@@ -339,7 +339,12 @@
         "cloudwatch",
         "opensearch",
         "glue",
-        "lambda"
+        "lambda",
+        "sagemaker-jumpstart",
+        "bedrock-knowledge-bases",
+        "bedrock-agents",
+        "bedrock-guardrails",
+        "sagemaker-clarify"
       ],
       "startHereVideo": {
         "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20AI%20Practitioner%20full%20course%20AIF-C01",
@@ -347,7 +352,8 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 6,
+      "contentTodo": "Has 6 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "SAA-C03",
@@ -543,14 +549,15 @@
         "videoTitle": "AWS Solutions Architect Associate Certification (SAA-C03) – Full Course to PASS the Exam",
         "videoChannel": "freeCodeCamp.org",
         "videoIsSearchFallback": false
-      }
+      },
+      "scenarioCount": 26
     },
     {
       "code": "DVA-C02",
       "name": "AWS Certified Developer – Associate",
       "shortName": "Developer",
       "tier": "associate",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-developer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html",
       "tagline": "Develop, package, deploy and debug AWS Cloud applications with CI/CD workflows.",
@@ -657,14 +664,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 8,
+      "contentTodo": "Has 8 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "SOA-C03",
       "name": "AWS Certified CloudOps Engineer – Associate",
       "shortName": "CloudOps Engineer",
       "tier": "associate",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/sysops-administrator-associate-03/sysops-administrator-associate-03.html",
       "tagline": "Deploy, manage and operate workloads on AWS. Renamed from SysOps Administrator – Associate.",
@@ -789,14 +797,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 5,
+      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "DEA-C01",
       "name": "AWS Certified Data Engineer – Associate",
       "shortName": "Data Engineer",
       "tier": "associate",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-data-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html",
       "tagline": "Implement data pipelines, then monitor, troubleshoot and optimise their cost and performance.",
@@ -894,7 +903,8 @@
         "cloudwatch",
         "cloudtrail",
         "sqs",
-        "sns"
+        "sns",
+        "sagemaker-feature-store"
       ],
       "startHereVideo": {
         "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Data%20Engineer%20%E2%80%93%20Associate%20full%20course%20DEA-C01",
@@ -902,14 +912,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 4,
+      "contentTodo": "Has 4 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "MLA-C01",
       "name": "AWS Certified Machine Learning Engineer – Associate",
       "shortName": "ML Engineer",
       "tier": "associate",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-01/machine-learning-engineer-associate-01.html",
       "tagline": "Build, operationalise, deploy and maintain ML solutions and pipelines on AWS.",
@@ -954,7 +965,7 @@
           "name": "ML Model Development",
           "weight": 26,
           "tags": [
-            "ml"
+            "ml-modeling"
           ]
         },
         {
@@ -963,7 +974,7 @@
           "name": "Deployment and Orchestration of ML Workflows",
           "weight": 22,
           "tags": [
-            "ml",
+            "ml-ops",
             "compute",
             "developer-tools"
           ]
@@ -1004,7 +1015,13 @@
         "codebuild",
         "cloudformation",
         "opensearch",
-        "dynamodb"
+        "dynamodb",
+        "sagemaker-jumpstart",
+        "sagemaker-feature-store",
+        "sagemaker-pipelines",
+        "sagemaker-model-monitor",
+        "sagemaker-clarify",
+        "sagemaker-ground-truth"
       ],
       "startHereVideo": {
         "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Machine%20Learning%20Engineer%20%E2%80%93%20Associate%20full%20course%20MLA-C01",
@@ -1012,14 +1029,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 6,
+      "contentTodo": "Has 6 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "SAP-C02",
       "name": "AWS Certified Solutions Architect – Professional",
       "shortName": "SA Professional",
       "tier": "professional",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html",
       "tagline": "Design optimised AWS solutions across organisational complexity, migration and modernisation.",
@@ -1153,14 +1171,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 5,
+      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "DOP-C02",
       "name": "AWS Certified DevOps Engineer – Professional",
       "shortName": "DevOps Engineer",
       "tier": "professional",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/devops-engineer-professional-02/devops-engineer-professional-02.html",
       "tagline": "Provision, operate and manage distributed systems on AWS with automated delivery and recovery.",
@@ -1290,14 +1309,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 4,
+      "contentTodo": "Has 4 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "AIP-C01",
       "name": "AWS Certified Generative AI Developer – Professional",
       "shortName": "GenAI Developer",
       "tier": "professional",
-      "dataStatus": "stub",
+      "dataStatus": "developing",
       "url": "https://aws.amazon.com/certification/certified-generative-ai-developer-professional/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html",
       "tagline": "Integrate foundation models into production applications, agents and business workflows.",
@@ -1339,7 +1359,7 @@
           "name": "Implementation and Integration",
           "weight": 26,
           "tags": [
-            "genai",
+            "genai-apps",
             "integration",
             "compute"
           ]
@@ -1400,7 +1420,11 @@
         "guardduty",
         "macie",
         "cost-explorer",
-        "glue"
+        "glue",
+        "bedrock-knowledge-bases",
+        "bedrock-agents",
+        "bedrock-guardrails",
+        "sagemaker-jumpstart"
       ],
       "startHereVideo": {
         "videoUrl": "https://www.youtube.com/results?search_query=AWS%20Certified%20Generative%20AI%20Developer%20%E2%80%93%20Professional%20full%20course%20AIP-C01",
@@ -1408,14 +1432,15 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 5,
+      "contentTodo": "Has 5 authored scenarios. Target is 9+ for parity with the full exams; until then a mock draws more heavily on generated recall questions."
     },
     {
       "code": "SCS-C03",
       "name": "AWS Certified Security – Specialty",
       "shortName": "Security",
       "tier": "specialty",
-      "dataStatus": "stub",
+      "dataStatus": "full",
       "url": "https://aws.amazon.com/certification/certified-security-specialty/",
       "examGuideUrl": "https://docs.aws.amazon.com/aws-certification/latest/security-specialty-03/security-specialty-03.html",
       "tagline": "Detect, respond to and prevent security issues across AWS accounts, data and infrastructure.",
@@ -1547,7 +1572,7 @@
         "videoChannel": null,
         "videoIsSearchFallback": true
       },
-      "beginnerLayerTodo": "TODO: this certification still shares the beginner explanations written for CLF-C02 and SAA-C03. Author beginner text for any services unique to this exam, and verify a start-here course video from a trusted channel, when this cert is built out."
+      "scenarioCount": 9
     }
   ],
   "retired": [
@@ -1575,5 +1600,10 @@
   "beginnerLayer": {
     "note": "Per-certification 'start here' videos. Entries with videoIsSearchFallback:false had their channel and title confirmed via YouTube's oEmbed endpoint before being written. Never add an unverified videoUrl — use a search link instead.",
     "verifiedOn": "2026-08-18"
+  },
+  "dataStatusLevels": {
+    "full": "Deep content: a large scenario bank as well as full service and concept coverage.",
+    "developing": "Real exam-specific services, concepts and scenarios, but a thinner scenario bank than the full exams. A mock will lean more on generated recall questions.",
+    "stub": "Metadata only. Not used any more."
   }
 }

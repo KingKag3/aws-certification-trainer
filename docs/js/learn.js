@@ -99,9 +99,21 @@ export function primaryDomain(cert, entity) {
  * flat that is a hundred-item wall; split by category it reads as a contents page.
  */
 export function groupByDomain(cert, entities, categories = {}) {
-  const groups = new Map(cert.domains.map((d) => [d.id, { domain: d, entries: [] }]));
+  const groups = new Map(cert.domains.map((d) => [d.id, { domain: d, entries: [], shared: false }]));
   for (const e of entities) {
     groups.get(primaryDomain(cert, e).id).entries.push(e);
+  }
+
+  /* A topic can legitimately sit in more than one exam domain, and single
+     assignment sends it to whichever domain weighs most. That silently emptied
+     real domains — MLA-C01's "ML Model Development" is 26% of that exam and was
+     rendering nothing at all. Rather than hide a domain, an otherwise-empty one
+     lists the topics that match it, accepting that they appear twice. */
+  for (const g of groups.values()) {
+    if (g.entries.length) continue;
+    const want = new Set(g.domain.tags);
+    g.entries = entities.filter((e) => (e.tags || []).some((t) => want.has(t)));
+    g.shared = g.entries.length > 0;
   }
 
   return [...groups.values()]
